@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>LogOpen</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<style type="text/css">
+/* This file is deliberately empty. */
+</style>
+<link rel="stylesheet" type="text/css" href="styles.css">
+</head>
+<body>
+<p><em><a href="_Qbdebug_Contents.html">back to Table of Contents</a></em></p>
+<hr />
+<h2>LogOpen <em>(function)</em></h2>
+<p>Open a new branch in the debug output tree, should be called on any
+function's entry point or as introduction of a new debug section in the
+main program. The result must be stored and passed back to a subsequent
+(matching) call to the subroutine <a href="LogClose.html">LogClose()</a>.</p>
+<hr />
+<blockquote>
+<blockquote>
+<blockquote>
+<blockquote>
+<blockquote>
+<p><strong><em>SYNTAX:</em></strong></p>
+</blockquote>
+</blockquote>
+</blockquote>
+</blockquote>
+<pre><code>ostat% = LogOpen% (func$, file$)
+</code></pre>
+
+</blockquote>
+<hr />
+<blockquote>
+<blockquote>
+<blockquote>
+<blockquote>
+<blockquote>
+<p><strong><em>INPUTS:</em></strong></p>
+</blockquote>
+</blockquote>
+</blockquote>
+</blockquote>
+<h4>func$ <em>(STRING)</em></h4>
+<ul>
+<li>Recommended is the name of the current function or section in the main
+program, but as this is in general just a descriptive label for the logging
+output, you may write whatever seems appropriate for your needs.</li>
+</ul>
+<h4>file$ <em>(STRING)</em></h4>
+<ul>
+<li>Optional the name of the source file, which contains the function. Same
+as above, it's just a recommendation.</li>
+</ul>
+</blockquote>
+<hr />
+<blockquote>
+<blockquote>
+<blockquote>
+<blockquote>
+<blockquote>
+<p><strong><em>RESULT:</em></strong></p>
+</blockquote>
+</blockquote>
+</blockquote>
+</blockquote>
+<h4>ostat% <em>(INTEGER)</em></h4>
+<ul>
+<li>This is a state value, which must be saved and later passed back to the
+matching call of the <a href="LogClose.html">LogClose()</a> subroutine.</li>
+</ul>
+</blockquote>
+<hr />
+<p><em><a href="_Qbdebug_Contents.html">back to Table of Contents</a></em></p>
+
+</body>
+</html>
+<!-- This document was created with MarkdownPad, the Markdown editor for Windows (http://markdownpad.com) -->

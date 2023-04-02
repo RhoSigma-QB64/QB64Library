@@ -1,0 +1,243 @@
+'+---------------+---------------------------------------------------+
+'| ###### ###### |     .--. .         .-.                            |
+'| ##  ## ##   # |     |   )|        (   ) o                         |
+'| ##  ##  ##    |     |--' |--. .-.  `-.  .  .-...--.--. .-.        |
+'| ######   ##   |     |  \ |  |(   )(   ) | (   ||  |  |(   )       |
+'| ##      ##    |     '   `'  `-`-'  `-'-' `-`-`|'  '  `-`-'`-      |
+'| ##     ##   # |                            ._.'                   |
+'| ##     ###### |  Sources & Documents placed in the Public Domain. |
+'+---------------+---------------------------------------------------+
+'|                                                                   |
+'| === types.bm ===                                                  |
+'|                                                                   |
+'| == The SUBs and FUNCTIONs used to define data type structures.    |
+'|                                                                   |
+'+-------------------------------------------------------------------+
+'| Done by RhoSigma, R.Heyder, provided AS IS, use at your own risk. |
+'| Find me in the QB64 Forum or mail to support@rhosigma-cw.net for  |
+'| any questions or suggestions. Thanx for your interest in my work. |
+'+-------------------------------------------------------------------+
+
+'==========================================
+'=== Structure offset counter alignment ===
+'==========================================
+'=== If required, then call either of the following three SUBs directly
+'=== prior to the entry, which needs the alignment. (see also RSI-Docs)
+
+'--- Align offset to next WORD (INTEGER) boundary,
+'--- does nothing, if the offset is already well aligned
+'---------------------------------------------------------------------
+SUB ALIGNWORD ()
+sOffset& = ((sOffset& + 1) AND -2&)
+END SUB
+
+'--- Align offset to next LONG boundary,
+'--- does nothing, if the offset is already well aligned
+'---------------------------------------------------------------------
+SUB ALIGNLONG ()
+sOffset& = ((sOffset& + 3) AND -4&)
+END SUB
+
+'--- Align offset to next LONG LONG (_INTEGER64) boundary,
+'--- does nothing, if the offset is already well aligned
+'---------------------------------------------------------------------
+SUB ALIGNLONGLONG ()
+sOffset& = ((sOffset& + 7) AND -8&)
+END SUB
+
+'=======================================
+'=== Special case structure building ===
+'=======================================
+'=== The following two SUBs are used especially to handle the steps
+'=== required to init a new structure, to build unions and to finish
+'=== a structure. (see also RSI-Docs)
+
+'--- Start a new structure data type,
+'--- start offset may be used to incorporate another structure directly
+'--- at the head of the new structure (eg. a (Min)ListNode& for linkage),
+'--- or to incorporate array space.
+'---------------------------------------------------------------------
+SUB DefSTRUCTURE (sym&, offs&) '(structure name symbol, start offset)
+IF offs& < 0 THEN ERROR 97 'negative offset not allowed
+sym& = 0
+sOffset& = offs&
+END SUB
+
+'--- Finish a structure data type,
+'--- this SUB may also be used to define union offsets, as it does not
+'--- increment the offset counter.
+'---------------------------------------------------------------------
+SUB DefLABEL (sym&) '(offset name symbol)
+sym& = sOffset&
+END SUB
+
+'==================================
+'=== Regular structure building ===
+'==================================
+'=== Either of the following SUBs will assign the current offset counter
+'=== to the given name symbol and then incrementing the counter according
+'=== to the entry's size. (see also RSI-Docs)
+
+'--- General Purpose Memory pointer,
+'--- this kind of entry is used to store any valid GPM address or zero,
+'--- usually these are returned by the GPM allocation functions. (memory.bm)
+'---------------------------------------------------------------------
+SUB DefGPMPTR (sym&) '(offset name symbol)
+sym& = sOffset&
+sOffset& = sOffset& + 4
+END SUB
+
+'--- Pointer to a zero terminated string in GP Memory,
+'--- this entry is similar to the one above, it's used to store any
+'--- GPM address usually returned by memory.bm/CreateGPMString&.
+'---------------------------------------------------------------------
+SUB DefGPMSTR (sym&) '(offset name symbol)
+sym& = sOffset&
+sOffset& = sOffset& + 4
+END SUB
+
+'--- A 1-byte character entry,
+'--- this is used to store a single character (eg. a key code)
+'---------------------------------------------------------------------
+SUB DefCHAR (sym&) '(offset name symbol)
+sym& = sOffset&
+sOffset& = sOffset& + 1
+END SUB
+
+'--- Embedded string buffer,
+'--- instead of using a pointer to a zero terminated string, this entry
+'--- will directly incorporate a fixed length string into the structure.
+'---------------------------------------------------------------------
+SUB DefSTRING (sym&, size&) '(offset name symbol, size of buffer (one byte for zero temination is added))
+IF size& < 0 THEN ERROR 97 'negative size not allowed
+sym& = sOffset&
+sOffset& = sOffset& + size& + 1 'one more for zero termination
+ALIGNWORD 'always align embedded size to WORD boundary
+END SUB
+
+'--- Incorporate another structure,
+'--- the size& argument is usually the xx_SizeOf& symbol of the structure
+'--- to incorporate, this SUB may also be used to incorporate array space.
+'---------------------------------------------------------------------
+SUB DefSTRUCT (sym&, size&) '(offset name symbol, size of incorporated structure or array)
+IF size& < 0 THEN ERROR 97 'negative size not allowed
+sym& = sOffset&
+sOffset& = sOffset& + size&
+ALIGNWORD 'always align incorporated size to WORD boundary
+END SUB
+
+'--- Boolean entry,
+'--- this one is used to store logical states, although it is 16 bits
+'--- wide, only all bits set (true) or unset (false) should be stored.
+'---------------------------------------------------------------------
+SUB DefBOOL (sym&) '(offset name symbol)
+sym& = sOffset&
+sOffset& = sOffset& + 2
+END SUB
+
+'--- Byte entry, signed 8 bits wide,
+'--- however, nothing prevents you to interpret its value as unsigned.
+'---------------------------------------------------------------------
+SUB DefBYTE (sym&) '(offset name symbol)
+sym& = sOffset&
+sOffset& = sOffset& + 1
+END SUB
+
+'--- Byte entry, unsigned 8 bits wide,
+'--- however, nothing prevents you to interpret its value as signed.
+'---------------------------------------------------------------------
+SUB DefUBYTE (sym&) '(offset name symbol)
+sym& = sOffset&
+sOffset& = sOffset& + 1
+END SUB
+
+'--- Word (INTEGER) entry, signed 16 bits wide,
+'--- however, nothing prevents you to interpret its value as unsigned.
+'---------------------------------------------------------------------
+SUB DefWORD (sym&) '(offset name symbol)
+sym& = sOffset&
+sOffset& = sOffset& + 2
+END SUB
+
+'--- Word (INTEGER) entry, unsigned 16 bits wide,
+'--- however, nothing prevents you to interpret its value as signed.
+'---------------------------------------------------------------------
+SUB DefUWORD (sym&) '(offset name symbol)
+sym& = sOffset&
+sOffset& = sOffset& + 2
+END SUB
+
+'--- Long entry, signed 32 bits wide,
+'--- however, nothing prevents you to interpret its value as unsigned.
+'---------------------------------------------------------------------
+SUB DefLONG (sym&) '(offset name symbol)
+sym& = sOffset&
+sOffset& = sOffset& + 4
+END SUB
+
+'--- Long entry, unsigned 32 bits wide,
+'--- however, nothing prevents you to interpret its value as signed.
+'---------------------------------------------------------------------
+SUB DefULONG (sym&) '(offset name symbol)
+sym& = sOffset&
+sOffset& = sOffset& + 4
+END SUB
+
+'--- Long Long (_INTEGER64) entry, signed 64 bits wide,
+'--- however, nothing prevents you to interpret its value as unsigned.
+'---------------------------------------------------------------------
+SUB DefLONGLONG (sym&) '(offset name symbol)
+sym& = sOffset&
+sOffset& = sOffset& + 8
+END SUB
+
+'--- Long Long (_INTEGER64) entry, unsigned 64 bits wide,
+'--- however, nothing prevents you to interpret its value as signed.
+'---------------------------------------------------------------------
+SUB DefULONGLONG (sym&) '(offset name symbol)
+sym& = sOffset&
+sOffset& = sOffset& + 8
+END SUB
+
+'--- Floating point entry, single precision 32 bits wide,
+'--- however, nothing prevents you to interpret its value as LONG.
+'---------------------------------------------------------------------
+SUB DefSINGLE (sym&) '(offset name symbol)
+sym& = sOffset&
+sOffset& = sOffset& + 4
+END SUB
+
+'--- Floating point entry, double precision 64 bits wide,
+'--- however, nothing prevents you to interpret its value as _INTEGER64.
+'---------------------------------------------------------------------
+SUB DefDOUBLE (sym&) '(offset name symbol)
+sym& = sOffset&
+sOffset& = sOffset& + 8
+END SUB
+
+'============================
+'=== Enumerated variables ===
+'============================
+'=== The following three SUBs are used to build enumerated variables
+'=== in either ascending or descending order. (see also RSI-Docs)
+
+'--- Set a new base number for enumerating
+'---------------------------------------------------------------------
+SUB SetENUM (offs&) '(new base)
+eOffset& = offs&
+END SUB
+
+'--- Set a variable and increment
+'---------------------------------------------------------------------
+SUB IncEVAR (sym&) '(variable name symbol)
+sym& = eOffset&
+eOffset& = eOffset& + 1
+END SUB
+
+'--- Set a variable and decrement
+'---------------------------------------------------------------------
+SUB DecEVAR (sym&) '(variable name symbol)
+sym& = eOffset&
+eOffset& = eOffset& - 1
+END SUB
+

@@ -1,0 +1,31 @@
+<html>
+<head>
+<title>List handling Functions / Empty Lists</title>
+</head>
+<body>
+<pre style="font-size:20px">
+It is often important to determine if a list is empty.  This can be done
+in many ways, but only two are worth mentioning.  If either the <b>lh_TailPred&amp;</b>
+field is pointing to the list header or the <b>ln_Succ&amp;</b> field of the node
+<b>lh_Head&amp;</b> is pointing to is zero, then the list is empty.
+
+In code, for example, these methods would be written as follows:
+
+    &#39;You can use this method...
+    IF PeekL&amp;(list&amp;, lh_TailPred&amp;) = list&amp; THEN PRINT &quot;List is empty.&quot;
+
+    &#39;Or you can use this method
+    IF PeekL&amp;(PeekL&amp;(list&amp;, lh_Head&amp;), ln_Succ&amp;) = 0 THEN PRINT &quot;List is empty.&quot;
+
+Even if there is only one line of code required for this check, there is
+a FUNCTION <b>IsListEmpty&amp;</b> set up to do this check.  You should use it to
+make your programs more readable.
+
+For example:
+
+    IF IsListEmpty&amp;(list&amp;) THEN PRINT &quot;List is empty.&quot;
+
+                                                     <a href="funcs.html">Back to List Functions</a>
+</pre>
+</body>
+</html>

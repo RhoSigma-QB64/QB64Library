@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>DecryptFile</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<style type="text/css">
+/* This file is deliberately empty. */
+</style>
+<link rel="stylesheet" type="text/css" href="styles.css">
+</head>
+<body>
+<p><em><a href="_Des56_Contents.html">back to Table of Contents</a></em></p>
+<hr />
+<h2>DecryptFile <em>(function)</em></h2>
+<p>This will decrypt a whole file using the given password. This function can
+only decrypt files encrypted with function <a href="EncryptFile.html">EncryptFile()</a> of this library.
+As it may also happen, that a file is encrypted multiple times, you may do
+additional calls to this function until DES56_WARN_NOTCRYPTED is returned.
+In alternative use the function <a href="IsCryptedFile.html">IsCryptedFile()</a> for this purpose.</p>
+<hr />
+<blockquote>
+<blockquote>
+<blockquote>
+<blockquote>
+<blockquote>
+<p><strong><em>SYNTAX:</em></strong></p>
+</blockquote>
+</blockquote>
+</blockquote>
+</blockquote>
+<pre><code>error% = DecryptFile% (file$, pass$)
+</code></pre>
+
+</blockquote>
+<hr />
+<blockquote>
+<blockquote>
+<blockquote>
+<blockquote>
+<blockquote>
+<p><strong><em>INPUTS:</em></strong></p>
+</blockquote>
+</blockquote>
+</blockquote>
+</blockquote>
+<h4>file$ <em>(STRING)</em></h4>
+<ul>
+<li>Any existing file, with full path if required. An empty file$ or not
+existing file results into error DES56_ERROR_NOACCESS.</li>
+</ul>
+<h4>pass$ <em>(STRING)</em></h4>
+<ul>
+<li>Any password as literal or variable. An empty password will result
+into error DES56_ERROR_NOPASS.</li>
+</ul>
+</blockquote>
+<hr />
+<blockquote>
+<blockquote>
+<blockquote>
+<blockquote>
+<blockquote>
+<p><strong><em>RESULT:</em></strong></p>
+</blockquote>
+</blockquote>
+</blockquote>
+</blockquote>
+<h4>error% <em>(INTEGER)</em></h4>
+<ul>
+<li>
+Zero on success, else any error defined in file <strong>des56.bi</strong>.
+<ul>
+<li>See also page <a href="Des56-Common.html">Common Info</a>.</li>
+</ul>
+</li>
+</ul>
+</blockquote>
+<hr />
+<p><em><a href="_Des56_Contents.html">back to Table of Contents</a></em></p>
+
+</body>
+</html>
+<!-- This document was created with MarkdownPad, the Markdown editor for Windows (http://markdownpad.com) -->

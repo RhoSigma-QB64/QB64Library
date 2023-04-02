@@ -1,0 +1,20 @@
+This implementation of the RhoSigma Includes for QB64 and its examples
+were an attempt to create a facility for independent data storage and
+management in any QB64 programs before the _MEM blocks system was built
+into the language. This work is inspired by the respective methods used
+in the AmigaOS, which I tried to rebuild in QB64.
+
+Note that this library is mostly outdated since _MEM blocks were built
+into QB64. I'll no longer maintain it and provide it here "as is" for
+educational purposes in the Public Domain (see PD-Unlicense.txt). This
+applies to the entire contents in this distribution, namely:
+    - lists.bi
+    - lists.bm
+    - memory.bi
+    - memory.bm
+    - types.bi
+    - types.bm
+    - docs\ (entire contents)
+    - example\Phonebook.bas
+    - example\phbook.txt
+

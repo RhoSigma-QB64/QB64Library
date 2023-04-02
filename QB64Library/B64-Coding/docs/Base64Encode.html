@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Base64Encode</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<style type="text/css">
+/* This file is deliberately empty. */
+</style>
+<link rel="stylesheet" type="text/css" href="styles.css">
+</head>
+<body>
+<p><em><a href="_Base64_Contents.html">back to Table of Contents</a></em></p>
+<hr />
+<h2>Base64Encode$ <em>(function)</em></h2>
+<p>Encode the given string message data into a Base64 string. The data can
+be any sequence of bytes inclusive zeros and control chars. There are
+also options to determine how the encoding shall be done.</p>
+<hr />
+<blockquote>
+<blockquote>
+<blockquote>
+<blockquote>
+<blockquote>
+<p><strong><em>SYNTAX:</em></strong></p>
+</blockquote>
+</blockquote>
+</blockquote>
+</blockquote>
+<pre><code>encoded$ = Base64Encode$ (message$, wrapLen%, padFlag%, lineMode%)
+</code></pre>
+
+</blockquote>
+<hr />
+<blockquote>
+<blockquote>
+<blockquote>
+<blockquote>
+<blockquote>
+<p><strong><em>INPUTS:</em></strong></p>
+</blockquote>
+</blockquote>
+</blockquote>
+</blockquote>
+<h4>message$ <em>(STRING)</em></h4>
+<ul>
+<li>The message data you want to encode into Base64.</li>
+<li>Each <em>&lt;LF&gt;</em> code (CHR$(10)) does end a line, if encoding in line mode.</li>
+</ul>
+<h4>wrapLen% <em>(INTEGER)</em></h4>
+<ul>
+<li>This value specifies the number of chars in the encoded Base64 string,
+after which a line break shall be inserted. If this is less or equal to
+zero (0), then no line breaks are inserted at all.</li>
+<li>Note that the line breaks are Unix style, hence <em>&lt;LF&gt;</em> only (CHR$(10)).</li>
+<li>This option is not valid in line mode, any given value is ignored then.</li>
+</ul>
+<h4>padFlag% <em>(INTEGER)</em></h4>
+<ul>
+<li>This flag controls whether the one or two pad characters are included
+at the end of encoding. If zero (0), then no padding is done, any other
+value will enable padding.</li>
+</ul>
+<h4>lineMode% <em>(INTEGER)</em></h4>
+<ul>
+<li>If line mode is enabled (any value &lt;&gt; 0), then each line found in the
+input message string is separately encoded into a single Base64 string.
+The <em>&lt;LF&gt;</em> codes are preserved, hence the encoded result will have the same
+line structure as the input message.</li>
+<li>Each of the resulting Base64 encoded lines could be decoded separately,
+or multiple/all lines could be decoded using the line mode again.</li>
+</ul>
+</blockquote>
+<hr />
+<blockquote>
+<blockquote>
+<blockquote>
+<blockquote>
+<blockquote>
+<p><strong><em>RESULT:</em></strong></p>
+</blockquote>
+</blockquote>
+</blockquote>
+</blockquote>
+<h4>encoded$ <em>(STRING)</em></h4>
+<ul>
+<li>The encoded Base64 string, according to the given options.</li>
+</ul>
+</blockquote>
+<hr />
+<p><em><a href="_Base64_Contents.html">back to Table of Contents</a></em></p>
+
+</body>
+</html>
+<!-- This document was created with MarkdownPad, the Markdown editor for Windows (http://markdownpad.com) -->

@@ -1,0 +1,12 @@
+This implementation of the Image Support libraries for QB64 and its examples
+is unlicensed and placed in the Public Domain (see PD-Unlicense.txt), it
+applies to the entire contents in this distribution, namely:
+    - converthelper.bm
+    - imageprocess.bm
+    - docs\ (entire contents)
+    - example\BeachGirl.jpg
+    - example\AsciiArtDemo.bas
+    - example\Circles.bas
+    - example\ColorSpin.bas
+    - example\ImgProcDemo.bas
+

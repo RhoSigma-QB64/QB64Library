@@ -1,0 +1,9 @@
+This implementation of the Debug/Logging library for QB64 and its examples
+is unlicensed and placed in the Public Domain (see PD-Unlicense.txt), it
+applies to the entire contents in this distribution, namely:
+    - qbdebug.h
+    - qbdebug.bi
+    - qbdebug.bm
+    - docs\ (entire contents)
+    - example\Debug-HowTo.bas
+

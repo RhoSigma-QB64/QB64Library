@@ -1,0 +1,67 @@
+'+---------------+---------------------------------------------------+
+'| ###### ###### |     .--. .         .-.                            |
+'| ##  ## ##   # |     |   )|        (   ) o                         |
+'| ##  ##  ##    |     |--' |--. .-.  `-.  .  .-...--.--. .-.        |
+'| ######   ##   |     |  \ |  |(   )(   ) | (   ||  |  |(   )       |
+'| ##      ##    |     '   `'  `-`-'  `-'-' `-`-`|'  '  `-`-'`-      |
+'| ##     ##   # |                            ._.'                   |
+'| ##     ###### |   Sources & Documents placed under GNU GPL v2.0   |
+'+---------------+---------------------------------------------------+
+'|                                                                   |
+'| === des56.bm ===                                                  |
+'|                                                                   |
+'| == The SUBs and FUNCTIONs to use DES-56 en-/decryption with QB64. |
+'|                                                                   |
+'+-------------------------------------------------------------------+
+'| Done by RhoSigma, R.Heyder, provided AS IS, use at your own risk. |
+'| Find me in the QB64 Forum or mail to support@rhosigma-cw.net for  |
+'| any questions or suggestions. Thanx for your interest in my work. |
+'+-------------------------------------------------------------------+
+
+' This program is free software; you can redistribute it and/or modify
+' it under the terms of the GNU General Public License as published by
+' the Free Software Foundation; either version 2, or (at your option)
+' any later version.
+'
+' This program is distributed in the hope that it will be useful,
+' but WITHOUT ANY WARRANTY; without even the implied warranty of
+' MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+' GNU General Public License for more details.
+'
+' You should have received a copy of the GNU General Public License
+' along with this program; if not, write to the Free Software
+' Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+
+'--- docs\EncryptPassword.html
+'---------------------------------------------------------------------
+FUNCTION EncryptPassword$ (pass$, salt$)
+EncryptPassword$ = EncPass$(pass$ + CHR$(0), salt$ + CHR$(0))
+END FUNCTION
+
+'--- docs\EncryptFile.html
+'---------------------------------------------------------------------
+FUNCTION EncryptFile% (file$, pass$)
+EncryptFile% = EncFile%(file$ + CHR$(0), pass$ + CHR$(0))
+END FUNCTION
+
+'--- docs\DecryptFile.html
+'---------------------------------------------------------------------
+FUNCTION DecryptFile% (file$, pass$)
+DecryptFile% = DecFile%(file$ + CHR$(0), pass$ + CHR$(0))
+END FUNCTION
+
+'--- docs\IsCryptedFile.html
+'---------------------------------------------------------------------
+FUNCTION IsCryptedFile% (file$)
+DIM ret% 'option _explicit requirements
+ret% = DecFile%(file$ + CHR$(0), "This is an absolutly senseless very long dummy password, which is hopefully not used by anybody in real life." + CHR$(0))
+IsCryptedFile% = 0
+IF ret% <> DES56_WARN_NOTCRYPTED THEN
+    IF ret% = DES56_ERROR_WRONGCRC THEN 'could indicate wrong password (of course it is)
+        'consider any other error as file is not properly processable at all,
+        'so we don't need to suggest the caller to tread as encrypted file then
+        IsCryptedFile% = -1
+    END IF
+END IF
+END FUNCTION
+

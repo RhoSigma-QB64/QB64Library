@@ -1,0 +1,40 @@
+<html>
+<head>
+<title>Function Reference / PokeXX</title>
+</head>
+<body>
+<pre style="font-size:20px">
+
+DEFINITION - SUB
+    <b>PokeB</b> <i>addr&amp;</i>, <i>offs&amp;</i>, <i>value%%</i>
+                  -- write a BYTE (8 bits) to GP memory
+    <b>PokeW</b> <i>addr&amp;</i>, <i>offs&amp;</i>, <i>value%</i>
+                  -- write a WORD (INTEGER) (16 bits) to GP memory
+    <b>PokeL</b> <i>addr&amp;</i>, <i>offs&amp;</i>, <i>value&amp;</i>
+                  -- write a LONG (32 bits) to GP memory
+    <b>PokeLL</b> <i>addr&amp;</i>, <i>offs&amp;</i>, <i>value&amp;&amp;</i>
+                  -- write a LONG LONG (_INTEGER64) (64 bits) to GP memory
+
+    <b>PokeS</b> <i>addr&amp;</i>, <i>offs&amp;</i>, <i>value!</i> -- write a SINGLE (32 bits) to GP memory
+    <b>PokeD</b> <i>addr&amp;</i>, <i>offs&amp;</i>, <i>value#</i> -- write a DOUBLE (64 bits) to GP memory
+
+    <b>PokeSTR</b> <i>addr&amp;</i>, <i>offs&amp;</i>, <i>text$</i> -- write a STRING to GP memory
+
+OPERATION
+    Write the given <i>value</i> or <i>text</i> to GP memory starting at the address
+    specified by the sum of the <i>addr&amp;</i> and <i>offs&amp;</i> arguments.  In fact, these
+    arguments are interchangeable and one can even be set to zero, if the
+    sum is pre-calculated and put in the other argument.
+
+ARGUMENTS
+    <i>addr&amp;</i> -- a pointer to the memory (consider it a base address)
+    <i>offs&amp;</i> -- a byte offset added to the base address, may be zero
+    <i>value</i> -- the actual value to write (or text for <b>PokeSTR</b>)
+
+SEE ALSO
+    <a href="access.html">Accessing GP Memory</a>
+
+                                                 <a href="funcref.html">Back to Function Reference</a>
+</pre>
+</body>
+</html>

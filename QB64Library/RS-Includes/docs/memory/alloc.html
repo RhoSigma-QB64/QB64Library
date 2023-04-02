@@ -1,0 +1,87 @@
+<html>
+<head>
+<title>GP Memory Functions / Allocating GP Memory</title>
+</head>
+<body>
+<pre style="font-size:20px">
+Normally, a program uses the FUNCTION <b>AllocGPMem&amp;</b> to ask for memory:
+
+    <i>addr&amp;</i> = <b>AllocGPMem&amp;</b>(<i>getSize&amp;</i>, <i>flags&amp;</i>)
+
+The <i>getSize&amp;</i> argument is the amount of memory the program needs and <i>flags&amp;</i>
+is a bit field which specifies any special characteristics (see reference).
+If <b>AllocGPMem&amp;</b> is successful, it returns an address pointer to a block of
+memory.  The memory allocation will fail if the GPM system cannot find a
+big enough block.  If <b>AllocGPMem&amp;</b> fails, it returns zero.
+
+Because the GP Memory system only keeps track of how much free memory is
+available and not how much is in use, it has no idea what memory has been
+allocated so far.  This means the program has to explicitly return, or
+deallocate, any memory it has allocated so the GPM system can return that
+memory to the free memory list.  If the program does not return a block of
+memory, then the GPM system will not be able to reallocate that memory for
+later reuse.  That block of memory will be lost until the program ends.
+If you are using <b>AllocGPMem&amp;</b> to allocate memory, a call to <b>FreeGPMem</b> will
+return that memory to the GP Memory system:
+
+    <b>FreeGPMem</b> <i>addr&amp;</i>, <i>freeSize&amp;</i>
+
+Here <i>addr&amp;</i> is the address pointer to the memory block the program is about
+to return to the GPM system and <i>freeSize&amp;</i> is the same size that was passed
+when the memory was allocated with <b>AllocGPMem&amp;</b>.
+
+The GP Memory system allocation functions will always return memory blocks
+that are at least LONG LONG (_INTEGER64) aligned.  This means that the
+allocated memory will always start on an address which is at least evenly
+divisible by eight.  This alignment makes the memory suitable for any type
+of structures or buffers and also provides optimal alignment for stacks
+and memory copying.
+<hr>
+The following examples show how to allocate memory.
+
+    apointer&amp; = AllocGPMem&amp;(100&amp;, 0&amp;)
+    IF apointer&amp; = 0 THEN
+        PRINT &quot;couldn&#39;t get memory, exiting...&quot;
+        GOTO exitProgram
+    END IF
+
+In this example <b>AllocGPMem&amp;</b> returns the address of the first byte of a
+memory block that is at least 100 bytes in size or zero if there is not
+that much free memory.
+
+    anotherptr&amp; = AllocGPMem&amp;(1000&amp;, gpmF_Clear&amp;)
+    IF anotherptr&amp; = 0 THEN
+        PRINT &quot;couldn&#39;t get memory, exiting...&quot;
+        GOTO exitProgram
+    END IF
+
+The example above allocates 1000 bytes of memory, which the GPM system
+fills with zeros before it lets the program use the memory.  If the GPM
+system free memory list does not contain enough contiguous memory bytes,
+then <b>AllocGPMem&amp;</b> returns a zero.  <u>You must check for this condition</u> and
+do a suitable error handling, if needed.
+
+If you&#39;re tired remembering the sizes of all memory blocks your program
+has allocated, then you can also use the FUNCTION <b>AllocGPMVec&amp;</b> to make
+memory allocations.  In addition to allocating a block of memory, this
+function keeps track of the size of the memory block, so the program
+doesn&#39;t have to remember it when it deallocates that memory block.  The
+<b>AllocGPMVec&amp;</b> function allocates a little more memory to store the size
+of the memory allocation request.
+
+    yap&amp; = AllocGPMVec&amp;(512&amp;, gpmF_Clear&amp;)
+    IF yap&amp; = 0 THEN
+        PRINT &quot;couldn&#39;t get memory, exiting...&quot;
+        GOTO exitProgram
+    END IF
+
+  Make Sure You Have Memory.
+  --------------------------
+  Always check the result of any memory allocation to be sure the
+  amount of memory requested is available.  Failure to do so will
+  lead to trying to use an non-valid pointer.
+
+                                                      <a href="memory-index.html">Back to GPM Functions</a>
+</pre>
+</body>
+</html>

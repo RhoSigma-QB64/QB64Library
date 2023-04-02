@@ -1,0 +1,15 @@
+This MD5 hashing library for QB64 is based on the MD5 sources of Notepad++.
+
+Although I did some changes to fit the whole thing into a QB64 library,
+I'am not the author or copyright holder of this RSA Data Security, Inc.
+MD5 Message-Digest Algorithm.
+
+This RSA Data Security, Inc. MD5 Message-Digest Algorithm is under the
+terms of RSA Data Security, Inc. its own license (see RSA-License.txt)
+and applies to the entire contents in this distribution, namely:
+    - md5.h
+    - md5.bi
+    - md5.bm
+    - docs\ (entire contents)
+    - example\MD5-HowTo.bas
+

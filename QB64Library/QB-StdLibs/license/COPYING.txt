@@ -1,0 +1,17 @@
+This implementation of the Standard libraries for QB64 and its examples
+is unlicensed and placed in the Public Domain (see PD-Unlicense.txt), it
+applies to the entire contents in this distribution, namely:
+    - qbstdarg.h
+    - qbstdarg.bi
+    - qbstdarg.bm
+    - qbstdio.h
+    - qbstdio.bi
+    - qbstdio.bm
+    - qbtime.h
+    - qbtime.bi
+    - qbtime.bm
+    - docs\ (entire contents)
+    - example\StdLibs-HowTo.bas
+    - example\StdLibs-Test.bas
+    - example\StdLibs-Test.png
+

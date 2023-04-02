@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Base64Decode</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<style type="text/css">
+/* This file is deliberately empty. */
+</style>
+<link rel="stylesheet" type="text/css" href="styles.css">
+</head>
+<body>
+<p><em><a href="_Base64_Contents.html">back to Table of Contents</a></em></p>
+<hr />
+<h2>Base64Decode$ <em>(function)</em></h2>
+<p>This will decode a Base64 string back into the original data. There are
+choices about what to do with illegal characters or malformed strings.
+This function has a strict flag to indicate that the input must be a
+single valid Base64 string with no illegal characters. Otherwise there
+is best effort to decode around illegal characters which are preserved
+in the output. So <strong>&quot;TWFyeQ==.aGFk.YQ.bGl0dGxl.bGFtYg==&quot;</strong> decodes to
+<strong>&quot;Mary.had.a.little.lamb&quot;</strong> with five separate Base64 strings decoded,
+each separated by the illegal character (dot). In strict mode the first
+dot would trigger a fatal error. The four whitespace characters <em>&lt;CR&gt;</em>,
+<em>&lt;LF&gt;</em>, <em>&lt;TAB&gt;</em> and <em>&lt;SPACE&gt;</em> are silently ignored in any case.</p>
+<hr />
+<blockquote>
+<blockquote>
+<blockquote>
+<blockquote>
+<blockquote>
+<p><strong><em>SYNTAX:</em></strong></p>
+</blockquote>
+</blockquote>
+</blockquote>
+</blockquote>
+<pre><code>message$ = Base64Decode$ (encoded$, strict%, lineMode%)
+</code></pre>
+
+</blockquote>
+<hr />
+<blockquote>
+<blockquote>
+<blockquote>
+<blockquote>
+<blockquote>
+<p><strong><em>INPUTS:</em></strong></p>
+</blockquote>
+</blockquote>
+</blockquote>
+</blockquote>
+<h4>encoded$ <em>(STRING)</em></h4>
+<ul>
+<li>The Base64 encoded string data, which shall be decoded again.</li>
+<li>Each <em>&lt;LF&gt;</em> code (CHR$(10)) does end a line, if decoding in line mode.</li>
+</ul>
+<h4>strict% <em>(INTEGER)</em></h4>
+<ul>
+<li>If this flag is set (any value &lt;&gt; 0), then the input must be a single
+valid Base64 string with no illegal characters, no extra padding, and no
+short segments. Otherwise an error message is returned.</li>
+</ul>
+<h4>lineMode% <em>(INTEGER)</em></h4>
+<ul>
+<li>If line mode is enabled (any value &lt;&gt; 0), then each line found in the
+input data must represent a single valid Base64 string and is separately
+decoded back into the respective original data line. The <em>&lt;LF&gt;</em> codes are
+preserved, hence the decoded result will have the same line structure as
+the Base64 input data.</li>
+</ul>
+</blockquote>
+<hr />
+<blockquote>
+<blockquote>
+<blockquote>
+<blockquote>
+<blockquote>
+<p><strong><em>RESULT:</em></strong></p>
+</blockquote>
+</blockquote>
+</blockquote>
+</blockquote>
+<h4>message$ <em>(STRING)</em></h4>
+<ul>
+<li>The decoded original message string, according to the given options.</li>
+<li>In strict mode it may be one of the error messages listed below.</li>
+</ul>
+</blockquote>
+<hr />
+<blockquote>
+<blockquote>
+<blockquote>
+<blockquote>
+<blockquote>
+<p><strong><em>ERRORS:</em></strong></p>
+</blockquote>
+</blockquote>
+</blockquote>
+</blockquote>
+<h6>B64DEC_ERROR_DAP</h6>
+<ul>
+<li>Data after pad character.</li>
+</ul>
+<h6>B64DEC_ERROR_PCW</h6>
+<ul>
+<li>Pad character in wrong place.</li>
+</ul>
+<h6>B64DEC_ERROR_SSB</h6>
+<ul>
+<li>Single symbol block not valid.</li>
+</ul>
+<h6>B64DEC_ERROR_BCI</h6>
+<ul>
+<li>Bad character in input string.</li>
+</ul>
+</blockquote>
+<hr />
+<p><em><a href="_Base64_Contents.html">back to Table of Contents</a></em></p>
+
+</body>
+</html>
+<!-- This document was created with MarkdownPad, the Markdown editor for Windows (http://markdownpad.com) -->

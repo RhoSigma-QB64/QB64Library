@@ -1,0 +1,145 @@
+<html>
+<head>
+<title>Alternative Types / How to use the type SUBs</title>
+</head>
+<body>
+<pre style="font-size:20px">
+So why shall I use this SUBs instead of simply coding my offset symbols as
+CONSTs with the offsets given as literals?
+Because if you add/remove entries in your structure or changing the size of
+an existing entry, then you must manually adjust all following offsets too.
+This is annoying and may cause errors by miscalculations.  With these SUBs
+you can do any required changes and all following offsets are adjusted
+automatically.
+<hr>
+Example of usage: (a simple structure)
+--------------------------------------
+    DefSTRUCTURE MyStruct&amp;, 0&amp;
+    DefULONG     ms_1stLong&amp;
+    DefULONG     ms_2ndLong&amp;
+    DefBYTE      ms_SignedByte&amp;
+    ALIGNWORD
+    DefUWORD     ms_UnsignedWord&amp;
+    DefLABEL     MyStruct_SizeOf&amp;
+
+and again with explaination:
+----------------------------
+    DefSTRUCTURE MyStruct&amp;, 0&amp;
+      &#39;this SUB does init a structure type, optional with start offset
+        &#39;set the variable <b>MyStruct&amp;</b> = zero (always)
+        &#39;init the offset counter to given start offset (here zero)
+
+    DefULONG     ms_1stLong&amp;
+      &#39;this SUB creates a 4-byte entry
+        &#39;set the variable <b>ms_1stLong&amp;</b> = offset counter (is zero from the init above)
+        &#39;increment the offset counter by 4 for the next entry
+
+    DefULONG     ms_2ndLong&amp;
+      &#39;the same SUB again to create another 4-byte entry
+        &#39;set the variable <b>ms_2ndLong&amp;</b> = offset counter (now 4 from last increment)
+        &#39;increment the offset counter by 4 for the next entry
+
+    DefBYTE      ms_SignedByte&amp;
+      &#39;this SUB creates a 1-byte entry
+        &#39;set the variable <b>ms_SignedByte&amp;</b> = offset counter (now 8 from last increment)
+        &#39;increment the offset counter by 1 for the next entry
+          &#39;offset counter is now 9, which would be Ok for another BYTE entry,
+           but is not a nice value for WORD, LONG etc. entries
+
+    ALIGNWORD
+      &#39;this SUB aligns the offset counter to (next) WORD boundary (here 10)
+        &#39;if the offset counter is already on such a boundary, then this SUB
+         does nothing, otherwise the next boundary will be calculated
+
+    DefUWORD     ms_UnsignedWord&amp;
+      &#39;this SUB creates a 2-byte entry
+        &#39;set the variable <b>ms_UnsignedWord&amp;</b> = offset counter (now 10 from alignment)
+        &#39;increment the offset counter by 2 for the next entry
+
+    DefLABEL     MyStruct_SizeOf&amp;
+      &#39;(here) this SUB is used to finish the actual structure
+        &#39;set the variable <b>MyStruct_SizeOf&amp;</b> = offset counter (now 12 from last increment,
+         this is the size required for this structure, use it to allocate storage
+         space via the FUNCTIONs in <b>memory.bm</b>)
+        &#39;this SUB does not increment the offset counter
+<hr>
+Another Example: (a structure incorporating the structure <b>MyStruct&amp;</b> twice (at
+the beginning and in the middle), also it shall have a union)
+-----------------------------------------------------------------------------
+    DefSTRUCTURE BigStruct&amp;, MyStruct_SizeOf&amp;
+    DefLONG      bs_SigLong&amp;
+    DefLABEL     bs_UniEnt1&amp;
+    DefWORD      bs_UniEnt2&amp;
+    DefWORD      bs_SigWord&amp;
+    DefSTRUCT    bs_MyStruct&amp;, MyStruct_SizeOf&amp;
+    DefULONG     bs_USigLong1&amp;
+    DefULONG     bs_USigLong2&amp;
+    DefLABEL     BigStruct_SizeOf&amp;
+
+and once again with explaination:
+---------------------------------
+    DefSTRUCTURE BigStruct&amp;, MyStruct_SizeOf&amp;
+      &#39;again this SUB does init the structure, here with a start offset,
+       which is the size required for the structure <b>MyStruct&amp;</b> defined above)
+        &#39;set the variable <b>BigStruct&amp;</b> = zero (always)
+        &#39;init the offset counter to given start offset (here <b>MyStruct_SizeOf&amp;</b> (12))
+          &#39;so now we have space for <b>MyStruct&amp;</b> at the beginning of <b>BigStruct&amp;</b>
+
+    DefLONG      bs_SigLong&amp;
+      &#39;this SUB creates a 4-byte entry again
+        &#39;set the variable <b>bs_SigLong&amp;</b> = offset counter (is 12 from the init above)
+        &#39;increment the offset counter by 4 for the next entry
+
+    DefLABEL     bs_UniEnt1&amp;
+      &#39;(here) this SUB is used to define the first label of a union
+        &#39;set the variable <b>bs_UniEnt1&amp;</b> = offset counter (now 16 from last increment)
+        &#39;this SUB does not increment the offset counter
+
+    DefWORD      bs_UniEnt2&amp;
+      &#39;this SUB creates a 2-byte entry again
+        &#39;set the variable <b>bs_UniEnt2&amp;</b> = offset counter (still 16, as DefLABEL didn&#39;t increment)
+        &#39;increment the offset counter by 2 for the next entry
+          &#39;so now <b>bs_UniEnt1&amp;</b> and <b>bs_UniEnt2&amp;</b> have the same offset (union),
+           as the last union entry was defined as a WORD, this size is also
+           mandatory for the first union entry
+
+    DefWORD      bs_SigWord&amp;
+      &#39;this SUB creates another 2-byte entry
+        &#39;set the variable <b>bs_SigWord&amp;</b> = offset counter (now 18 from last increment)
+        &#39;increment the offset counter by 2 for the next entry
+
+    DefSTRUCT    bs_MyStruct&amp;, MyStruct_SizeOf&amp;
+      &#39;this SUB is used to incorporate another complete structure
+        &#39;set the variable <b>bs_MyStruct&amp;</b> = offset counter (now 20 from last increment)
+        &#39;increment the offset counter by the size of the incorporated structure (12)
+          &#39;so now we have space for <b>MyStruct&amp;</b> in the middle of <b>BigStruct&amp;</b>
+
+    DefULONG     bs_USigLong1&amp;
+      &#39;this SUB creates a 4-byte entry again
+        &#39;set the variable <b>bs_USigLong1&amp;</b> = offset counter (now 32 from last DefSTRUCT increment)
+        &#39;increment the offset counter by 4 for the next entry
+
+    DefULONG     bs_USigLong2&amp;
+      &#39;the same SUB again to create another 4-byte entry
+        &#39;set the variable <b>bs_USigLong2&amp;</b> = offset counter (now 36 from last increment)
+        &#39;increment the offset counter by 4 for the next entry
+
+    DefLABEL     BigStruct_SizeOf&amp;
+      &#39;(here) the SUB DefLABEL is used again to finish the actual structure
+        &#39;set the variable <b>BigStruct_SizeOf&amp;</b> = offset counter (now 40 from last increment,
+         this is the size required for this structure, use it to allocate storage
+         space via the FUNCTIONs in <b>memory.bm</b>)
+        &#39;this SUB does not increment the offset counter
+
+To access the entries in the first incorporated <b>MyStruct&amp;</b> you would simply use
+the defined <b>ms_...</b> offsets itself or <b>BigStruct&amp;</b> + <b>ms_...</b>, the entries in the
+second <b>MyStruct&amp;</b> you can access using <b>bs_MyStruct&amp;</b> + <b>ms_...</b> as offsets.
+
+For an overview of all available <b>DefXXX</b> SUBs just take a look into <b>types.bm</b>,
+you will quickly see how easy the system works and then you can also add
+types for your own needs.
+
+                                                     <a href="types-index.html">Back to Types Overview</a>
+</pre>
+</body>
+</html>

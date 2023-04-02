@@ -1,0 +1,51 @@
+<html>
+<head>
+<title>Function Reference / CompareGPMem&amp;</title>
+</head>
+<body>
+<pre style="font-size:20px">
+
+DEFINITION - FUNCTION
+    <i>diff&amp;</i> = <b>CompareGPMem&amp;</b>(<i>sAddr&amp;</i>, <i>cAddr&amp;</i>, <i>size&amp;</i>, <i>flags&amp;</i>)
+                                -- compare two memory blocks to each other
+OPERATION
+    <b>CompareGPMem&amp;</b> will perform a byte by byte compare of the source data
+    region with the compare data region.  It can deal with any arbitrary
+    length and the pointers on arbitrary alignments.  The result includes
+    the offset position of the first found difference plus the information
+    whether the source byte was less/greater than the compared byte.
+
+ARGUMENTS
+    <i>sAddr&amp;</i> -- a address pointer to the source data region
+    <i>cAddr&amp;</i> -- a address pointer to the compare data region
+    <i>size&amp;</i>  -- the size (in bytes) to compare
+    <i>flags&amp;</i> -- a bit field specifying further options
+
+RESULT
+    <i>diff&amp;</i>  -- offset position and state of first difference or zero, if
+              both regions match exactly (see NOTES)
+
+NOTES
+    1.) If the <i>diff&amp;</i> result is zero, then both regions match exactly.
+    2.) In all other cases <b>ABS</b>(<i>diff&amp;</i>)-1 is the byte offset of the first
+        found difference, and <b>SGN</b>(<i>diff&amp;</i>) says whether the source byte was
+        less than the compared byte (negativ) or greater than (positive).
+
+FLAGS
+    The <i>flags&amp;</i> defined in the include file <b>memory.bi</b> are bit-coded values,
+    hence they can easily combined by ORing or adding them:
+
+    <b>gpmF_Unsigned&amp;</b> -- If given, then the compare operation uses unsigned
+                      math, otherwise signed math if omitted.
+
+    This information is required, because in signed math bytes with its MSB
+    set are <u>in general</u> less than bytes with a cleared MSB, but in unsigned
+    math it&#39;s the opposite case.
+
+SEE ALSO
+    <a href="supp.html">Support Functions</a>
+
+                                                 <a href="funcref.html">Back to Function Reference</a>
+</pre>
+</body>
+</html>

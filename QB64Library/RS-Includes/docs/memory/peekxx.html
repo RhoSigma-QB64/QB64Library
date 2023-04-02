@@ -1,0 +1,46 @@
+<html>
+<head>
+<title>Function Reference / PeekXX</title>
+</head>
+<body>
+<pre style="font-size:20px">
+
+DEFINITION - FUNCTION
+    <i>value%%</i> = <b>PeekB%%</b>(<i>addr&amp;</i>, <i>offs&amp;</i>)
+                  -- read a BYTE (8 bits) from GP memory
+    <i>value%</i> = <b>PeekW%</b>(<i>addr&amp;</i>, <i>offs&amp;</i>)
+                  -- read a WORD (INTEGER) (16 bits) from GP memory
+    <i>value&amp;</i> = <b>PeekL&amp;</b>(<i>addr&amp;</i>, <i>offs&amp;</i>)
+                  -- read a LONG (32 bits) from GP memory
+    <i>value&amp;&amp;</i> = <b>PeekLL&amp;&amp;</b>(<i>addr&amp;</i>, <i>offs&amp;</i>)
+                  -- read a LONG LONG (_INTEGER64) (64 bits) from GP memory
+
+    <i>value!</i> = <b>PeekS!</b>(<i>addr&amp;</i>, <i>offs&amp;</i>) -- read a SINGLE (32 bits) from GP memory
+    <i>value#</i> = <b>PeekD#</b>(<i>addr&amp;</i>, <i>offs&amp;</i>) -- read a DOUBLE (64 bits) from GP memory
+
+    <i>text$</i> = <b>PeekSTR$</b>(<i>addr&amp;</i>, <i>offs&amp;</i>) -- read a STRING from GP memory
+
+OPERATION
+    Read a <i>value</i> or <i>text</i> from GP memory starting at the address specified
+    by the sum of the <i>addr&amp;</i> and <i>offs&amp;</i> arguments.  In fact, these arguments
+    are interchangeable and one can even be set to zero, if the sum is
+    pre-calculated and put in the other argument.
+
+ARGUMENTS
+    <i>addr&amp;</i> -- a pointer to the memory (consider it a base address)
+    <i>offs&amp;</i> -- a byte offset added to the base address, may be zero
+
+RESULT
+    <i>value</i> -- the read value (or text for <b>PeekSTR$</b>)
+
+NOTES
+    You may use <b>PeekSTR$</b> to read out a string created with <b>CreateGPMString&amp;</b>,
+    simply put the string pointer into <i>addr&amp;</i> and set <i>offs&amp;</i> to zero.
+
+SEE ALSO
+    <a href="access.html">Accessing GP Memory</a>
+
+                                                 <a href="funcref.html">Back to Function Reference</a>
+</pre>
+</body>
+</html>

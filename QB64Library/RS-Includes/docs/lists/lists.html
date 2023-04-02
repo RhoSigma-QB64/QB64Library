@@ -1,0 +1,142 @@
+<html>
+<head>
+<title>List Structure / List Header Structure Definition &amp; Init</title>
+</head>
+<body>
+<pre style="font-size:20px">
+As mentioned earlier, a list header maintains memory pointers to the first
+and last nodes of the linked chain of nodes.  It also serves as a handle
+for referencing the entire list.  The minimum list header (&quot;mlh_&quot;) and the
+full-featured list header (&quot;lh_&quot;) are generally interchangeable.
+<hr>
+The structure <b>MinListHeader&amp;</b> defines a minimum list header:
+
+    DefSTRUCTURE MinListHeader&amp;, 0&amp;
+    DefGPMPTR    mlh_Head&amp;
+    DefGPMPTR    mlh_Tail&amp;
+    DefGPMPTR    mlh_TailPred&amp;
+    DefLABEL     MinListHeader_SizeOf&amp;
+
+mlh_Head&amp;
+    points to the first node in the list
+
+mlh_Tail&amp;
+    is always zero
+
+mlh_TailPred&amp;
+    points to the last node in the list
+<hr>
+In a few limited cases a full-featured <b>ListHeader&amp;</b> structure will
+be required:
+
+    DefSTRUCTURE ListHeader&amp;, 0&amp;
+    DefGPMPTR    lh_Head&amp;
+    DefGPMPTR    lh_Tail&amp;
+    DefGPMPTR    lh_TailPred&amp;
+    DefUBYTE     lh_Type&amp;
+    DefUBYTE     lh_Pad&amp;
+    DefLABEL     ListHeader_SizeOf&amp;
+
+lh_Head&amp;
+    points to the first node in the list
+
+lh_Tail&amp;
+    is always zero
+
+lh_TailPred&amp;
+    points to the last node in the list
+
+lh_Type&amp;
+    defines the type of nodes within the list (&quot;NT_&quot; types)
+
+lh_Pad&amp;
+    is a structure alignment byte
+<hr>
+One subtlety here must be explained further.  The list header is
+constructed in an efficient, but confusing manner.  Think of the header as
+a structure containing the head and tail nodes for the list.  The head and
+tail nodes are placeholders, and never carry data.  The head and tail
+portions of the header actually overlap in memory.  <b>lh_Head&amp;</b> and <b>lh_Tail&amp;</b>
+form the head node, <b>lh_Tail&amp;</b> and <b>lh_TailPred&amp;</b> form the tail node.  This
+makes it easy to find the start or end of the list, and eliminates any
+special cases for insertion or removal.
+           ____________                      ____________
+          |            |                    |            |
+          |  ln_Succ&amp;  |                    |  lh_Head&amp;  |
+          |____________|____________        |____________|
+          |            |            | /___\ |            |
+          | ln_Pred&amp;=0 | ln_Succ&amp;=0 | \   / | lh_Tail&amp;=0 |
+          |____________|____________|       |____________|
+                       |            |       |            |
+                       |  ln_Pred&amp;  |       |lh_TailPred&amp;|
+                       |____________|       |____________|
+
+                   Figure 2: List Header Overlap
+
+The <b>lh_Head&amp;</b> and <b>lh_Tail&amp;</b> fields of the list header act like the <b>ln_Succ&amp;</b> and
+<b>ln_Pred&amp;</b> fields of a node.  The <b>lh_Tail&amp;</b> field is set permanently to zero,
+indicating that the head node is indeed the first on the list -- that is,
+it has no predecessors.  See the figure above.
+
+Likewise, the <b>lh_Tail&amp;</b> and <b>lh_TailPred&amp;</b> fields of the list header act like
+the <b>ln_Succ&amp;</b> and <b>ln_Pred&amp;</b> fields of a node. Here the zero <b>lh_Tail&amp;</b> indicates
+that the tail node is indeed the last on the list -- that is, it has no
+successors.  See the figure above.
+
+Because of the facts discussed above it seems obvious, that headers must be
+properly initialized before use.  It is not adequate to simply initialize all
+header fields to zero.  The head and tail entries must have specific values.
+<hr>
+The header must be initialized for use as follows:
+
+    1. Set the <b>lh_Head&amp;</b> field to the address of <b>lh_Tail&amp;</b>.
+
+    2. Clear the <b>lh_Tail&amp;</b> field.
+
+    3. Set the <b>lh_TailPred&amp;</b> field to the address of <b>lh_Head&amp;</b>.
+
+    4. Set <b>lh_Type&amp;</b> to the same data type as the nodes to be kept in the list.
+       (Unless you are using a <b>MinListHeader&amp;</b>).
+
+    4.1. If you intent to link nodes of different data types into the list,
+         then you rather should use an untyped <b>MinListHeader&amp;</b> and therefore
+         full-featured <b>ListNode&amp;</b> structures to assign the types directly
+         to the nodes.
+                         __________________
+                        |   ____________   |
+                        |  |            |__|
+                        |  |  lh_Head&amp;  |/_
+                        |  |____________|\ |
+                        |_\|            |  |
+                          /| lh_Tail&amp;=0 |  |
+                           |____________|  |
+                           |            |  |
+                           |lh_TailPred&amp;|__|
+                           |____________|
+ one of the &quot;NT_&quot; types __\|            |
+                          /|  lh_Type&amp;  |
+                           |____________|
+                           |            |
+                           |  lh_Pad&amp;   |
+                           |____________|
+
+    PokeL list&amp;, lh_Head&amp;, (list&amp; + lh_Tail&amp;)
+    PokeL list&amp;, lh_Tail&amp;, 0&amp;
+    PokeL list&amp;, lh_TailPred&amp;, (list&amp; + lh_Head&amp;)
+    &#39;now, if needed
+    PokeB list&amp;, lh_Type&amp;, NT_...&amp;
+
+            Figure 3: Initializing a List Header Structure
+
+The sequence of <b>PokeL</b> SUB calls in the figure above (except for the type
+field) is equivalent to the SUB <b>NewList</b>, contained in the include file
+<b>lists.bm</b>.  Since the <b>MinListHeader&amp;</b> structure is the same as the
+<b>ListHeader&amp;</b> structure except for the type and pad fields, this sequence
+of code will work for both structures.  However, the preferred way to
+initialize a list header structure is to call the SUB <b>NewList</b> with the
+list header&#39;s address, what will make your programs more readable.
+
+                                                      <a href="lists-index.html">Back to List Overview</a>
+</pre>
+</body>
+</html>

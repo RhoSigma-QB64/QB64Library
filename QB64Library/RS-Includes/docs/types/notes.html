@@ -1,0 +1,35 @@
+<html>
+<head>
+<title>Alternative Types / Things to keep in mind</title>
+</head>
+<body>
+<pre style="font-size:20px">
+If you take a look into the include file <b>types.bm</b>, then you will recognize
+SUBs to define unsigned and signed integer types as well as single and double
+precision floating point types and a couple others.  These SUBs are made to
+write your structures in the way of its intended use, but nevertheless all
+SUBs just define the size of an entry.  That is, you as programmer must make
+sure to access the entries with the right <b>PokeXX</b> and <b>PeekXX</b> routines from
+the include file <b>memory.bm</b>, and interpreting them as intended.  There is no
+safety net which prevents you from accessing a SINGLE entry as UWORD or
+interpreting an ULONG as signed value nevertheless, so in fact there is
+one major rule:  <i>The programmer knows what he&#39;s doing!</i>
+
+As with all variables, the offsets defined with these SUBs are only valid
+in the scope they are defined in, hence you must exclusively SHARE the
+offsets defined in the main module, if you use it in a SUB or FUNCTION.
+Likewise, offsets defined from within a SUB or FUNCTION are local to this
+SUB or FUNCTION unless they are SHAREd.
+
+<b><u>!! IMPORTANT !!</u></b>
+Make sure the variables you pass in as <i>sym&amp;</i> to any of the <b>DefXXX</b> SUBs or
+the enumerating SUBs are of type LONG, otherwise the compiler does create
+a temporary LONG object for the call.  This behavior would assign the
+offset to the temporary object instead of your given variable and as the
+temporary object is disposed after the SUB returns, your given variable
+would remain blank.
+
+                                                     <a href="types-index.html">Back to Types Overview</a>
+</pre>
+</body>
+</html>

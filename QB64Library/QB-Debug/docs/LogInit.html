@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>LogInit</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<style type="text/css">
+/* This file is deliberately empty. */
+</style>
+<link rel="stylesheet" type="text/css" href="styles.css">
+</head>
+<body>
+<p><em><a href="_Qbdebug_Contents.html">back to Table of Contents</a></em></p>
+<hr />
+<h2>LogInit <em>(sub)</em></h2>
+<p>Init the debug output logging system, needs to be called once to activate
+debug output. As long the system is not initialized, all calls to any of
+the other functions will be ignored and no debug output is written at all.</p>
+<hr />
+<blockquote>
+<blockquote>
+<blockquote>
+<blockquote>
+<blockquote>
+<p><strong><em>SYNTAX:</em></strong></p>
+</blockquote>
+</blockquote>
+</blockquote>
+</blockquote>
+<pre><code>LogInit file$, fmode%
+</code></pre>
+
+</blockquote>
+<hr />
+<blockquote>
+<blockquote>
+<blockquote>
+<blockquote>
+<blockquote>
+<p><strong><em>INPUTS:</em></strong></p>
+</blockquote>
+</blockquote>
+</blockquote>
+</blockquote>
+<h4>file$ <em>(STRING)</em></h4>
+<ul>
+<li>The name of the logfile inclusive path or an empty string to use
+the default name (&quot;qbdebug.txt&quot;).</li>
+</ul>
+<h4>fmode% <em>(INTEGER)</em></h4>
+<ul>
+<li>Any of the filter mode constants defined in file <strong>qbdebug.bi</strong>, which
+will specify how to print control chars (see also below).</li>
+</ul>
+</blockquote>
+<hr />
+<blockquote>
+<blockquote>
+<blockquote>
+<blockquote>
+<blockquote>
+<p><strong><em>MODE CONSTANTS:</em></strong></p>
+</blockquote>
+</blockquote>
+</blockquote>
+</blockquote>
+<h4>QBDEBUG_FilterNone</h4>
+<ul>
+<li>
+Do not filter anything:
+<ul>
+<li>This may lead to distortion of the debug tree layout, if there are
+any tabs, linefeeds, formfeeds etc. in the output string.</li>
+</ul>
+</li>
+</ul>
+<h4>QBDEBUG_FilterSimple</h4>
+<ul>
+<li>
+Do simple filtering:
+<ul>
+<li>Any ASCII code &lt; 32 is replaced by a vertical bar &quot;|&quot; in the output.</li>
+</ul>
+</li>
+</ul>
+<h4>QBDEBUG_FilterFull</h4>
+<ul>
+<li>
+Full info filtering:
+<ul>
+<li>Any ASCII code &lt; 32 is replaced in the form &quot;|xx|&quot;, where &quot;xx&quot; is the
+decimal ASCII value.</li>
+</ul>
+</li>
+</ul>
+</blockquote>
+<hr />
+<p><em><a href="_Qbdebug_Contents.html">back to Table of Contents</a></em></p>
+
+</body>
+</html>
+<!-- This document was created with MarkdownPad, the Markdown editor for Windows (http://markdownpad.com) -->

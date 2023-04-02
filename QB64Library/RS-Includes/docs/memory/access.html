@@ -1,0 +1,70 @@
+<html>
+<head>
+<title>GP Memory Functions / Accessing GP Memory</title>
+</head>
+<body>
+<pre style="font-size:20px">
+Well, all SUBs and FUNCTIONs discussed so far are supposed for any special
+case memory operations.  Now we still need a set of routines for the low
+level access to the memory.  That is, accessing single bytes, words etc..
+Here the various <b>PokeXX</b> and <b>PeekXX</b> routines come into place.  The &quot;XX&quot; in
+the SUB/FUNCTION names are replaced by letters logically representing the
+size/type of an access.  The routines defined so far are:
+
+  <u>Integers:</u>
+    <b>PokeB</b>   / <b>PeekB%%</b>  - byte access (8 bits)
+    <b>PokeW</b>   / <b>PeekW%</b>   - word (in QB64 INTEGER) access (16 bits)
+    <b>PokeL</b>   / <b>PeekL&amp;</b>   - long access (32 bits)
+    <b>PokeLL</b>  / <b>PeekLL&amp;&amp;</b> - long long (in QB64 _INTEGER64) access (64 bits)
+
+  <u>Floating points:</u>
+    <b>PokeS</b>   / <b>PeekS!</b>   - write/read single floating point (32 bits)
+    <b>PokeD</b>   / <b>PeekD#</b>   - write/read double floating point (64 bits)
+
+  <u>Strings:</u>
+    <b>PokeSTR</b> / <b>PeekSTR$</b> - write/read zero terminated strings
+
+  The general syntax for all <b>PokeXX</b> SUBs and <b>PeekXX</b> FUNCTIONs is:
+
+        <b>PokeXX</b> <i>addr&amp;</i>, <i>offs&amp;</i>, <i>value</i>
+        <i>value</i> = <b>PeekXX</b>(<i>addr&amp;</i>, <i>offs&amp;</i>)
+
+The <i>addr&amp;</i> and <i>offs&amp;</i> arguments are generally interchangeable, they are
+simply added together internally to build the actual address to access.
+I chose this way, so you can put the base address (eg. any structure)
+into the <i>addr&amp;</i> argument and the offset to access within that structure
+to the <i>offs&amp;</i> argument.  However, you can also add the addresses and
+offsets yourself and put it in either <i>addr&amp;</i> or <i>offs&amp;</i> and set the unused
+argument to zero.  Simply find the most convenient way for you.
+
+Note that the integer <b>PokeXX</b> routines can take either signed or unsigned
+values, but the respective <b>PeekXX</b> functions will always return signed
+values.  However, if the result is assigned to a unsigned integer variable,
+then the value is automatically converted to unsigned again.  If needed
+within a temporary operation, then you may use a logic AND operation of
+the appropriate size to convert the value.  See example:
+
+    &#39;CHR$ accepts positive values only, so if in doubt what is returned
+    &#39;by PeekB%%, then make the result unsigned for CHR$ to avoid errors
+    PRINT CHR$(PeekB%%(addr&amp;, offs&amp;) AND &amp;HFF~%%)
+<hr>
+Something special you need to keep in mind using <b>PokeSTR</b> is, that this SUB
+does automatically add the zero termination byte after the actual string.
+That is, <u>you don&#39;t need to add CHR$(0) to any of your strings</u>, but on the
+other hand it will be required to <u>allocate buffers with LEN(string) + 1</u>,
+or the adding of the zero byte would violate innocent memory following the
+buffer.  If you define embedded strings within a structure using the SUB
+<b>DefSTRING</b> from the <b>types.bm</b> include file, then this SUB already takes care
+of adding 1 for the termination byte, also the FUNCTION <b>CreateGPMString&amp;</b>
+discussed earlier will take care of allocating a big enough buffer.  You
+just need to remember the <i>+1</i> rule, if you for any reason allocate a buffer
+by yourself.
+
+On the other hand <b>PeekSTR$</b> will always return the string without the zero
+termination byte, hence you get it back as you did poke it in.  So in fact
+you can also poke and peek back empty <i>(&quot;&quot;)</i> strings.
+
+                                                      <a href="memory-index.html">Back to GPM Functions</a>
+</pre>
+</body>
+</html>

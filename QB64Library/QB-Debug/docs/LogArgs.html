@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>LogArgs</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<style type="text/css">
+/* This file is deliberately empty. */
+</style>
+<link rel="stylesheet" type="text/css" href="styles.css">
+</head>
+<body>
+<p><em><a href="_Qbdebug_Contents.html">back to Table of Contents</a></em></p>
+<hr />
+<h2>LogArgs <em>(sub)</em></h2>
+<p>Print the contents of a variable args list to debug output, any control
+chars (in string args) will be filtered using the active filter mode.
+Note that strings will stop at the first CHR$(0) found, as output is
+done through C/C++ stdio functions.</p>
+<hr />
+<blockquote>
+<blockquote>
+<blockquote>
+<blockquote>
+<blockquote>
+<p><strong><em>SYNTAX:</em></strong></p>
+</blockquote>
+</blockquote>
+</blockquote>
+</blockquote>
+<pre><code>LogArgs vargs$
+</code></pre>
+
+</blockquote>
+<hr />
+<blockquote>
+<blockquote>
+<blockquote>
+<blockquote>
+<blockquote>
+<p><strong><em>INPUTS:</em></strong></p>
+</blockquote>
+</blockquote>
+</blockquote>
+</blockquote>
+<h4>vargs$ <em>(STRING)</em></h4>
+<ul>
+<li>Any variable args list made with the SUBs/FUNCTIONs provided in the
+<strong>QB-StdLibs\qbstdarg.bm</strong> library file.</li>
+</ul>
+</blockquote>
+<hr />
+<blockquote>
+<blockquote>
+<blockquote>
+<blockquote>
+<blockquote>
+<p><strong><em>ERRORS:</em></strong></p>
+</blockquote>
+</blockquote>
+</blockquote>
+</blockquote>
+<ul>
+<li>If vargs$ is no valid va_list string, then this subroutine will do
+nothing, not even writing a empty line to output.</li>
+</ul>
+</blockquote>
+<hr />
+<p><em><a href="_Qbdebug_Contents.html">back to Table of Contents</a></em></p>
+
+</body>
+</html>
+<!-- This document was created with MarkdownPad, the Markdown editor for Windows (http://markdownpad.com) -->

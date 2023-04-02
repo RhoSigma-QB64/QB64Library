@@ -1,0 +1,78 @@
+'+---------------+---------------------------------------------------+
+'| ###### ###### |     .--. .         .-.                            |
+'| ##  ## ##   # |     |   )|        (   ) o                         |
+'| ##  ##  ##    |     |--' |--. .-.  `-.  .  .-...--.--. .-.        |
+'| ######   ##   |     |  \ |  |(   )(   ) | (   ||  |  |(   )       |
+'| ##      ##    |     '   `'  `-`-'  `-'-' `-`-`|'  '  `-`-'`-      |
+'| ##     ##   # |                            ._.'                   |
+'| ##     ###### |   Sources & Documents placed under GNU GPL v2.0   |
+'+---------------+---------------------------------------------------+
+'|                                                                   |
+'| === base64.bm ===                                                 |
+'|                                                                   |
+'| == The library provides FUNCTIONs for Base64 en-/decoding in QB64.|
+'| == Encoding and decoding is done from string to string.           |
+'|                                                                   |
+'+-------------------------------------------------------------------+
+'| Done by RhoSigma, R.Heyder, provided AS IS, use at your own risk. |
+'| Find me in the QB64 Forum or mail to support@rhosigma-cw.net for  |
+'| any questions or suggestions. Thanx for your interest in my work. |
+'+-------------------------------------------------------------------+
+
+' This program is free software; you can redistribute it and/or
+' modify it under the terms of the GNU General Public License
+' as published by the Free Software Foundation; either
+' version 2 of the License, or (at your option) any later version.
+'
+' This program is distributed in the hope that it will be useful,
+' but WITHOUT ANY WARRANTY; without even the implied warranty of
+' MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+' GNU General Public License for more details.
+'
+' You should have received a copy of the GNU General Public License
+' along with this program; if not, write to the Free Software
+' Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+
+'--- docs\Base64Encode.html
+'---------------------------------------------------------------------
+FUNCTION Base64Encode$ (message$, wrapLen%, padFlag%, lineMode%)
+'--- option _explicit requirements ---
+DIM outSize&, numLine&, outBuff$
+'--- calc output buffer size ---
+outSize& = LEN(message$) / 3 * 4 'general encoding
+outSize& = ((outSize& + 3) AND -4) 'add padding space
+IF wrapLen% > 0 THEN
+    numLine& = outSize& / wrapLen%
+    outSize& = outSize& + (numLine& * 2) 'add CR+LF for line wraps
+END IF
+outSize& = outSize& + 256 'add a nice safety margin
+'--- base64 encoding ---
+outBuff$ = SPACE$(outSize&)
+outSize& = B64Enc&(outBuff$, message$, LEN(message$), wrapLen%, padFlag%, lineMode%)
+'--- set result ---
+Base64Encode$ = LEFT$(outBuff$, outSize&)
+END FUNCTION
+
+'--- docs\Base64Decode.html
+'---------------------------------------------------------------------
+FUNCTION Base64Decode$ (encoded$, strict%, lineMode%)
+'--- option _explicit requirements ---
+DIM outBuff$, outSize&
+'--- base64 decoding ---
+outBuff$ = SPACE$(LEN(encoded$))
+outSize& = B64Dec&(outBuff$, encoded$, LEN(encoded$), strict%, lineMode%)
+'--- check for errors & set result ---
+SELECT CASE outSize&
+    CASE B64DEC_ERROR_DAP
+        Base64Decode$ = "Base64-decoding-Error: Data after pad character."
+    CASE B64DEC_ERROR_PCW
+        Base64Decode$ = "Base64-decoding-Error: Pad character in wrong place."
+    CASE B64DEC_ERROR_SSB
+        Base64Decode$ = "Base64-decoding-Error: Single symbol block not valid."
+    CASE B64DEC_ERROR_BCI
+        Base64Decode$ = "Base64-decoding-Error: Bad character in input string."
+    CASE ELSE
+        Base64Decode$ = LEFT$(outBuff$, outSize&)
+END SELECT
+END FUNCTION
+

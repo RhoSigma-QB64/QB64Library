@@ -1,0 +1,80 @@
+<html>
+<head>
+<title>Alternative Types / Enumerated variables</title>
+</head>
+<body>
+<pre style="font-size:20px">
+The enumerating SUBs are used in a similar way as the structure type SUBs.
+A common use for those enumerated variables are the definition of object
+types, return values, error numbers etc.
+<hr>
+Example: (defining some return values)
+--------------------------------------
+    SetENUM 0&amp;
+    IncEVAR RETURN_OK&amp;
+    IncEVAR RETURN_WARN&amp;
+    IncEVAR RETURN_ERROR&amp;
+    IncEVAR RETURN_FAIL&amp;
+
+and again with explaination:
+----------------------------
+    SetENUM 0&amp;
+      &#39;this SUB does init the enumerating base number
+
+    IncEVAR RETURN_OK&amp;
+      &#39;set the variable <b>RETURN_OK&amp;</b> = offset counter (is zero from the init above)
+      &#39;increment the offset counter by 1 for the next variable
+
+    IncEVAR RETURN_WARN&amp;
+      &#39;set the variable <b>RETURN_WARN&amp;</b> = offset counter (now 1 from last increment)
+      &#39;increment the offset counter by 1 for the next variable
+
+    IncEVAR RETURN_ERROR&amp;
+      &#39;set the variable <b>RETURN_ERROR&amp;</b> = offset counter (now 2 from last increment)
+      &#39;increment the offset counter by 1 for the next variable
+
+    IncEVAR RETURN_FAIL&amp;
+      &#39;set the variable <b>RETURN_FAIL&amp;</b> = offset counter (now 3 from last increment)
+      &#39;increment the offset counter by 1 for the next variable
+<hr>
+Another Example: (separating the OK value from error levels by setting
+a new base in between, you may set a new base at any time)
+----------------------------------------------------------------------
+    SetENUM 0&amp;
+    IncEVAR RETURN_OK&amp;
+    SetENUM 10&amp;
+    IncEVAR RETURN_WARN&amp;
+    IncEVAR RETURN_ERROR&amp;
+    IncEVAR RETURN_FAIL&amp;
+
+and once again with explaination:
+---------------------------------
+    SetENUM 0&amp;
+      &#39;this SUB does init the enumerating base number
+
+    IncEVAR RETURN_OK&amp;
+      &#39;set the variable <b>RETURN_OK&amp;</b> = offset counter (is zero from the init above)
+      &#39;increment the offset counter by 1 for the next variable
+
+    SetENUM 10&amp;
+      &#39;init a new enumerating base number
+
+    IncEVAR RETURN_WARN&amp;
+      &#39;set the variable <b>RETURN_WARN&amp;</b> = offset counter (is 10 from the new base init)
+      &#39;increment the offset counter by 1 for the next variable
+
+    IncEVAR RETURN_ERROR&amp;
+      &#39;set the variable <b>RETURN_ERROR&amp;</b> = offset counter (now 11 from last increment)
+      &#39;increment the offset counter by 1 for the next variable
+
+    IncEVAR RETURN_FAIL&amp;
+      &#39;set the variable <b>RETURN_FAIL&amp;</b> = offset counter (now 12 from last increment)
+      &#39;increment the offset counter by 1 for the next variable
+
+Likewise you could use <b>DecEVAR</b> to generate decrementing variable numbers.
+Mixing <b>IncEVAR</b> and <b>DecEVAR</b> in the same sequence seems useless.
+
+                                                     <a href="types-index.html">Back to Types Overview</a>
+</pre>
+</body>
+</html>

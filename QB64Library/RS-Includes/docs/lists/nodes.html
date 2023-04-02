@@ -1,0 +1,135 @@
+<html>
+<head>
+<title>List Structure / Node Structure Definition &amp; Init</title>
+</head>
+<body>
+<pre style="font-size:20px">
+A Node structure is divided into three parts: linkage, information, and
+content.  The linkage part contains memory pointers to the node&#39;s
+successor and predecessor nodes.  The information part contains the node
+type, the priority, and a name pointer.  The content part stores the
+actual data structure of interest.
+<hr>
+For nodes that require linkage only, a small <b>MinListNode&amp;</b> structure
+is used:
+
+    DefSTRUCTURE MinListNode&amp;, 0&amp;
+    DefGPMPTR    mln_Succ&amp;
+    DefGPMPTR    mln_Pred&amp;
+    DefLABEL     MinListNode_SizeOf&amp;
+
+mln_Succ&amp;
+    points to the next node in the list (successor)
+
+mln_Pred&amp;
+    points to the previous node in the list (predecessor)
+<hr>
+When a type, priority, or name is required, a full-featured <b>ListNode&amp;</b>
+structure is used:
+
+    DefSTRUCTURE ListNode&amp;, 0&amp;
+    DefGPMPTR    ln_Succ&amp;
+    DefGPMPTR    ln_Pred&amp;
+    DefUBYTE     ln_Type&amp;
+    DefBYTE      ln_Pri&amp;
+    DefGPMSTR    ln_Name&amp;
+    DefLABEL     ListNode_SizeOf&amp;
+
+ln_Succ&amp;
+    points to the next node in the list (successor)
+
+ln_Pred&amp;
+    points to the previous node in the list (predecessor)
+
+ln_Type&amp;
+    defines the type of the node (&quot;NT_&quot; types)
+
+ln_Pri&amp;
+    specifies the priority of the node  (+127 (highest) to -128 (lowest))
+
+ln_Name&amp;
+    points to a printable name for the node (a zero terminated string)
+<hr>
+The <b>MinListNode&amp;</b> and/or <b>ListNode&amp;</b> structures are often incorporated into
+larger structures, so groups of the larger structures can easily be linked
+together.  For example, an addressbook entry could be defined as follows:
+
+    DefSTRUCTURE Person&amp;,<b>MinListNode_SizeOf&amp;</b> &#39;the carrier <b>MinListNode&amp;</b> for content data
+    DefGPMSTR    p_FirstName&amp;
+    DefGPMSTR    p_LastName&amp;
+    DefGPMSTR    p_Street&amp;
+    DefGPMSTR    p_City&amp;
+    DefULONG     p_ZIP&amp;
+    DefGPMSTR    p_State&amp;
+    DefGPMSTR    p_Phone&amp;
+    DefGPMSTR    p_Fax&amp;
+    DefLABEL     p_SizeOf&amp;
+
+Here the <b>p_FirstName&amp;</b> to <b>p_Fax&amp;</b> fields represent the useful content of the
+node.  Because the <b>Person&amp;</b> structure begins with a (<b>Min</b>)<b>ListNode&amp;</b> structure,
+it may directly be passed to any of the list handling SUBs and FUNCTIONs in
+place of the required node argument.
+
+Before linking a node into a list, certain fields may need initialization.
+Initialization consists of setting the <b>ln_Type&amp;</b>, <b>ln_Pri&amp;</b>, and <b>ln_Name&amp;</b> fields
+to their appropriate values (A <b>MinListNode&amp;</b> structure does not have these
+fields).  The successor and predecessor fields do not require initialization.
+<hr>
+Description of all fields and its possible initialization values:
+
+The <b>ln_Type&amp;</b> field contains the data type of the node.  This indicates the
+type, and hence the structure, of the content portion of the node (the extra
+data after the <b>ListNode&amp;</b> structure).  The standard types are defined in the
+<b>lists.bi</b> include file.  If you do not need a type, but just a priority
+and/or name, then initialize the type field to <b>NT_UNKNOWN&amp;</b> (zero).
+
+The <b>ln_Pri&amp;</b> field uses a signed numerical value ranging from +127 to -128
+to indicate the priority of the node.  Higher-priority nodes have greater
+values: for example, 127 is the highest priority, zero is nominal priority,
+and -128 is the lowest priority.  Some lists may need to be kept sorted
+by priority order.  In such lists, the highest-priority node is at the head
+of the list, and the lowest-priority node is at the tail of the list.  If
+you do not need a priority, but just a type and/or name, then initialize
+the priority field to zero.
+
+The <b>ln_Name&amp;</b> field is a pointer to a zero terminated string of characters.
+Node names are used to find and identify list-bound objects, and to bind
+symbolic names to actual nodes.  Names are also useful for debugging.  Take
+care to provide a valid name pointer, best one created with the FUNCTION
+<b>CreateGPMString&amp;</b>, which is part of the <b>memory.bm</b> include file.  <u>Don&#39;t</u> use a
+VARPTR pointer of a QB64 string variable here, first regular strings are
+not usually zero terminated and second these pointers may get invalid at
+any time due to the internal operations of QB64.  If you do not need a name,
+but just a type and/or priority, then initialize the name field to zero, but
+note in this case the node can never be found using the FUNCTION <b>FindName&amp;</b>
+from the <b>lists.bm</b> include file.
+
+This code fragment shows the initialization of a <b>ListNode&amp;</b> structure:
+
+    np&amp; = CreateGPMString&amp;(&quot;sample.node&quot;)
+    IF np&amp; = 0 THEN
+      PRINT &quot;not enough memory for node name...&quot;
+      &#39;
+      &#39;you must handle this situation
+      &#39;
+    ELSE
+      PokeB node&amp;, ln_Type&amp;, NT_...&amp;
+      PokeB node&amp;, ln_Pri&amp;, -10&amp;
+      PokeL node&amp;, ln_Name&amp;, np&amp;
+    END IF
+
+Whenever you unlink and free a named node initialized this way, then always
+make sure to dispose the created name string <u>prior</u> to freeing the memory
+occupied by the node structure itself:
+
+    <u>first:</u>
+      DisposeGPMString PeekL&amp;(node&amp;, ln_Name&amp;)
+    <u>then:</u>                    _
+      FreeGPMVec node&amp;        \ depends on the used
+    <u>or:</u>                       / allocation method
+      FreeGPMem node&amp;, size&amp; /
+
+                                                      <a href="lists-index.html">Back to List Overview</a>
+</pre>
+</body>
+</html>

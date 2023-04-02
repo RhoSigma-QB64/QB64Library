@@ -1,0 +1,33 @@
+<html>
+<head>
+<title>GP Memory Functions / Freeing GP Memory</title>
+</head>
+<body>
+<pre style="font-size:20px">
+The following examples free the memory blocks of the example allocation
+calls to <b>AllocGPMem&amp;</b>, shown in the previous chapter.
+
+    <b>FreeGPMem</b> <i>apointer&amp;</i>, <i>100&amp;</i>
+    <b>FreeGPMem</b> <i>anotherptr&amp;</i>, <i>1000&amp;</i>
+
+A memory block allocated with <b>AllocGPMVec&amp;</b> must be returned to the GP Memory
+system with the SUB <b>FreeGPMVec</b>.  This SUB uses the stored size in the
+allocation to free the memory block, so there is no need to specify the
+size of the memory block to free.
+
+    <b>FreeGPMVec</b> <i>yap&amp;</i>
+
+<b>FreeGPMem</b> and <b>FreeGPMVec</b> return no status.  However, if you attempt to free
+a memory block in the middle of a block that the system believes is already
+free, you will cause the GPM system to panic with an error.  Programs should
+free the <u>same size</u> memory blocks that they allocated.  An allocated block
+<u>should not</u> be deallocated as smaller pieces.  Due to the internal way the
+GPM system rounds up and aligns allocations, partial deallocations can cause
+corruption of the GPM system&#39;s free memory list, if they are not carefully
+pre-aligned.  Memory blocks allocated with <b>AllocGPMVec&amp;</b> can never partially
+deallocated in a safe way.
+
+                                                      <a href="memory-index.html">Back to GPM Functions</a>
+</pre>
+</body>
+</html>

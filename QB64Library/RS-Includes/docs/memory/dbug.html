@@ -1,0 +1,34 @@
+<html>
+<head>
+<title>GP Memory Functions / Debugging Support</title>
+</head>
+<body>
+<pre style="font-size:20px">
+During development and testing of your programs, it may be required to know
+the current state (or contents) of the GP Memory at a certain point within
+your code.  For this purpose the SUB <b>DumpGPMem</b> is used, it will create a
+text file mirroring the GP Memory region inclusive its header information,
+a list of currently unused (free) blocks and last but not least a complete
+hex-dump of the memory&#39;s contents.  Where applicable, hex values will also
+be converted to decimal ones, and the contents dump features an additional
+ASCII printout of the respective values.
+
+For example, &quot;<b>DumpGPMem</b> <i>&quot;dumpfile-0.txt&quot;</i>, <i>0&amp;</i>&quot; would create the text file
+<i>dumpfile-0.txt</i> within the current directory.  You may also specify a full
+path with the <i>file$</i> argument.
+
+I&#39;am not a friend of the little-endian notation, because it&#39;s against every
+mathematic and logic rule I&#39;ve learned in my life (thanks to my Dad, who was
+one of the mathematics/physics teachers at our school).  Because of this,
+I keep everything in big-endian notation within the GPM system.
+
+For you, the programmer, nothing will change, as long you&#39;re using the <b>PokeXX</b>
+and <b>PeekXX</b> SUBs and FUNCTIONs to access the memory, rather than manipulating
+the array by yourself.  The dump file also gets much better readable for the
+human eye by using big-endian, as offsets and values appear in their natural
+mathematical order, strings are readable as is from left to right.
+
+                                                      <a href="memory-index.html">Back to GPM Functions</a>
+</pre>
+</body>
+</html>

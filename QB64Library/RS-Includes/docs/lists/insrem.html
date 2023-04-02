@@ -1,0 +1,30 @@
+<html>
+<head>
+<title>List handling Functions / Insertion and Removal</title>
+</head>
+<body>
+<pre style="font-size:20px">
+The SUB <b>Insert</b> is used for inserting a new node into any position in
+a list.  It always inserts the node following a specified node that is
+already part of the list.  For example, &quot;<b>Insert</b> <i>list&amp;</i>, <i>node&amp;</i>, <i>pred&amp;</i>&quot;
+inserts the node <i>node&amp;</i> after the node <i>pred&amp;</i> in the specified <i>list&amp;</i>.
+If the <i>pred&amp;</i> node points to the list header or is zero, the new node
+will be inserted at the head of the list.  Similarly, if the <i>pred&amp;</i> node
+points to the <b>lh_Tail&amp;</b> of the list, the new node will be inserted at
+the tail of the list.  However, both of these actions can be better
+accomplished with the SUBs <b>AddHead</b> and <b>AddTail</b>.
+
+The SUB <b>Remove</b> is used to remove a specified node from a list.  For
+example, &quot;<b>Remove</b> <i>node&amp;</i>&quot; will remove the specified <i>node&amp;</i> from whatever
+list it is in.  To be removed, a node <u>must</u> actually be in a list.
+If you attempt to remove a node that is not in a list, then you may cause
+serious corruption to the administrative structure of the GP Memory system
+implemented with the <b>memory.bi/.bm</b> include files, or you may destroy any
+objects stored in this memory region.  So in fact, if you get those memory
+corruption errors, then don&#39;t forget to check, if you unintentionally
+remove any nodes, which are not linked into a list.
+
+                                                     <a href="funcs.html">Back to List Functions</a>
+</pre>
+</body>
+</html>

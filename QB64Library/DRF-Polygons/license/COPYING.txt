@@ -1,0 +1,14 @@
+This implementation of the Polygon Support library for QB64 and its examples
+is based on the Geometry/Math examples described by Darel Rex Finley (DRF)
+on his web site http://alienryderflex.com/tutorials.shtml.
+
+As DRF's examples are placed in the Public Domain, I'll not claim any
+rights or impose restrictions on this library as well, it's unlicensed
+and will remain in the Public Domain (see PD-Unlicense.txt). This applies
+to the entire contents in this distribution, namely:
+    - polygons.bm
+    - docs\ (entire contents)
+    - example\3dFuncPlot.bas
+    - example\FractalMountains.bas
+    - example\Polygons-HowTo.bas
+

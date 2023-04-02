@@ -1,0 +1,29 @@
+<html>
+<head>
+<title>Function Reference / FreeGPMVec</title>
+</head>
+<body>
+<pre style="font-size:20px">
+
+DEFINITION - SUB
+    <b>FreeGPMVec</b> <i>addr&amp;</i> -- return <b>AllocGPMVec&amp;</b> memory to the GPM system
+
+OPERATION
+    Free an allocation made by the <b>AllocGPMVec&amp;</b> call.  The memory will be
+    returned to the GPM system pool.
+
+ARGUMENTS
+    <i>addr&amp;</i> -- pointer to the memory block address to free
+
+NOTES
+    If a block of memory is freed twice, or you pass a wrong pointer, you
+    will probably cause the GPM system to panic with an error.  There may
+    be more sanity checks added in the future.
+
+SEE ALSO
+    <a href="free.html">Freeing GP Memory</a>
+
+                                                 <a href="funcref.html">Back to Function Reference</a>
+</pre>
+</body>
+</html>

@@ -1,0 +1,33 @@
+<html>
+<head>
+<title>Function Reference / FreeGPMem</title>
+</head>
+<body>
+<pre style="font-size:20px">
+
+DEFINITION - SUB
+    <b>FreeGPMem</b> <i>addr&amp;</i>, <i>freeSize&amp;</i>
+                         -- deallocate memory with knowledge of the size
+
+OPERATION
+    Free a region of memory, returning it to the GPM system pool.  Freeing
+    partial blocks back into the GPM system is unwise.
+
+ARGUMENTS
+    <i>addr&amp;</i>     -- pointer to the memory block address to free
+    <i>freeSize&amp;</i> -- the size of the block to free in bytes  (The GPM system
+                 will automatically round this number to a multiple of the
+                 minimum supported memory block size)
+
+NOTES
+    If a block of memory is freed twice, or you pass a wrong pointer, you
+    will probably cause the GPM system to panic with an error.  There may
+    be more sanity checks added in the future.
+
+SEE ALSO
+    <a href="free.html">Freeing GP Memory</a>
+
+                                                 <a href="funcref.html">Back to Function Reference</a>
+</pre>
+</body>
+</html>

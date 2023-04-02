@@ -1,0 +1,11 @@
+This implementation of the Simplebuffer library for QB64 and its examples
+is unlicensed and placed in the Public Domain (see PD-Unlicense.txt), it
+applies to the entire contents in this distribution, namely:
+    - simplebuffer.bi
+    - simplebuffer.bm
+    - docs\ (entire contents)
+    - example\BinaryData.bas
+    - example\FuncParse.bas
+    - example\ShowSeek.bas
+    - example\SimplyText.bas
+

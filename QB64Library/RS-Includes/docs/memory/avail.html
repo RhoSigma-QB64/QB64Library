@@ -1,0 +1,31 @@
+<html>
+<head>
+<title>GP Memory Functions / Query GP Memory</title>
+</head>
+<body>
+<pre style="font-size:20px">
+The query FUNCTION <b>AvailGPMem&amp;</b> can provide the amount of memory available
+in the GPM system from different points of view.  It may check for the
+overall free size, the total memory size, or the free size of the largest
+continuous free block.  As mentioned earlier, the GP Memory region is not
+DIMed to the full extent of the given init maximum size, but will grow to
+it as needed.  Because of this, all of the three different sizes mentioned
+above can be seen either according to the current extent of the GPM region,
+or according to the maximum given at init time.  For example, the call
+&quot;<i>size&amp;</i> = <b>AvailGPMem&amp;</b>(<i>gpmF_Largest&amp; + gpmF_NoAdd&amp;</i>)&quot; would return the <i>size&amp;</i>
+of the largest continuous free block in the <u>current</u> region.  That is, the
+largest block, which could be allocated right now, without causing the
+actual memory region to grow (<i>gpmF_NoAdd&amp;</i>).
+
+You may use <b>AvailGPMem&amp;</b> ahead of a big allocation, to find out, if there
+is enough free memory to fit the request, but in general the FUNCTIONs
+<b>AllocGPMem&amp;</b> and <b>AllocGPMVec&amp;</b> will return a zero result anyway, if the
+allocation cannot be satisfied.  If used with the <i>gpmF_Largest&amp;</i> flag, this
+routine needs to traverse the entire free memory list to find the largest
+continuous free memory block, this is a good opportunity to make a general
+check on the integrity of the GPM system without wasting runtime.
+
+                                                      <a href="memory-index.html">Back to GPM Functions</a>
+</pre>
+</body>
+</html>

@@ -1,0 +1,117 @@
+<html>
+<head>
+<title>GP Memory Functions / Support Functions</title>
+</head>
+<body>
+<pre style="font-size:20px">
+In some situations a pointer to a zero terminated string is required.  As
+strings in QB64 usually do not have a zero byte at its end, and also QB64
+may shift the strings at any time on its internal heap, the use of VARPTR
+and/or _OFFSET to obtain a pointer for such purposes is not adequate.
+
+The FUNCTION <b>CreateGPMString&amp;</b> will create a zero terminated copy of the
+given string in GP Memory and return a pointer to that copied string:
+
+    <i>mstr&amp;</i> = <b>CreateGPMString&amp;</b>(<i>&quot;sample.string&quot;</i>)
+
+After this call <i>mstr&amp;</i> will hold the pointer to a zero terminated copy of
+<i>&quot;sample.string&quot;</i> created in the GP Memory region.  <b>CreateGPMString&amp;</b> will
+automatically allocate the required memory (inclusive the zero termination
+byte), then writing the given string to the reserved memory and write the
+termination byte.  As the memory allocation may fail due to lack of free
+memory, this routine may return a zero result.  <u>You must check for this
+condition before using the returned pointer</u>.
+
+If the creation of the string was successful, then the pointer remains valid
+until the string is explicitly disposed using the SUB <b>DisposeGPMString</b> as
+shown in the following example:
+
+    <b>DisposeGPMString</b> <i>mstr&amp;</i>
+
+This call will simply free all the occupied memory used by the string, the
+given pointer is invalid after the call and should not longer be used.
+<hr>
+The FUNCTION <b>AlignGPMSize&amp;</b> is mostly used internally by the GPM system to
+round up memory allocation sizes to a multiple of the minimum supported
+block size (currently 8 bytes).  Here some examples:
+
+    <i>size&amp;</i> = <b>AlignGPMSize&amp;</b>(<i>7</i>) &#39;results into 8
+    <i>size&amp;</i> = <b>AlignGPMSize&amp;</b>(<i>8</i>) &#39;remains 8
+    <i>size&amp;</i> = <b>AlignGPMSize&amp;</b>(<i>9</i>) &#39;results into 16
+
+There is normally no need for you to use this function, as the GPM system
+will make sure everything is well aligned internally.
+<hr>
+To fill all bytes of a given memory block with a specific value, you may
+use the SUB <b>FillGPMem</b> as shown in the following example:
+
+    <b>FillGPMem</b> <i>addr&amp;</i>, <i>1000&amp;</i>, <i>ASC(&quot;*&quot;)</i>
+
+This call would fill <i>1000</i> bytes, starting at <i>addr&amp;</i>, with the ASCII value
+which represents the <i>&quot;*&quot;</i> character.  <b>FillGPMem</b> will fill the given number
+of bytes in the target memory region with the specified byte value.  The
+pointer to the target region can be aligned on an arbitrary address boundary.
+<b>FillGPMem</b> will attempt to fill the memory as efficiently as it can according
+to the alignment of the memory region, and the number of bytes it has to
+fill.  The algorithm is optimized for filling large blocks of memory which
+can result in unnecessary overhead if used to fill very small blocks.
+<hr>
+If you need to compare two memory regions (eg. verifying two buffers against
+each other), then you may use the FUNCTION <b>CompareGPMem&amp;</b> for that purpose.
+
+    <i>diff&amp;</i> = <b>CompareGPMem&amp;</b>(<i>sAddr&amp;</i>, <i>cAddr&amp;</i>, <i>1000&amp;</i>, <i>gpmF_Unsigned&amp;</i>)
+
+Here you would compare <i>1000</i> bytes of the contents of the source data region
+<i>sAddr&amp;</i> with the respective contents of the compare data region <i>cAddr&amp;</i> using
+<i>unsigned</i> math for comparing.  Well, <b>CompareGPMem&amp;</b> will compare the given
+memory regions, which may both be aligned on arbitrary addresses, and will
+return either zero, if the two regions match exactly or a state value which
+contains the position of the first found difference and additional information
+whether the source byte was less than the compared byte or vice versa.  Because
+of the less than / greater than information provided by the result, this
+function need to know which comparing math (signed/unsigned) it shall use.
+This is, because in signed math bytes with its MSB set are <u>in general</u> less
+than bytes with a cleared MSB, but in unsigned math it&#39;s the opposite case.
+<hr>
+For memory block copies, the SUB <b>CopyGPMem</b> can be used.  The following
+sample shows how to use it:
+
+    <b>CopyGPMem</b> <i>sAddr&amp;</i>, <i>dAddr&amp;</i>, <i>1000&amp;</i>
+
+The call above will copy <i>1000</i> bytes from the source region <i>sAddr&amp;</i> to the
+destination region <i>dAddr&amp;</i>.  <b>CopyGPMem</b> copies the specified number of bytes
+from the source data region to the destination data region.  The pointers
+to the regions can be aligned on arbitrary address boundaries.  <b>CopyGPMem</b>
+will attempt to copy the memory as efficiently as it can according to the
+alignment of the memory blocks, and the amount of data it has to transfer.
+The algorithm is optimized for copying large blocks of memory which can
+cause unnecessary overhead if used to transfer very small blocks of memory.
+
+    Overlap Copies Are Supported.
+    -----------------------------
+    The SUB <b>CopyGPMem</b> does explicitly support copying between
+    regions that overlap.
+<hr>
+Memory regions can also be saved into a binary file and loaded back into
+memory using the following SUB/FUNCTION calls:
+
+    <b>SaveBin</b> <i>&quot;memfile.bin&quot;</i>, <i>addr&amp;</i>, <i>1000</i>
+
+This call will write <i>1000</I> bytes starting from the memory region <i>addr&amp;</i>
+into the file <i>&quot;memfile.bin&quot;</i>.  The pointer to the region can be aligned on
+arbitrary address boundaries.
+
+    <i>addr&amp;</i> = <b>LoadBin&amp;</b>(<i>&quot;memfile.bin&quot;</i>)
+
+This call otherwise will load the entire contents of file <i>&quot;memfile.bin&quot;</i>
+into a new memory region.  The new region is allocated using the FUNCTION
+<b>AllocGPMVec&amp;</b> and its address is returned on success.  As the memory
+allocation may fail due to lack of free memory, this routine may return
+a zero result.  <u>You must check for this condition before using the returned
+pointer</u>.  When you&#39;re done with the loaded file contents, then you can free
+the occupied memory by passing the returned address to SUB <b>FreeGPMVec</b>.
+
+                                                      <a href="memory-index.html">Back to GPM Functions</a>
+</pre>
+</body>
+</html>

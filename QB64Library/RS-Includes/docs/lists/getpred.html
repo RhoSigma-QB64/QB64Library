@@ -1,0 +1,35 @@
+<html>
+<head>
+<title>Function Reference / GetPred&amp;</title>
+</head>
+<body>
+<pre style="font-size:20px">
+
+DEFINITION - FUNCTION
+    <i>node&amp;</i> = <b>GetPred&amp;</b>(<i>node&amp;</i>)
+                 -- return the predecessor (<b>Min</b>)<b>ListNode&amp;</b> of a given node
+
+OPERATION
+    Get the previous (<b>Min</b>)<b>ListNode&amp;</b> in the linked chain of nodes, and return
+    a pointer to it.  To get the last (tail) node, this function may be
+    called with a list pointer, though this can be better accomplished with
+    the FUNCTION <b>GetTail&amp;</b>.  If the list is empty or the linked chain its
+    head end is reached, return zero.
+
+ARGUMENTS
+    <i>node&amp;</i> -- pointer to a (<b>Min</b>)<b>ListNode&amp;</b> or a (<b>Min</b>)<b>ListHeader&amp;</b>
+
+RESULT
+    <i>node&amp;</i> -- pointer to the predecessor (<b>Min</b>)<b>ListNode&amp;</b> or zero when the
+             list is empty or the list chain&#39;s end is reached
+
+NOTES
+    The source for the operation (the <i>node&amp;</i> argument) may also be a <i>list&amp;</i>.
+
+SEE ALSO
+    <a href="scan.html">Scanning a List</a>
+
+                                                 <a href="funcref.html">Back to Function Reference</a>
+</pre>
+</body>
+</html>

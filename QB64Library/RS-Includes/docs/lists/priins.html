@@ -1,0 +1,35 @@
+<html>
+<head>
+<title>List handling Functions / Prioritized Insertion</title>
+</head>
+<body>
+<pre style="font-size:20px">
+The list functions discussed so far do not make use of the priority field
+in a <b>ListNode&amp;</b>. The SUB <b>Enqueue</b> is equivalent to the SUB <b>Insert</b>, except
+it inserts nodes into a list sorting them according to their priority.
+It keeps the higher-priority nodes towards the head of the list.  All nodes
+passed to this SUB must have their priority assigned <u>prior</u> to the call.
+For example, &quot;<b>Enqueue</b> <i>list&amp;</i>, <i>node&amp;</i>&quot; inserts the <i>node&amp;</i> behind the lowest
+priority node with a priority greater than or equal to <i>node&amp;&#39;s</i> priority.
+For <b>Enqueue</b> to work properly, the list must already be sort according to
+priority, in fact you should use <b>Enqueue</b> from the beginning on to insert
+new nodes into a priority sorted list. Because the highest priority node
+is at the head of the list, the FUNCTION <b>RemHead&amp;</b> will remove the
+highest-priority node.  Likewise, the FUNCTION <b>RemTail&amp;</b> will remove
+the lowest-priority node.
+
+    FIFO Is Used For The Same Priority.
+    -----------------------------------
+    If you add a node that has the same priority as another node in the
+    queue, <b>Enqueue</b> will use FIFO (or pipe) ordering.  The new node is
+    inserted following the last node of equal priority.
+
+There exists no further SUB to sort the nodes in opposite direction, the
+head node will always be the highest- and the tail node the lowest-priority
+node.  If you need the opposite sorting order, then simply scan the list
+from tail to head using the scanning FUNCTIONs <b>GetTail&amp;</b> and <b>GetPred&amp;</b>.
+
+                                                     <a href="funcs.html">Back to List Functions</a>
+</pre>
+</body>
+</html>

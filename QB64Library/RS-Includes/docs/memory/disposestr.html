@@ -1,0 +1,30 @@
+<html>
+<head>
+<title>Function Reference / DisposeGPMString</title>
+</head>
+<body>
+<pre style="font-size:20px">
+
+DEFINITION - SUB
+    <b>DisposeGPMString</b> <i>mstr&amp;</i>
+                 -- dispose a zero terminated string from <b>CreateGPMString&amp;</b>
+
+OPERATION
+    Dispose a zero terminated string which is not longer needed.  This SUB
+    will free all memory resources allocated by the <b>CreateGPMString&amp;</b> call.
+    The memory will be returned to the GPM system pool.
+
+ARGUMENTS
+    <i>mstr&amp;</i> -- a pointer to the string you wanna dispose
+
+NOTES
+    After this call the given <i>mstr&amp;</i> pointer is <u>invalid</u> and should not be
+    used any longer.
+
+SEE ALSO
+    <a href="supp.html">Support Functions</a>
+
+                                                 <a href="funcref.html">Back to Function Reference</a>
+</pre>
+</body>
+</html>

@@ -1,0 +1,21 @@
+This SHA2 hashing library for QB64 is based on the SHA2 sources of Notepad++.
+
+Although I did some changes to fit the whole thing into a QB64 library,
+I'am not the author or copyright holder of the SHA2 Secure Hash Algorithm.
+Also note that this library does only implement the SHA-256 algorithm out
+of the entire SHA2 family algorithms.
+
+SHA2 is a set of cryptographic hash functions designed by the United
+States National Security Agency (NSA) and patented in US patent 6829355.
+The United States has released the patent under a royalty-free license,
+it applies to the following files in this distribution:
+    - sha2.h
+
+However, the implementation of the QB64 wrapper library and its examples
+is unlicensed and placed in the Public Domain (see PD-Unlicense.txt), it
+applies to the following files in this distribution:
+    - sha2.bi
+    - sha2.bm
+    - docs\ (entire contents)
+    - example\SHA2-HowTo.bas
+

@@ -1,0 +1,34 @@
+<html>
+<head>
+<title>Alternative Types</title>
+</head>
+<body>
+<pre style="font-size:20px">
+The include files <b>types.bi/.bm</b> do provide a number of SUBs, which allow to
+define structure data types as used by C++ and other programming languages.
+This shall not be a replacement for QB64&#39;s DEF TYPE like data types, just
+see it as a useful addition to it, which can be used where the QB64 native
+DEF TYPE like data types seem unsuitable.
+
+However, using these SUBs you just define the offsets of the structure
+fields, so you still need storage space for the structure&#39;s content, and
+routines to access it.  The solution for this problem are the include
+files <b>memory.bi/.bm</b>, which implement the General Purpose Memory System.
+
+The first low level application build on top of these two include file
+pairs are doubly linked lists (<b>lists.bi/.bm</b>), which are one of the basic
+constructs in clean content organization of common objects or records.
+
+ <a href="howto.html">How to use the type SUBs</a>
+ <a href="array.html">A special case - Arrays</a>
+
+ <a href="enum.html">Enumerated variables</a>
+
+ <a href="notes.html">Things to keep in mind</a>
+
+ <a href="funcref.html">Function Reference</a>
+
+                                                           <a href="../RSI-Docs.html">Back to RSI-Docs</a>
+</pre>
+</body>
+</html>

@@ -1,0 +1,13 @@
+This implementation of the LZW pack-/unpacker library for QB64 and its
+examples is based on LZW examples by Rich Geldreich, in particular the
+ones you can download here:
+ https://qbasic.east-power-soft.de/index.php?menu=quickbasic_quickbasic_tuts_zip#lzw
+
+As Rich's examples are placed in the Public Domain, I'll not claim any
+rights or impose restrictions on this library as well, it's unlicensed
+and will remain in the Public Domain (see PD-Unlicense.txt). This applies
+to the entire contents in this distribution, namely:
+    - lzwpacker.bm
+    - docs\ (entire contents)
+    - example\LZW-HowTo.bas
+

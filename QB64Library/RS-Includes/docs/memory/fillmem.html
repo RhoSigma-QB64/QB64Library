@@ -1,0 +1,29 @@
+<html>
+<head>
+<title>Function Reference / FillGPMem</title>
+</head>
+<body>
+<pre style="font-size:20px">
+
+DEFINITION - SUB
+    <b>FillGPMem</b> <i>addr&amp;</i>, <i>size&amp;</i>, <i>byteVal%%</i> -- memset() like memory fill function
+
+OPERATION
+    <b>FillGPMem</b> is a fast memory fill function.  It can deal with arbitrary
+    lengths and its pointer on arbitrary alignments.  It will attempt to
+    optimize larger fills, it uses byte fills for small blocks or parts of
+    larger blocks outside of the ideal alignment.
+
+ARGUMENTS
+    <i>addr&amp;</i>     -- a address pointer to the memory block to fill
+    <i>size&amp;</i>     -- the size (in bytes) of the memory block
+    <i>byteVal%%</i> -- the byte value, which is written to all bytes of
+                 the given block
+
+SEE ALSO
+    <a href="supp.html">Support Functions</a>
+
+                                                 <a href="funcref.html">Back to Function Reference</a>
+</pre>
+</body>
+</html>

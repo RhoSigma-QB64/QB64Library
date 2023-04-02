@@ -1,0 +1,47 @@
+<html>
+<head>
+<title>Lists and Queues / List Structure</title>
+</head>
+<body>
+<pre style="font-size:20px">
+A list is composed of a header and a doubly-linked chain of elements
+called nodes.  The header contains memory pointers to the first and last
+nodes of the linked chain.  The address of the header is used as the
+handle to the entire list.  To manipulate a list, you must provide the
+address of its header.
+                                    _______________
+                                 _\|               |
+                                / /|   First Node  |
+                               /  /|_______________|
+                              /  /       |  /|\
+            _______________  /  /        |   |
+           |               |/  /    ____\|/__|_____
+           |   Head Node   |/_/    |               |
+           |_______________|\      |  Second Node  |
+           |               |/_     |_______________|
+           |   Tail Node   |\ \          |  /|\
+           |_______________|\  \         |   |
+                             \  \   ____\|/__|_____
+                              \  \ |               |
+                               \  \|   Third Node  |
+                                \_\|_______________|
+                                  /
+
+       Figure 1: Simplified Overview of a doubly-linked List
+
+Nodes may be scattered anywhere in memory.  Each node contains two
+pointers, a successor and a predecessor.  As illustrated above, a list
+header contains two placeholder nodes that contain no data.  In an empty
+list, the head and tail nodes point to each other.
+
+ <a href="lists.html">List Header Structure Definition &amp; Init</a>
+ <a href="nodes.html">Node Structure Definition &amp; Init</a>
+
+ <a href="funcs.html">List Handling Functions</a>
+
+ <a href="funcref.html">Function Reference</a>
+
+                                                           <a href="../RSI-Docs.html">Back to RSI-Docs</a>
+</pre>
+</body>
+</html>

@@ -1,0 +1,29 @@
+<html>
+<head>
+<title>Function Reference / AlignGPMSize&amp;</title>
+</head>
+<body>
+<pre style="font-size:20px">
+
+DEFINITION - FUNCTION
+    <i>size&amp;</i> = <b>AlignGPMSize&amp;</b>(<i>size&amp;</i>) -- align size to minimum block multiple
+
+OPERATION
+    This function will round up any arbitrary given size to a multiple of
+    the minimum supported block size used within the GPM system (currently
+    8 bytes).  It&#39;s mostly for internal use in the various GPM functions.
+    If the given size is already well aligned, this call does nothing.
+
+ARGUMENTS
+    <i>size&amp;</i> -- the size which needs alignment
+
+RESULT
+    <i>size&amp;</i> -- the aligned size (always greater or equal than input size)
+
+SEE ALSO
+    <a href="supp.html">Support Functions</a>
+
+                                                 <a href="funcref.html">Back to Function Reference</a>
+</pre>
+</body>
+</html>

@@ -1,0 +1,34 @@
+<html>
+<head>
+<title>GP Memory Functions / Initializing GP Memory</title>
+</head>
+<body>
+<pre style="font-size:20px">
+Before the GPM system can be used, it needs to be properly initialized.
+This is simply done by calling the SUB <b>InitGPMem</b> once before any other
+functions are used, hence the best place for this call is somewhere within
+your program&#39;s init procedure.  The initialization of the GP Memory
+consists of dimensioning the array according to the given maximum size,
+and setting up the administrative structures, which allow to keep track
+of the available memory within the array.  For example, the call
+&quot;<b>InitGPMem</b> <i>131072&amp;</i>, <i>0&amp;</i>&quot; would initialize the GPM system and allow the
+array to grow up to a maximum size of <i>128KiB</i> during operation.
+
+Something special to mention is the fact, that at init time the array is
+DIMed only that big, to fit 1/8 of the given maximum size.  If allocations
+start to fail getting the requested amount of memory, then another 1/8 of
+the maximum size is added to the array with &quot;REDIM _PRESERVE ...&quot; until
+the maximum is reached.  The query FUNCTION <b>AvailGPMem&amp;</b> can be used to get
+informations about the important sizes of the GP Memory region.
+
+<b>InitGPMem</b> does some checks on the given maximum size, it will use 512KiB
+as default, if the given maximum size was invalid (&lt;= zero).  Further it
+does currently limit the maximum to 4MiB.  If it turns out, that your
+program needs even more memory, then you have to change the appropriate
+check within the SUB, but note the limit given by the implementation of
+the GPM system is approximately 2GiB.
+
+                                                      <a href="memory-index.html">Back to GPM Functions</a>
+</pre>
+</body>
+</html>

@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Des56-Common</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<style type="text/css">
+/* This file is deliberately empty. */
+</style>
+<link rel="stylesheet" type="text/css" href="styles.css">
+</head>
+<body>
+<p><em><a href="_Des56_Contents.html">back to Table of Contents</a></em></p>
+<hr />
+<h2>Common Results</h2>
+<p>The functions <a href="EncryptFile.html">EncryptFile()</a> and <a href="DecryptFile.html">DecryptFile()</a> have common results which
+indicate either success or failure of operation. The following numbers are
+defined as CONSTs in the <strong>des56.bi</strong> file.</p>
+<hr />
+<blockquote>
+<blockquote>
+<blockquote>
+<blockquote>
+<blockquote>
+<p><strong><em>WARNINGS &amp; ERRORS:</em></strong></p>
+</blockquote>
+</blockquote>
+</blockquote>
+</blockquote>
+<h4>DES56_WARN_NOTCRYPTED</h4>
+<ul>
+<li>Is returned by function <a href="DecryptFile.html">DecryptFile()</a> only, it means the given file is
+not encrypted, at least not with function <a href="EncryptFile.html">EncryptFile()</a> of this library.</li>
+</ul>
+<h5>DES56_ERROR_NONE</h5>
+<ul>
+<li>No error happened, the given file was successfully encrypted or decrypted.</li>
+</ul>
+<h6>DES56_ERROR_NOACCESS</h6>
+<ul>
+<li>The given file could not be opened, either it's not found or the access is
+denied.</li>
+</ul>
+<h6>DES56_ERROR_NOPASS</h6>
+<ul>
+<li>The given password was an empty string.</li>
+</ul>
+<h6>DES56_ERROR_BADCHUNK</h6>
+<ul>
+<li>
+Is returned by function <a href="DecryptFile.html">DecryptFile()</a> only, it means an expected data
+chunk was not found.
+<ul>
+<li>This may indicate the given file was either encrypted by a different
+library version or the file is damaged/truncated.</li>
+</ul>
+</li>
+</ul>
+<h6>DES56_ERROR_TRUNCATED</h6>
+<ul>
+<li>Also returned by function <a href="DecryptFile.html">DecryptFile()</a> only, the given file is certainly
+truncated (reading past end of file).</li>
+</ul>
+<h6>DES56_ERROR_WRONGCRC</h6>
+<ul>
+<li>
+Returned by function <a href="DecryptFile.html">DecryptFile()</a> only, it means a internal checksum was
+wrong.
+<ul>
+<li>This indicates either file damage, file manipulation or (most probably
+case) a wrong password for decryption.</li>
+</ul>
+</li>
+</ul>
+<h6>DES56_ERROR_FILEOP</h6>
+<ul>
+<li>An error occurred during a common file operation (seek, rewind, getpos etc.).</li>
+</ul>
+<h6>DES56_ERROR_FILEREAD</h6>
+<ul>
+<li>An error occurred while reading data from the file.</li>
+</ul>
+<h6>DES56_ERROR_FILEWRITE</h6>
+<ul>
+<li>An error occurred while writing data into the file.</li>
+</ul>
+<h6>DES56_ERROR_LOWMEM</h6>
+<ul>
+<li>Running out of memory during file buffering.</li>
+</ul>
+</blockquote>
+<hr />
+<p><em><a href="_Des56_Contents.html">back to Table of Contents</a></em></p>
+
+</body>
+</html>
+<!-- This document was created with MarkdownPad, the Markdown editor for Windows (http://markdownpad.com) -->

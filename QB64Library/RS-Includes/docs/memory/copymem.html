@@ -1,0 +1,30 @@
+<html>
+<head>
+<title>Function Reference / CopyGPMem</title>
+</head>
+<body>
+<pre style="font-size:20px">
+
+DEFINITION - SUB
+    <b>CopyGPMem</b> <i>sAddr&amp;</i>, <i>dAddr&amp;</i>, <i>size&amp;</i> -- general purpose memory copy function
+
+OPERATION
+    <b>CopyGPMem</b> is a general purpose, fast memory copy function.  It can deal
+    with arbitrary lengths, with its pointers on arbitrary alignments.
+    It attempts to optimize larger copies with more efficient copies, it
+    uses byte copies for small moves, parts of larger copies, or the entire
+    copy if the source and destination are misaligned with respect to each
+    other.  Arbitrary overlapping copies are explicitly supported.
+
+ARGUMENTS
+    <i>sAddr&amp;</i> -- a address pointer to the source data region
+    <i>dAddr&amp;</i> -- a address pointer to the destination data region
+    <i>size&amp;</i>  -- the size (in bytes) of the memory area to copy
+
+SEE ALSO
+    <a href="supp.html">Support Functions</a>
+
+                                                 <a href="funcref.html">Back to Function Reference</a>
+</pre>
+</body>
+</html>

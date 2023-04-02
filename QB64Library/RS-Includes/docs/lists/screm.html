@@ -1,0 +1,22 @@
+<html>
+<head>
+<title>List handling Functions / Special Case Removal</title>
+</head>
+<body>
+<pre style="font-size:20px">
+The two FUNCTIONs <b>RemHead&amp;</b> and <b>RemTail&amp;</b> are used in combination with
+the SUBs <b>AddHead</b> and <b>AddTail</b> to create special list ordering.  When
+you combine <b>AddTail</b> and <b>RemHead&amp;</b>, you produce a first-in-first-out
+(FIFO or pipe) list.  When you combine <b>AddHead</b> and <b>RemHead&amp;</b> a
+last-in-first-out (LIFO or stack) list is produced.  <b>RemTail&amp;</b> exists
+for symmetry.  Other combinations of these functions can also be used
+productively.
+
+Both <b>RemHead&amp;</b> and <b>RemTail&amp;</b> remove a node from the <i>list&amp;</i>, and return a
+pointer to the removed <i>node&amp;</i>. If the list is empty, the FUNCTIONs will
+return a zero result.  For example, &quot;<i>node&amp;</i> = <b>RemHead&amp;</b>(<i>list&amp;</i>)&quot;.
+
+                                                     <a href="funcs.html">Back to List Functions</a>
+</pre>
+</body>
+</html>

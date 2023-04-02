@@ -1,0 +1,874 @@
+'+---------------+---------------------------------------------------+
+'| ###### ###### |     .--. .         .-.                            |
+'| ##  ## ##   # |     |   )|        (   ) o                         |
+'| ##  ##  ##    |     |--' |--. .-.  `-.  .  .-...--.--. .-.        |
+'| ######   ##   |     |  \ |  |(   )(   ) | (   ||  |  |(   )       |
+'| ##      ##    |     '   `'  `-`-'  `-'-' `-`-`|'  '  `-`-'`-      |
+'| ##     ##   # |                            ._.'                   |
+'| ##     ###### |  Sources & Documents placed in the Public Domain. |
+'+---------------+---------------------------------------------------+
+'|                                                                   |
+'| === memory.bm ===                                                 |
+'|                                                                   |
+'| == The SUBs and FUNCTIONs used to implement the GP Memory system. |
+'|                                                                   |
+'+-------------------------------------------------------------------+
+'| Done by RhoSigma, R.Heyder, provided AS IS, use at your own risk. |
+'| Find me in the QB64 Forum or mail to support@rhosigma-cw.net for  |
+'| any questions or suggestions. Thanx for your interest in my work. |
+'+-------------------------------------------------------------------+
+
+'====================
+'=== Dependencies ===
+'====================
+'=== If you wanna use this library in your project, then you must also
+'=== include the following other libaries into your project:
+'===    - RS-Includes\types (.bi/.bm)
+'=====================================================================
+
+'=================================
+'=== General memory management ===
+'=================================
+'=== The following routines do all the required magic to manage the
+'=== available memory in the gpMemory&& array. That is, keeping track
+'=== of the free memory regions and doing regularly checks on the
+'=== integrity of the internal structures. (see also RSI-Docs)
+
+'--- Initialize GP Memory,
+'--- this SUB does init the entire GPM system, it needs to be called
+'--- once before any other routines may be used.
+'---------------------------------------------------------------------
+SUB InitGPMem (maxSize&, flags&)
+'--- variables ---
+STATIC initDone%
+DIM mSize&, iSize&, aSize&, mhSize&, mcSize&, idx&, i&
+mSize& = maxSize& 'avoid side effect on passed argument
+'--- check ---
+IF mSize& <= 0 THEN mSize& = 524288 'invalid maxSize&, use default instead
+mSize& = ((mSize& + 63) AND -64&) 'required alignment for 1/8 growing feature
+IF mSize& > 4194304 THEN mSize& = 4194304
+'--- init ---
+IF initDone% THEN EXIT SUB
+iSize& = INT(mSize& / 8)
+aSize& = INT(mSize& / 8)
+mhSize& = AlignGPMSize&(MemHeader_SizeOf&)
+mcSize& = AlignGPMSize&(MemChunk_SizeOf&)
+idx& = (iSize& + mhSize&) / gpm_BlockSize& 'add aligned Header size
+REDIM gpMemory&&(idx&) 'one more for Poke safety on last index (normally idx& - 1)
+PokeL 0&, mh_First&, mhSize& 'init Header
+PokeL 0&, mh_Free&, iSize&
+PokeL 0&, mh_AddSize&, aSize&
+PokeL 0&, mh_MaxSize&, mSize&
+PokeL 0&, mh_Lower&, mhSize&
+PokeL 0&, mh_Upper&, mhSize& + iSize&
+PokeL mhSize&, mc_Next&, 0& 'init 1st Chunk
+PokeL mhSize&, mc_Free&, iSize&
+'--- mark ---
+IF (flags& AND gpmF_MarkFree&) <> 0 THEN
+    FOR i& = (mhSize& + mcSize&) / gpm_BlockSize& TO idx& - 1
+        gpMemory&&(i&) = &H6672656566726565~&&
+    NEXT i&
+END IF
+gpMemory&&(idx&) = &HDEADBEEFDEADBEEF~&&
+initDone% = -1
+END SUB
+
+'--- Dump GP Memory contents,
+'--- this is made to support you during the debugging stage of your
+'--- programs, it dumps the current memory contents to a text file.
+'---------------------------------------------------------------------
+SUB DumpGPMem (file$, flags&)
+'--- variables ---
+DIM mcSize&, ff%, mc&, i&, idx&, raw$, txt$, j%
+'--- init ---
+mcSize& = AlignGPMSize&(MemChunk_SizeOf&)
+ff% = FREEFILE
+OPEN "O", #ff%, file$
+'--- dump, mark ---
+PRINT #ff%, "MemHeader:"
+PRINT #ff%, "----------"
+PRINT #ff%, "  Address           Offset          Content"
+PRINT #ff%, "----------------------------------------------------"
+PRINT #ff%, "&h"; RIGHT$("000000" + HEX$(0& + mh_First&), 6); " ("; RIGHT$("0000000" + LTRIM$(STR$(0& + mh_First&)), 7); "): mh_First&   = &h"; RIGHT$("000000" + HEX$(PeekL&(0&, mh_First&)), 6); " ("; RIGHT$("0000000" + LTRIM$(STR$(PeekL&(0&, mh_First&))), 7); ")"
+PRINT #ff%, "&h"; RIGHT$("000000" + HEX$(0& + mh_Free&), 6); " ("; RIGHT$("0000000" + LTRIM$(STR$(0& + mh_Free&)), 7); "): mh_Free&    = &h"; RIGHT$("000000" + HEX$(PeekL&(0&, mh_Free&)), 6); " ("; RIGHT$("0000000" + LTRIM$(STR$(PeekL&(0&, mh_Free&))), 7); ")"
+PRINT #ff%, "&h"; RIGHT$("000000" + HEX$(0& + mh_AddSize&), 6); " ("; RIGHT$("0000000" + LTRIM$(STR$(0& + mh_AddSize&)), 7); "): mh_AddSize& = &h"; RIGHT$("000000" + HEX$(PeekL&(0&, mh_AddSize&)), 6); " ("; RIGHT$("0000000" + LTRIM$(STR$(PeekL&(0&, mh_AddSize&))), 7); ")"
+PRINT #ff%, "&h"; RIGHT$("000000" + HEX$(0& + mh_MaxSize&), 6); " ("; RIGHT$("0000000" + LTRIM$(STR$(0& + mh_MaxSize&)), 7); "): mh_MaxSize& = &h"; RIGHT$("000000" + HEX$(PeekL&(0&, mh_MaxSize&)), 6); " ("; RIGHT$("0000000" + LTRIM$(STR$(PeekL&(0&, mh_MaxSize&))), 7); ")"
+PRINT #ff%, "&h"; RIGHT$("000000" + HEX$(0& + mh_Lower&), 6); " ("; RIGHT$("0000000" + LTRIM$(STR$(0& + mh_Lower&)), 7); "): mh_Lower&   = &h"; RIGHT$("000000" + HEX$(PeekL&(0&, mh_Lower&)), 6); " ("; RIGHT$("0000000" + LTRIM$(STR$(PeekL&(0&, mh_Lower&))), 7); ")"
+PRINT #ff%, "&h"; RIGHT$("000000" + HEX$(0& + mh_Upper&), 6); " ("; RIGHT$("0000000" + LTRIM$(STR$(0& + mh_Upper&)), 7); "): mh_Upper&   = &h"; RIGHT$("000000" + HEX$(PeekL&(0&, mh_Upper&)), 6); " ("; RIGHT$("0000000" + LTRIM$(STR$(PeekL&(0&, mh_Upper&))), 7); ")"
+PRINT #ff%, ""
+IF (flags& AND gpmF_NoFreeList&) = 0 THEN
+    PRINT #ff%, "Free MemChunk list:"
+    PRINT #ff%, "-------------------"
+    PRINT #ff%, "  Address           Offset       Content"
+    PRINT #ff%, "-------------------------------------------------"
+END IF
+mc& = PeekL&(0&, mh_First&)
+WHILE mc& <> 0
+    IF (flags& AND gpmF_MarkFree&) <> 0 THEN
+        FOR i& = (mc& + mcSize&) / gpm_BlockSize& TO ((mc& + PeekL&(mc&, mc_Free&)) / gpm_BlockSize&) - 1
+            gpMemory&&(i&) = &H6672656566726565~&&
+        NEXT i&
+    END IF
+    IF (flags& AND gpmF_NoFreeList&) = 0 THEN
+        PRINT #ff%, "&h"; RIGHT$("000000" + HEX$(mc& + mc_Next&), 6); " ("; RIGHT$("0000000" + LTRIM$(STR$(mc& + mc_Next&)), 7); "): mc_Next& = &h"; RIGHT$("000000" + HEX$(PeekL&(mc&, mc_Next&)), 6); " ("; RIGHT$("0000000" + LTRIM$(STR$(PeekL&(mc&, mc_Next&))), 7); ")"
+        PRINT #ff%, "&h"; RIGHT$("000000" + HEX$(mc& + mc_Free&), 6); " ("; RIGHT$("0000000" + LTRIM$(STR$(mc& + mc_Free&)), 7); "): mc_Free& = &h"; RIGHT$("000000" + HEX$(PeekL&(mc&, mc_Free&)), 6); " ("; RIGHT$("0000000" + LTRIM$(STR$(PeekL&(mc&, mc_Free&))), 7); ")"
+    END IF
+    mc& = PeekL&(mc&, mc_Next&)
+WEND
+IF (flags& AND gpmF_NoFreeList&) = 0 THEN
+    PRINT #ff%, ""
+END IF
+PRINT #ff%, "Raw HEX dump (Note: Content is Big-Endian, Offsets order as defined"
+PRINT #ff%, "in structures from lower to higher addresses, Strings human readable):"
+PRINT #ff%, "----------------------------------------------------------------------"
+PRINT #ff%, "  Address             Content           ASCII"
+PRINT #ff%, "-------------------------------------------------"
+FOR idx& = 0 TO UBOUND(gpMemory&&)
+    PRINT #ff%, "&h"; RIGHT$("000000" + HEX$(idx& * gpm_BlockSize&), 6); " ("; RIGHT$("0000000" + LTRIM$(STR$(idx& * gpm_BlockSize&)), 7); "): ";
+    raw$ = RIGHT$("0000000000000000" + HEX$(gpMemory&&(idx&)), 16)
+    txt$ = ""
+    FOR i& = 1 TO 16 STEP 2
+        j% = VAL("&H" + MID$(raw$, i&, 2) + "~%")
+        IF (j% < 32) OR (j% = 127) OR (j% = 255) THEN
+            txt$ = txt$ + "."
+        ELSE
+            txt$ = txt$ + CHR$(j%)
+        END IF
+    NEXT i&
+    PRINT #ff%, "&h"; raw$; " "; CHR$(34); txt$; CHR$(34)
+NEXT idx&
+CLOSE #ff%
+END SUB
+
+'--- Query GP Memory,
+'--- use this FUNCTION to obtain information about the current sizes
+'--- of the GP Memory region.
+'---------------------------------------------------------------------
+FUNCTION AvailGPMem& (flags&)
+'--- variables ---
+DIM extSize&, size&, lgst&, mc&, cur&, lc&, lfs&
+'--- check ---
+IF (PeekL&(0&, mh_First&) = 0) AND (PeekL&(0&, mh_Free&) <> 0) THEN ERROR 97 'memory list corrupted
+IF (PeekL&(0&, mh_First&) <> 0) AND (PeekL&(0&, mh_Free&) = 0) THEN ERROR 97 'memory list corrupted
+'--- init ---
+extSize& = PeekL&(0&, mh_MaxSize&) - (PeekL&(0&, mh_Upper&) - PeekL&(0&, mh_Lower&))
+'--- query ---
+size& = PeekL&(0&, mh_Free&)
+IF (flags& AND gpmF_NoAdd&) = 0 THEN size& = size& + extSize&
+IF (flags& AND gpmF_Largest&) <> 0 THEN
+    size& = 0
+    lgst& = 0
+    mc& = PeekL&(0&, mh_First&)
+    WHILE mc& <> 0
+        cur& = PeekL&(mc&, mc_Free&)
+        IF cur& > lgst& THEN lgst& = cur&
+        size& = size& + cur&
+        lc& = mc&
+        mc& = PeekL&(mc&, mc_Next&)
+    WEND
+    IF size& <> PeekL&(0&, mh_Free&) THEN ERROR 97 'sanity check on memory list failed
+    IF (flags& AND gpmF_NoAdd&) = 0 THEN
+        lfs& = PeekL&(lc&, mc_Free&)
+        IF (lc& + lfs&) = PeekL&(0&, mh_Upper&) THEN
+            lfs& = lfs& + extSize&
+        ELSE
+            lfs& = extSize&
+        END IF
+        IF lfs& > lgst& THEN
+            size& = lfs&
+        ELSE
+            size& = lgst&
+        END IF
+    ELSE
+        size& = lgst&
+    END IF
+ELSEIF (flags& AND gpmF_Total&) <> 0 THEN
+    size& = PeekL&(0&, mh_Upper&) - PeekL&(0&, mh_Lower&)
+    IF (flags& AND gpmF_NoAdd&) = 0 THEN size& = size& + extSize&
+END IF
+'--- result ---
+AvailGPMem& = size&
+END FUNCTION
+
+'--- Regular GP Memory allocation,
+'--- this is the main allocator routine, you use it to reserve a piece
+'--- of the free memory for use in your program.
+'---------------------------------------------------------------------
+FUNCTION AllocGPMem& (getSize&, flags&)
+'--- variables ---
+DIM size&, flag&, lc&, mc&, i&, aSize&, idx&, ndx&, tmp&
+size& = getSize& 'avoid side effect on passed argument
+flag& = flags& 'avoid side effect on passed argument
+'--- check ---
+IF (PeekL&(0&, mh_First&) = 0) AND (PeekL&(0&, mh_Free&) <> 0) THEN ERROR 97 'memory list corrupted
+IF (PeekL&(0&, mh_First&) <> 0) AND (PeekL&(0&, mh_Free&) = 0) THEN ERROR 97 'memory list corrupted
+IF size& <= 0 THEN ERROR 97 'invalid getSize&
+'--- init ---
+size& = AlignGPMSize&(size&)
+AllocGPMem& = 0
+tryAgain:
+IF size& > PeekL&(0&, mh_Free&) THEN
+    IF (flag& AND gpmF_NoAdd&) = 0 THEN
+        GOSUB addMem
+        GOTO tryAgain
+    ELSE
+        GOTO noMem
+    END IF
+END IF
+'--- search ---
+lc& = 0
+mc& = PeekL&(0&, mh_First&)
+WHILE (size& > PeekL&(mc&, mc_Free&)) AND (mc& <> 0)
+    lc& = mc&
+    mc& = PeekL&(mc&, mc_Next&)
+WEND
+IF mc& = 0 THEN
+    IF (flag& AND gpmF_NoAdd&) = 0 THEN
+        GOSUB addMem
+        GOTO tryAgain
+    ELSE
+        GOTO noMem
+    END IF
+END IF
+'--- update ---
+IF size& = PeekL&(mc&, mc_Free&) THEN
+    PokeL lc&, mc_Next&, PeekL&(mc&, mc_Next&)
+ELSE
+    PokeL mc& + size&, mc_Next&, PeekL&(mc&, mc_Next&)
+    PokeL mc& + size&, mc_Free&, PeekL&(mc&, mc_Free&) - size&
+    PokeL lc&, mc_Next&, mc& + size&
+END IF
+PokeL 0&, mh_Free&, PeekL&(0&, mh_Free&) - size&
+'--- clear ---
+IF (flag& AND gpmF_Clear&) <> 0 THEN
+    FOR i& = mc& / gpm_BlockSize& TO ((mc& + size&) / gpm_BlockSize&) - 1
+        gpMemory&&(i&) = 0
+    NEXT i&
+END IF
+'--- result ---
+AllocGPMem& = mc&
+noMem:
+EXIT FUNCTION
+'--- extend ---
+addMem:
+IF (flag& AND gpmF_NoAdd&) = 0 THEN
+    aSize& = PeekL&(0&, mh_AddSize&)
+    IF (PeekL&(0&, mh_Upper&) - PeekL&(0&, mh_Lower&) + aSize&) <= PeekL&(0&, mh_MaxSize&) THEN
+        idx& = UBOUND(gpMemory&&)
+        ndx& = idx& + (aSize& / gpm_BlockSize&)
+        REDIM _PRESERVE gpMemory&&(ndx&)
+        gpMemory&&(ndx&) = &HDEADBEEFDEADBEEF~&&
+        PokeL 0&, mh_Upper&, PeekL&(0&, mh_Upper&) + aSize&
+        FreeGPMem idx& * gpm_BlockSize&, aSize&
+        tmp& = AvailGPMem&(gpmF_Largest&) 'check memory list structure
+    ELSE
+        flag& = (flag& OR gpmF_NoAdd&) 'mh_MaxSize& limit reached
+    END IF
+END IF
+RETURN
+END FUNCTION
+
+'--- Regular freeing GP Memory,
+'--- this SUB is the counterpart to the main allocator routine above,
+'--- you must use it to give back pieces of memory, which are not longer
+'--- needed by your program.
+'---------------------------------------------------------------------
+SUB FreeGPMem (addr&, freeSize&)
+'--- variables ---
+DIM mem&, size&, dif&, mc&, lc&
+mem& = addr& 'avoid side effect on passed argument
+size& = freeSize& 'avoid side effect on passed argument
+'--- check ---
+IF (PeekL&(0&, mh_First&) = 0) AND (PeekL&(0&, mh_Free&) <> 0) THEN ERROR 97 'memory list corrupted
+IF (PeekL&(0&, mh_First&) <> 0) AND (PeekL&(0&, mh_Free&) = 0) THEN ERROR 97 'memory list corrupted
+IF (mem& < PeekL&(0&, mh_Lower&)) OR (mem& >= PeekL&(0&, mh_Upper&)) THEN ERROR 97 'bad memory pointer
+IF size& <= 0 THEN ERROR 97 'invalid freeSize&
+'--- init ---
+dif& = (mem& AND gpm_BlockPad&)
+mem& = mem& - dif&
+size& = size& + dif&
+size& = AlignGPMSize&(size&)
+'--- update ---
+PokeL mem&, mc_Next&, 0&
+PokeL mem&, mc_Free&, size&
+PokeL 0&, mh_Free&, PeekL&(0&, mh_Free&) + size&
+'--- search, check, merge ---
+mc& = PeekL&(0&, mh_First&)
+IF mc& = 0 THEN
+    PokeL 0&, mh_First&, mem&
+ELSE
+    IF mem& = mc& THEN ERROR 97 'memory freed twice
+    IF mem& < mc& THEN
+        PokeL 0&, mh_First&, mem&
+        IF (mem& + PeekL&(mem&, mc_Free&)) > mc& THEN ERROR 97 'memory list corrupted
+        IF (mem& + PeekL&(mem&, mc_Free&)) = mc& THEN
+            PokeL mem&, mc_Next&, PeekL&(mc&, mc_Next&)
+            PokeL mem&, mc_Free&, PeekL&(mem&, mc_Free&) + PeekL&(mc&, mc_Free&)
+        ELSE
+            PokeL mem&, mc_Next&, mc&
+        END IF
+    ELSE
+        WHILE (mem& > mc&) AND (mc& <> 0)
+            lc& = mc&
+            mc& = PeekL&(mc&, mc_Next&)
+        WEND
+        IF mem& = mc& THEN ERROR 97 'memory freed twice
+        IF mc& <> 0 THEN
+            IF (mem& + PeekL&(mem&, mc_Free&)) > mc& THEN ERROR 97 'memory list corrupted
+            IF (mem& + PeekL&(mem&, mc_Free&)) = mc& THEN
+                PokeL mem&, mc_Next&, PeekL&(mc&, mc_Next&)
+                PokeL mem&, mc_Free&, PeekL&(mem&, mc_Free&) + PeekL&(mc&, mc_Free&)
+            ELSE
+                PokeL mem&, mc_Next&, mc&
+            END IF
+        END IF
+        IF (lc& + PeekL&(lc&, mc_Free&)) > mem& THEN ERROR 97 'memory list corrupted
+        IF (lc& + PeekL&(lc&, mc_Free&)) = mem& THEN
+            PokeL lc&, mc_Next&, PeekL&(mem&, mc_Next&)
+            PokeL lc&, mc_Free&, PeekL&(lc&, mc_Free&) + PeekL&(mem&, mc_Free&)
+        ELSE
+            PokeL lc&, mc_Next&, mem&
+        END IF
+    END IF
+END IF
+END SUB
+
+'--- Vectorized GP Memory allocation,
+'--- this alternative FUNCTION to reserve memory may especially used,
+'--- if you need many blocks of different sizes. Each memory vector
+'--- will remember its original allocation size for later freeing.
+'---------------------------------------------------------------------
+FUNCTION AllocGPMVec& (getSize&, flags&)
+'--- variables ---
+DIM mvSize&, mem&
+'--- check ---
+IF getSize& <= 0 THEN ERROR 97 'invalid getSize&
+'--- init ---
+mvSize& = AlignGPMSize&(MemVector_SizeOf&)
+'--- alloc ---
+mem& = AllocGPMem&(getSize& + mvSize&, flags&)
+IF mem& <> 0 THEN
+    PokeL mem&, mv_MemSize&, getSize&
+    PokeL mem&, mv_MatchTag&, mem&
+    mem& = mem& + mvSize&
+END IF
+'--- result ---
+AllocGPMVec& = mem&
+END FUNCTION
+
+'--- Vectorized freeing GP Memory,
+'--- this is the counterpart to the vector allocator routine above,
+'--- you must only use it to give back pieces of memory, which were
+'--- reserved using AllocGPMVec&.
+'---------------------------------------------------------------------
+SUB FreeGPMVec (addr&)
+'--- variables ---
+DIM mvSize&
+'--- check ---
+mvSize& = AlignGPMSize&(MemVector_SizeOf&)
+addr& = addr& - mvSize&
+IF (addr& < PeekL&(0&, mh_Lower&)) OR (addr& >= PeekL&(0&, mh_Upper&)) THEN ERROR 97 'bad memory pointer
+IF addr& <> PeekL&(addr&, mv_MatchTag&) THEN ERROR 97 'memory pointer is no GPMVec
+'--- free ---
+FreeGPMem addr&, PeekL&(addr&, mv_MemSize&) + mvSize&
+END SUB
+
+'--- Create zero terminated string in GP Memory,
+'--- different from a VARPTR of a QB64 string variable, which may get
+'--- invalid at any time, the address of a string in GP Memory remains
+'--- valid until the string is explicitly disposed.
+'---------------------------------------------------------------------
+FUNCTION CreateGPMString& (text$)
+'--- variables ---
+DIM gps&
+'--- alloc ---
+gps& = AllocGPMVec&(LEN(text$) + 1, gpmF_Clear&)
+IF gps& <> 0 THEN PokeSTR gps&, 0&, text$
+'--- result ---
+CreateGPMString& = gps&
+END FUNCTION
+
+'--- Dispose zero terminated string in GP Memory,
+'--- this is the counterpart to the routine above, use it to dispose
+'--- a string, which is not longer needed.
+'---------------------------------------------------------------------
+SUB DisposeGPMString (mstr&)
+'--- free ---
+FreeGPMVec mstr&
+END SUB
+
+'--- Block size alignment for GP Memory System,
+'--- this FUNCTION is used internally for allocation and freeing size
+'--- round ups. Normally there is no need to call this routine directly
+'--- in your program.
+'---------------------------------------------------------------------
+FUNCTION AlignGPMSize& (size&)
+'--- align ---
+AlignGPMSize& = ((size& + gpm_BlockPad&) AND gpm_BlockMask&)
+END FUNCTION
+
+'================================
+'=== Common memory operations ===
+'================================
+'=== The following routines do provide some common memory operations,
+'=== which includes copying a memory block or filling it with a given
+'=== value, or comparing two regions. (see also RSI-Docs)
+
+'--- Fill GP Memory,
+'--- use this SUB to fill all bytes of the specified memory block with
+'--- the given byte value.
+'---------------------------------------------------------------------
+SUB FillGPMem (addr&, size&, byteVal%%)
+'--- variables ---
+DIM dst&, num&, longlongVal&&
+dst& = addr& 'avoid side effect on passed argument
+num& = size& 'avoid side effect on passed argument
+'--- check ---
+IF num& <= 0 THEN ERROR 97 'invalid size&
+IF (dst& < PeekL&(0&, mh_Lower&)) OR ((dst& + num& - 1) >= PeekL&(0&, mh_Upper&)) THEN ERROR 97 'bad memory range
+'--- init ---
+longlongVal&& = _CV(_INTEGER64, STRING$(8, CHR$(byteVal%% AND &HFF~%%)))
+'--- fill ---
+WHILE (num& > 0) AND ((dst& AND gpm_BlockPad&) <> 0)
+    PokeB dst&, 0&, byteVal%%
+    dst& = dst& + 1
+    num& = num& - 1
+WEND
+WHILE num& >= 8
+    gpMemory&&(dst& / gpm_BlockSize&) = longlongVal&&
+    dst& = dst& + 8
+    num& = num& - 8
+WEND
+WHILE num& > 0
+    PokeB dst&, 0&, byteVal%%
+    dst& = dst& + 1
+    num& = num& - 1
+WEND
+END SUB
+
+'--- Compare GP Memory,
+'--- use this to compare two memory blocks of the same size. The result
+'--- gives information about the first found difference, if any.
+'---------------------------------------------------------------------
+FUNCTION CompareGPMem& (sAddr&, cAddr&, size&, flags&)
+'--- variables ---
+DIM sign%, i&, s%, c%
+'--- check ---
+IF size& <= 0 THEN ERROR 97 'invalid size&
+IF (sAddr& < PeekL&(0&, mh_Lower&)) OR ((sAddr& + size& - 1) >= PeekL&(0&, mh_Upper&)) THEN ERROR 97 'bad memory range
+IF (cAddr& < PeekL&(0&, mh_Lower&)) OR ((cAddr& + size& - 1) >= PeekL&(0&, mh_Upper&)) THEN ERROR 97 'bad memory range
+'--- compare ---
+CompareGPMem& = 0
+IF sAddr& = cAddr& THEN EXIT FUNCTION
+sign% = 0
+FOR i& = 0 TO size& - 1
+    IF (flags& AND gpmF_Unsigned&) <> 0 THEN
+        s% = (PeekB%%(sAddr&, i&) AND &H00FF~%)
+        c% = (PeekB%%(cAddr&, i&) AND &H00FF~%)
+    ELSE
+        s% = PeekB%%(sAddr&, i&)
+        c% = PeekB%%(cAddr&, i&)
+    END IF
+    IF s% < c% THEN
+        sign% = -1
+        EXIT FOR
+    ELSEIF s% > c% THEN
+        sign% = 1
+        EXIT FOR
+    END IF
+NEXT i&
+'--- result ---
+CompareGPMem& = (i& + 1) * sign%
+END FUNCTION
+
+'--- Copy GP Memory,
+'--- this SUB does copy any number of bytes from the source region to
+'--- the destination region. It supports copying between overlapping
+'--- memory regions.
+'---------------------------------------------------------------------
+SUB CopyGPMem (sAddr&, dAddr&, size&)
+'--- variables ---
+DIM src&, dst&, num&
+src& = sAddr& 'avoid side effect on passed argument
+dst& = dAddr& 'avoid side effect on passed argument
+num& = size& 'avoid side effect on passed argument
+'--- check ---
+IF num& <= 0 THEN ERROR 97 'invalid size&
+IF (src& < PeekL&(0&, mh_Lower&)) OR ((src& + num& - 1) >= PeekL&(0&, mh_Upper&)) THEN ERROR 97 'bad memory range
+IF (dst& < PeekL&(0&, mh_Lower&)) OR ((dst& + num& - 1) >= PeekL&(0&, mh_Upper&)) THEN ERROR 97 'bad memory range
+'--- copy ---
+IF src& = dst& THEN EXIT SUB
+IF src& > dst& THEN
+    '--- post increment copy ---
+    WHILE (num& > 0) AND ((src& AND gpm_BlockPad&) <> 0)
+        PokeB dst&, 0&, PeekB%%(src&, 0&)
+        src& = src& + 1
+        dst& = dst& + 1
+        num& = num& - 1
+    WEND
+    IF (dst& AND gpm_BlockPad&) = 0 THEN
+        WHILE num& >= 8
+            gpMemory&&(dst& / gpm_BlockSize&) = gpMemory&&(src& / gpm_BlockSize&)
+            src& = src& + 8
+            dst& = dst& + 8
+            num& = num& - 8
+        WEND
+    ELSE
+        WHILE num& >= 8
+            PokeLL dst&, 0&, PeekLL&&(src&, 0&)
+            src& = src& + 8
+            dst& = dst& + 8
+            num& = num& - 8
+        WEND
+    END IF
+    WHILE num& > 0
+        PokeB dst&, 0&, PeekB%%(src&, 0&)
+        src& = src& + 1
+        dst& = dst& + 1
+        num& = num& - 1
+    WEND
+ELSE
+    '--- pre decrement copy ---
+    src& = src& + num&
+    dst& = dst& + num&
+    WHILE (num& > 0) AND ((src& AND gpm_BlockPad&) <> 0)
+        src& = src& - 1
+        dst& = dst& - 1
+        num& = num& - 1
+        PokeB dst&, 0&, PeekB%%(src&, 0&)
+    WEND
+    IF (dst& AND gpm_BlockPad&) = 0 THEN
+        WHILE num& >= 8
+            src& = src& - 8
+            dst& = dst& - 8
+            num& = num& - 8
+            gpMemory&&(dst& / gpm_BlockSize&) = gpMemory&&(src& / gpm_BlockSize&)
+        WEND
+    ELSE
+        WHILE num& >= 8
+            src& = src& - 8
+            dst& = dst& - 8
+            num& = num& - 8
+            PokeLL dst&, 0&, PeekLL&&(src&, 0&)
+        WEND
+    END IF
+    WHILE num& > 0
+        src& = src& - 1
+        dst& = dst& - 1
+        num& = num& - 1
+        PokeB dst&, 0&, PeekB%%(src&, 0&)
+    WEND
+END IF
+END SUB
+
+'--- Save a GP Memory region into a file,
+'--- this SUB does write any number of bytes from the specified memory
+'--- region into the given file.
+'---------------------------------------------------------------------
+SUB SaveBin (file$, addr&, size&)
+'--- variables ---
+DIM num&, ff%, offs&, tmp$, bl%
+num& = size& 'avoid side effect on passed argument
+'--- check ---
+IF num& <= 0 THEN ERROR 97 'invalid size&
+IF (addr& < PeekL&(0&, mh_Lower&)) OR ((addr& + num& - 1) >= PeekL&(0&, mh_Upper&)) THEN ERROR 97 'bad memory range
+'--- open file ---
+ff% = FREEFILE
+OPEN "O", #ff%, file$
+'--- write ---
+offs& = 0
+WHILE num& > 0 AND (num& MOD 16) <> 0
+    PRINT #ff%, CHR$(PeekB%%(addr&, offs&) AND &HFF~%%);
+    offs& = offs& + 1
+    num& = num& - 1
+WEND
+WHILE num& > 0
+    tmp$ = ""
+    FOR bl% = 0 TO 15
+        tmp$ = tmp$ + CHR$(PeekB%%(addr&, offs& + bl%) AND &HFF~%%)
+    NEXT bl%
+    PRINT #ff%, tmp$;
+    offs& = offs& + 16
+    num& = num& - 16
+WEND
+'--- close file ---
+CLOSE #ff%
+END SUB
+
+'--- Load a file into GP Memory,
+'--- this FUNCTION will read the data of the given file into a new
+'--- allocated memory region and returns its address.
+'--- You may free the loaded data by passing the returned address to
+'--- the SUB FreeGPMVec.
+'---------------------------------------------------------------------
+FUNCTION LoadBin& (file$)
+'--- variables ---
+DIM ff%, size&, addr&, offs&, tmp$, bl%
+'--- open file & allocate memory ---
+ff% = FREEFILE
+OPEN "B", #ff%, file$
+size& = LOF(ff%)
+addr& = AllocGPMVec&(size&, 0&)
+'--- read ---
+IF addr& <> 0 THEN
+    offs& = 0
+    WHILE size& > 0 AND (size& MOD 16) <> 0
+        PokeB addr&, offs&, ASC(INPUT$(1, ff%))
+        offs& = offs& + 1
+        size& = size& - 1
+    WEND
+    WHILE size& > 0
+        tmp$ = INPUT$(16, ff%)
+        FOR bl% = 0 TO 15
+            PokeB addr&, offs& + bl%, ASC(MID$(tmp$, bl% + 1, 1))
+        NEXT bl%
+        offs& = offs& + 16
+        size& = size& - 16
+    WEND
+END IF
+'--- close file & return memory ---
+CLOSE #ff%
+LoadBin& = addr&
+END FUNCTION
+
+'===============================
+'=== Low level memory access ===
+'===============================
+'=== This collection of PokeXX and PeekXX routines does provide access to
+'=== the GP Memory. You should access the memory in the gpMemory&& array
+'=== by using these SUBs and FUNCTIONs only, don't mess with the array.
+
+'--- Write a byte value (8 bits) to memory,
+'--- the given value may be either signed or unsigned.
+'---------------------------------------------------------------------
+SUB PokeB (addr&, offs&, value%%)
+'--- variables ---
+DIM idx&, pad&, snip$
+'--- init ---
+idx& = INT((addr& + offs&) / gpm_BlockSize&)
+pad& = (((addr& + offs&) MOD gpm_BlockSize&) * 2) + 1
+'--- check ---
+IF (idx& < 0) OR (idx& >= UBOUND(gpMemory&&)) THEN ERROR 97 'invalid addr& and/or offs&
+'--- poke value ---
+snip$ = RIGHT$("0000000000000000" + HEX$(gpMemory&&(idx&)), 16)
+MID$(snip$, pad&, 2) = RIGHT$("00" + HEX$(value%%), 2)
+gpMemory&&(idx&) = VAL("&H" + snip$)
+END SUB
+
+'--- Read a byte value (8 bits) from memory,
+'--- the returned value is always signed, (PeekB%%(...) AND &HFF~%%)
+'--- may be used to make it unsigned, if required.
+'---------------------------------------------------------------------
+FUNCTION PeekB%% (addr&, offs&)
+'--- variables ---
+DIM idx&, pad&, snip$
+'--- init ---
+idx& = INT((addr& + offs&) / gpm_BlockSize&)
+pad& = (((addr& + offs&) MOD gpm_BlockSize&) * 2) + 1
+'--- check ---
+IF (idx& < 0) OR (idx& >= UBOUND(gpMemory&&)) THEN ERROR 97 'invalid addr& and/or offs&
+'--- peek result ---
+snip$ = RIGHT$("0000000000000000" + HEX$(gpMemory&&(idx&)), 16)
+PeekB%% = VAL("&H" + MID$(snip$, pad&, 2))
+END FUNCTION
+
+'--- Write a word (INTEGER) value (16 bits) to memory,
+'--- the given value may be either signed or unsigned.
+'---------------------------------------------------------------------
+SUB PokeW (addr&, offs&, value%)
+'--- variables ---
+DIM idx&, pad&, snip$
+'--- init ---
+idx& = INT((addr& + offs&) / gpm_BlockSize&)
+pad& = (((addr& + offs&) MOD gpm_BlockSize&) * 2) + 1
+'--- check ---
+IF (idx& < 0) OR (idx& >= UBOUND(gpMemory&&)) THEN ERROR 97 'invalid addr& and/or offs&
+'--- poke value ---
+snip$ = RIGHT$("0000000000000000" + HEX$(gpMemory&&(idx&)), 16)
+snip$ = snip$ + RIGHT$("0000000000000000" + HEX$(gpMemory&&(idx& + 1)), 16)
+MID$(snip$, pad&, 4) = RIGHT$("0000" + HEX$(value%), 4)
+gpMemory&&(idx&) = VAL("&H" + LEFT$(snip$, 16))
+gpMemory&&(idx& + 1) = VAL("&H" + RIGHT$(snip$, 16))
+END SUB
+
+'--- Read a word (INTEGER) value (16 bits) from memory,
+'--- the returned value is always signed, (PeekW%(...) AND &HFFFF~%)
+'--- may be used to make it unsigned, if required.
+'---------------------------------------------------------------------
+FUNCTION PeekW% (addr&, offs&)
+'--- variables ---
+DIM idx&, pad&, snip$
+'--- init ---
+idx& = INT((addr& + offs&) / gpm_BlockSize&)
+pad& = (((addr& + offs&) MOD gpm_BlockSize&) * 2) + 1
+'--- check ---
+IF (idx& < 0) OR (idx& >= UBOUND(gpMemory&&)) THEN ERROR 97 'invalid addr& and/or offs&
+'--- peek result ---
+snip$ = RIGHT$("0000000000000000" + HEX$(gpMemory&&(idx&)), 16)
+snip$ = snip$ + RIGHT$("0000000000000000" + HEX$(gpMemory&&(idx& + 1)), 16)
+PeekW% = VAL("&H" + MID$(snip$, pad&, 4))
+END FUNCTION
+
+'--- Write a long value (32 bits) to memory,
+'--- the given value may be either signed or unsigned.
+'---------------------------------------------------------------------
+SUB PokeL (addr&, offs&, value&)
+'--- variables ---
+DIM idx&, pad&, snip$
+'--- init ---
+idx& = INT((addr& + offs&) / gpm_BlockSize&)
+pad& = (((addr& + offs&) MOD gpm_BlockSize&) * 2) + 1
+'--- check ---
+IF (idx& < 0) OR (idx& >= UBOUND(gpMemory&&)) THEN ERROR 97 'invalid addr& and/or offs&
+'--- poke value ---
+snip$ = RIGHT$("0000000000000000" + HEX$(gpMemory&&(idx&)), 16)
+snip$ = snip$ + RIGHT$("0000000000000000" + HEX$(gpMemory&&(idx& + 1)), 16)
+MID$(snip$, pad&, 8) = RIGHT$("00000000" + HEX$(value&), 8)
+gpMemory&&(idx&) = VAL("&H" + LEFT$(snip$, 16))
+gpMemory&&(idx& + 1) = VAL("&H" + RIGHT$(snip$, 16))
+END SUB
+
+'--- Read a long value (32 bits) from memory,
+'--- the returned value is always signed, (PeekL&(...) AND &HFFFFFFFF~&)
+'--- may be used to make it unsigned, if required.
+'---------------------------------------------------------------------
+FUNCTION PeekL& (addr&, offs&)
+'--- variables ---
+DIM idx&, pad&, snip$
+'--- init ---
+idx& = INT((addr& + offs&) / gpm_BlockSize&)
+pad& = (((addr& + offs&) MOD gpm_BlockSize&) * 2) + 1
+'--- check ---
+IF (idx& < 0) OR (idx& >= UBOUND(gpMemory&&)) THEN ERROR 97 'invalid addr& and/or offs&
+'--- peek result ---
+snip$ = RIGHT$("0000000000000000" + HEX$(gpMemory&&(idx&)), 16)
+snip$ = snip$ + RIGHT$("0000000000000000" + HEX$(gpMemory&&(idx& + 1)), 16)
+PeekL& = VAL("&H" + MID$(snip$, pad&, 8))
+END FUNCTION
+
+'--- Write a long long (_INTEGER64) value (64 bits) to memory,
+'--- the given value may be either signed or unsigned.
+'---------------------------------------------------------------------
+SUB PokeLL (addr&, offs&, value&&)
+'--- variables ---
+DIM idx&, pad&, snip$
+'--- init ---
+idx& = INT((addr& + offs&) / gpm_BlockSize&)
+pad& = (((addr& + offs&) MOD gpm_BlockSize&) * 2) + 1
+'--- check ---
+IF (idx& < 0) OR (idx& >= UBOUND(gpMemory&&)) THEN ERROR 97 'invalid addr& and/or offs&
+'--- poke value ---
+snip$ = RIGHT$("0000000000000000" + HEX$(gpMemory&&(idx&)), 16)
+snip$ = snip$ + RIGHT$("0000000000000000" + HEX$(gpMemory&&(idx& + 1)), 16)
+MID$(snip$, pad&, 16) = RIGHT$("0000000000000000" + HEX$(value&&), 16)
+gpMemory&&(idx&) = VAL("&H" + LEFT$(snip$, 16))
+gpMemory&&(idx& + 1) = VAL("&H" + RIGHT$(snip$, 16))
+END SUB
+
+'--- Read a long long (_INTEGER64) value (64 bits) from memory,
+'--- the returned value is always signed, (PeekLL&&(...) AND &HFFFFFFFFFFFFFFFF~&&)
+'--- may be used to make it unsigned, if required.
+'---------------------------------------------------------------------
+FUNCTION PeekLL&& (addr&, offs&)
+'--- variables ---
+DIM idx&, pad&, snip$
+'--- init ---
+idx& = INT((addr& + offs&) / gpm_BlockSize&)
+pad& = (((addr& + offs&) MOD gpm_BlockSize&) * 2) + 1
+'--- check ---
+IF (idx& < 0) OR (idx& >= UBOUND(gpMemory&&)) THEN ERROR 97 'invalid addr& and/or offs&
+'--- peek result ---
+snip$ = RIGHT$("0000000000000000" + HEX$(gpMemory&&(idx&)), 16)
+snip$ = snip$ + RIGHT$("0000000000000000" + HEX$(gpMemory&&(idx& + 1)), 16)
+PeekLL&& = VAL("&H" + MID$(snip$, pad&, 16))
+END FUNCTION
+
+'--- Write a single precision floating point value (32 bits) to memory
+'---------------------------------------------------------------------
+SUB PokeS (addr&, offs&, value!)
+'--- redirect ---
+PokeL addr&, offs&, CVL(MKS$(value!))
+END SUB
+
+'--- Read a single precision floating point value (32 bits) from memory
+'---------------------------------------------------------------------
+FUNCTION PeekS! (addr&, offs&)
+'--- redirect ---
+PeekS! = CVS(MKL$(PeekL&(addr&, offs&)))
+END FUNCTION
+
+'--- Write a double precision floating point value (64 bits) to memory
+'---------------------------------------------------------------------
+SUB PokeD (addr&, offs&, value#)
+'--- redirect ---
+PokeLL addr&, offs&, _CV(_INTEGER64, MKD$(value#))
+END SUB
+
+'--- Read a double precision floating point value (64 bits) from memory
+'---------------------------------------------------------------------
+FUNCTION PeekD# (addr&, offs&)
+'--- redirect ---
+PeekD# = CVD(_MK$(_INTEGER64, PeekLL&&(addr&, offs&)))
+END FUNCTION
+
+'--- Write a string given as text$ to memory,
+'--- this SUB will also automatically add a zero termination byte.
+'---------------------------------------------------------------------
+SUB PokeSTR (addr&, offs&, text$)
+'--- variables ---
+DIM idx&, pad&, tle&, snip$, i&, tmp$
+'--- init ---
+idx& = INT((addr& + offs&) / gpm_BlockSize&)
+pad& = (((addr& + offs&) MOD gpm_BlockSize&) * 2) + 1
+tle& = INT((LEN(text$) + 1) / gpm_BlockSize&) + 1
+'--- check ---
+IF (idx& < 0) OR ((idx& + tle&) > UBOUND(gpMemory&&)) THEN ERROR 97 'invalid addr& and/or offs&, or text$ too long to fit in remaining memory
+'--- poke string ---
+snip$ = ""
+FOR i& = 0 TO tle&
+    snip$ = snip$ + RIGHT$("0000000000000000" + HEX$(gpMemory&&(idx& + i&)), 16)
+NEXT i&
+tmp$ = ""
+FOR i& = 1 TO LEN(text$)
+    tmp$ = tmp$ + RIGHT$("00" + HEX$(ASC(MID$(text$, i&, 1))), 2)
+NEXT i&
+tmp$ = tmp$ + "00"
+MID$(snip$, pad&, LEN(tmp$)) = tmp$
+FOR i& = 0 TO tle&
+    gpMemory&&(idx& + i&) = VAL("&H" + MID$(snip$, ((i& * gpm_BlockSize&) * 2) + 1, 16))
+NEXT i&
+END SUB
+
+'--- Read a string from memory,
+'--- this FUNCTION will read until a zero termination byte is found,
+'--- but it returns the string without that zero byte.
+'---------------------------------------------------------------------
+FUNCTION PeekSTR$ (addr&, offs&)
+'--- variables ---
+DIM idx&, pad&, i&, snip$, j&, tmp$
+'--- init ---
+idx& = INT((addr& + offs&) / gpm_BlockSize&)
+pad& = (((addr& + offs&) MOD gpm_BlockSize&) * 2) + 1
+'--- check ---
+IF (idx& < 0) OR (idx& >= UBOUND(gpMemory&&)) THEN ERROR 97 'invalid addr& and/or offs&
+'--- peek result string ---
+i& = 0
+snip$ = RIGHT$("0000000000000000" + HEX$(gpMemory&&(idx&)), 16)
+j& = INSTR(pad&, snip$, "00")
+psSearch:
+WHILE j& = 0
+    i& = i& + 1
+    snip$ = snip$ + RIGHT$("0000000000000000" + HEX$(gpMemory&&(idx& + i&)), 16)
+    j& = INSTR(pad& + (i& * 16), snip$, "00")
+WEND
+IF ((j& MOD 2) = 0) THEN
+    j& = INSTR(j& + 1, snip$, "00")
+    GOTO psSearch
+END IF
+tmp$ = ""
+FOR i& = pad& TO (j& - 1) STEP 2
+    tmp$ = tmp$ + CHR$(VAL("&H" + MID$(snip$, i&, 2) + "~%%"))
+NEXT i&
+PeekSTR$ = tmp$
+END FUNCTION
+

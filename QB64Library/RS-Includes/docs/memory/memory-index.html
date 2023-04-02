@@ -1,0 +1,64 @@
+<html>
+<head>
+<title>General Purpose Memory</title>
+</head>
+<body>
+<pre style="font-size:20px">
+The include files <b>memory.bi/.bm</b> do implement a system, which allows to use
+and address a big dimensioned numeric array as one continuous region of
+memory for your general purpose usage.  You can allocate blocks from this
+memory region to store whatever data you want in it, later on you can also
+free the blocks which are not longer needed to allow them to get re-used
+for further allocations.  It&#39;s a complete memory management and allocator
+system local to your program.
+
+Nevertheless of the nature of this system, there are no DEFSEG, VARSEG,
+VARPTR, _OFFSET or _MEM operations invoked, the system is operated only
+via the array indices.  That is, there are no low level accesses to the
+real underlying memory, hence the entire system runs safe within the QB64
+environment.
+
+The system manages all of the free memory currently available in the array.
+Using linked list structures, it keeps track of the memory and provides the
+functions to allocate and access it.  In the following discussion this system
+is referred to as <b>GPM</b> or <b>GP Memory</b>, where the GP is for &quot;General Purpose&quot;.
+
+    GP Memory Functions
+    -------------------
+    SUB InitGPMem (maxSize&amp;, flags&amp;)
+    SUB DumpGPMem (file$, flags&amp;)
+    FUNCTION AvailGPMem&amp; (flags&amp;)
+    FUNCTION AllocGPMem&amp; (getSize&amp;, flags&amp;)
+    FUNCTION AllocGPMVec&amp; (getSize&amp;, flags&amp;)
+    SUB FreeGPMem (addr&amp;, freeSize&amp;)
+    SUB FreeGPMVec (addr&amp;)
+    FUNCTION CreateGPMString&amp; (text$)
+    SUB DisposeGPMString (mstr&amp;)
+    FUNCTION AlignGPMSize&amp; (size&amp;)
+    SUB FillGPMem (addr&amp;, size&amp;, byteVal%%)
+    FUNCTION CompareGPMem&amp; (sAddr&amp;, cAddr&amp;, size&amp;, flags&amp;)
+    SUB CopyGPMem (sAddr&amp;, dAddr&amp;, size&amp;)
+    SUB SaveBin (file$, addr&amp;, size&amp;)
+    FUNCTION LoadBin&amp; (file$)
+    SUB PokeXX (addr&amp;, offs&amp;, value) &#39;XX is just a type placeholder here
+    FUNCTION PeekXX (addr&amp;, offs&amp;) &#39;XX is just a type placeholder here
+
+In these functions, xxx<b>Size&amp;</b> usually represents a size value given in bytes,
+x<b>Addr&amp;</b> represents an address pointer (type DefGPMPTR (<b>types.bm</b>)) as returned
+by the allocation functions, and <b>offs&amp;</b> is either zero or a byte offset which
+will be added to the given address.  Other arguments are discussed later.
+
+ <a href="init.html">Initializing GP Memory</a>
+ <a href="dbug.html">Debugging Support</a>
+ <a href="avail.html">Query GP Memory</a>
+ <a href="alloc.html">Allocating GP Memory</a>
+ <a href="free.html">Freeing GP Memory</a>
+ <a href="supp.html">Support Functions</a>
+ <a href="access.html">Accessing GP Memory</a>
+
+ <a href="funcref.html">Function Reference</a>
+
+                                                           <a href="../RSI-Docs.html">Back to RSI-Docs</a>
+</pre>
+</body>
+</html>

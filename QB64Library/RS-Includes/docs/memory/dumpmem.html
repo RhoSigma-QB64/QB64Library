@@ -1,0 +1,41 @@
+<html>
+<head>
+<title>Function Reference / DumpGPMem</title>
+</head>
+<body>
+<pre style="font-size:20px">
+
+DEFINITION - SUB
+    <b>DumpGPMem</b> <i>file$</i>, <i>flags&amp;</i> -- create a dump of current memory contents
+
+OPERATION
+    For debugging purposes you may call this SUB to create a memory dump,
+    which contains header information, a list of free areas and a complete
+    printout of the array used by the GPM system.
+
+ARGUMENTS
+    <i>file$</i>  -- the name of the dump file, if required inlusive a full path
+    <i>flags&amp;</i> -- a bit field with any special characteristics (see below)
+
+NOTES
+    The contents in the GP memory is hold in big-endian notation, hence you
+    find all numbers in its mathematical correct bit order just as you would
+    get it using HEX$.
+
+FLAGS
+    The <i>flags&amp;</i> defined in the include file <b>memory.bi</b> are bit-coded values,
+    hence they can easily combined by ORing or adding them:
+
+    <b>gpmF_MarkFree&amp;</b>   -- If given, then all free LONGs in the GP Memory region
+                        will be filled with the word &quot;free&quot;.  This gives a
+                        better overview in the memory dump.
+    <b>gpmF_NoFreeList&amp;</b> -- This flag will supress the output of the free
+                        areas list, which may become very long sometimes.
+
+SEE ALSO
+    <a href="dbug.html">Debugging Support</a>
+
+                                                 <a href="funcref.html">Back to Function Reference</a>
+</pre>
+</body>
+</html>

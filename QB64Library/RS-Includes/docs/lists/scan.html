@@ -1,0 +1,66 @@
+<html>
+<head>
+<title>List handling Functions / Scanning a List</title>
+</head>
+<body>
+<pre style="font-size:20px">
+Occasionally a program may need to scan a list to locate a particular
+node, find a node that has a field with a particular value, or just print
+the list.  Because lists are linked in both the forward and backward
+directions, the list can be scanned from either the head or tail.
+
+Here is a code fragment that uses a WHILE..WEND loop to print the names
+of all nodes in a list:
+
+    node&amp; = PeekL&amp;(list&amp;, lh_Head&amp;) &#39;get first node
+    WHILE node&amp; &lt;&gt; 0
+      IF PeekL&amp;(node&amp;, ln_Succ&amp;) &lt;&gt; 0 THEN &#39;avoid placeholder node
+        PRINT RIGHT$(&quot;00000000&quot; + HEX$(node&amp;), 8); &quot;: &quot;;
+        PRINT PeekSTR$(PeekL&amp;(node&amp;, ln_Name&amp;), 0&amp;) &#39;read out mstr&amp; pointer
+      END IF
+      node&amp; = PeekL&amp;(node&amp;, ln_Succ&amp;)
+    WEND
+
+The example above will start with the first valid data node obtained from
+the list headers <b>lh_Head&amp;</b> field, and it will finally end up with the tail
+placeholder node within the list header.
+Now carfully notice the IF..THEN block, a common mistake is to process the
+head or tail placeholder nodes within the (<b>Min</b>)<b>ListHeader&amp;</b>, which do not
+contain any data.  Valid data nodes have <u>non-zero successor and predecessor</u>
+pointers.  Keeping this fact in mind, the above example can be simplified
+and will even exclude the placeholder node at all:
+
+    node&amp; = PeekL&amp;(list&amp;, lh_Head&amp;) &#39;get first node
+    WHILE PeekL&amp;(node&amp;, ln_Succ&amp;) &lt;&gt; 0 &#39;avoid placeholder node
+      PRINT RIGHT$(&quot;00000000&quot; + HEX$(node&amp;), 8); &quot;: &quot;;
+      PRINT PeekSTR$(PeekL&amp;(node&amp;, ln_Name&amp;), 0&amp;) &#39;read out mstr&amp; pointer
+      node&amp; = PeekL&amp;(node&amp;, ln_Succ&amp;)
+    WEND
+
+This second example will start with the first valid data node, and end up
+with the last valid data node.  If the list is empty, then the WHILE..WEND
+loop is skipped at all and nothing is printed, because in empty lists the
+<b>lh_Head&amp;</b> field points to <b>lh_Tail&amp;</b>, which is always zero.  That is, it will
+appear as a zero <b>ln_Succ&amp;</b> field in the current node, hence it is no valid
+data node.
+
+But now, after all the theory, another example using the FUNCTIONs <b>GetHead&amp;</b>
+and <b>GetSucc&amp;</b> to do it the easy and correct way:
+
+    node&amp; = GetHead&amp;(list&amp;) &#39;get first node
+    WHILE node&amp; &lt;&gt; 0
+      PRINT RIGHT$(&quot;00000000&quot; + HEX$(node&amp;), 8); &quot;: &quot;;
+      PRINT PeekSTR$(PeekL&amp;(node&amp;, ln_Name&amp;), 0&amp;) &#39;read out mstr&amp; pointer
+      node&amp; = GetSucc&amp;(node&amp;)
+    WEND
+
+Likewise, you can use the FUNCTIONs <b>GetTail&amp;</b> and <b>GetPred&amp;</b> to scan a list
+backward from tail to head.  Once you are in the middle of a list you can
+even go back and forth using <b>GetSucc&amp;</b> and <b>GetPred&amp;</b>. All of these FUNCTIONs
+do already include the check for the placeholder nodes, hence they will
+only return valid data nodes, or a zero result, if no more data nodes exist.
+
+                                                     <a href="funcs.html">Back to List Functions</a>
+</pre>
+</body>
+</html>

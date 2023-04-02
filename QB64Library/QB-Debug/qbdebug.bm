@@ -1,0 +1,113 @@
+'+---------------+---------------------------------------------------+
+'| ###### ###### |     .--. .         .-.                            |
+'| ##  ## ##   # |     |   )|        (   ) o                         |
+'| ##  ##  ##    |     |--' |--. .-.  `-.  .  .-...--.--. .-.        |
+'| ######   ##   |     |  \ |  |(   )(   ) | (   ||  |  |(   )       |
+'| ##      ##    |     '   `'  `-`-'  `-'-' `-`-`|'  '  `-`-'`-      |
+'| ##     ##   # |                            ._.'                   |
+'| ##     ###### |  Sources & Documents placed in the Public Domain. |
+'+---------------+---------------------------------------------------+
+'|                                                                   |
+'| === qbdebug.bm ===                                                |
+'|                                                                   |
+'| == The SUBs and FUNCTIONs for easy debug output from QB64 level.  |
+'|                                                                   |
+'+-------------------------------------------------------------------+
+'| Done by RhoSigma, R.Heyder, provided AS IS, use at your own risk. |
+'| Find me in the QB64 Forum or mail to support@rhosigma-cw.net for  |
+'| any questions or suggestions. Thanx for your interest in my work. |
+'+-------------------------------------------------------------------+
+
+'====================
+'=== Dependencies ===
+'====================
+'=== If you wanna use this library in your project, then you must also
+'=== include the following other libaries into your project:
+'===    - QB-StdLibs\qbstdarg (.bi/.bm)
+'===    - QB-StdLibs\qbstdio  (.bi/.bm)
+'=====================================================================
+
+'--- docs\LogInit.html
+'---------------------------------------------------------------------
+SUB LogInit (file$, fmode%)
+DIM tmp$ 'option _explicit requirements
+IF file$ = "" THEN tmp$ = "qbdebug.txt": ELSE tmp$ = file$
+DebugInit tmp$ + CHR$(0), fmode%
+END SUB
+
+'--- docs\LogOpen.html
+'---------------------------------------------------------------------
+FUNCTION LogOpen% (func$, file$)
+DIM tmp$ 'option _explicit requirements
+IF func$ = "" THEN tmp$ = "Unknown SUB/FUNC": ELSE tmp$ = func$
+IF file$ <> "" THEN tmp$ = tmp$ + " (" + file$ + ")"
+LogOpen% = DebugOpen%(tmp$ + CHR$(0))
+END FUNCTION
+
+'--- docs\LogClose.html
+'---------------------------------------------------------------------
+SUB LogClose (ostat%)
+DebugClose ostat%
+END SUB
+
+'--- docs\LogStr.html
+'---------------------------------------------------------------------
+SUB LogStr (text$)
+DIM tmp%& 'option _explicit requirements
+IF DebugIsActive% THEN 'avoid wasting time for nothing
+    tmp%& = MakeCString%&(text$ + CHR$(0), LEN(text$))
+    DebugPuts ReadCString$(tmp%&) + CHR$(0)
+    FreeCString tmp%&
+END IF
+END SUB
+
+'--- docs\LogFmt.html
+'---------------------------------------------------------------------
+SUB LogFmt (fmt$, vargs$)
+DIM tmp%&, po&, buf%& 'option _explicit requirements
+IF (fmt$ = "") OR (INSTR(vargs$, "|ARGS|") = 0) THEN EXIT SUB
+IF DebugIsActive% THEN 'avoid wasting time for nothing
+    tmp%& = MakeCString%&(fmt$ + CHR$(0), LEN(fmt$))
+    po& = INSTR(vargs$, "|ARGS|")
+    buf%& = FormatToBuffer%&(tmp%&, MID$(vargs$, po& + 6))
+    FreeCString tmp%&
+    DebugPuts ReadCString$(buf%&) + CHR$(0)
+    FreeCString buf%&
+END IF
+END SUB
+
+'--- docs\LogArgs.html
+'---------------------------------------------------------------------
+SUB LogArgs (vargs$)
+DIM po&, fmt%&, ftx$, na&, i%, tmp%&, buf%& 'option _explicit requirements
+IF INSTR(vargs$, "|ARGS|") = 0 THEN EXIT SUB
+IF DebugIsActive% THEN 'avoid wasting time for nothing
+    '--- print prolog ---
+    DebugPuts "## begin vargs$ debug ##" + CHR$(0)
+    '--- print number of args ---
+    po& = INSTR(vargs$, "|DFMT|")
+    IF INSTR(_OS$, "[32BIT]") THEN
+        fmt%& = _CV(LONG, MID$(vargs$, po& + 6, 4))
+    ELSE
+        fmt%& = _CV(_INTEGER64, MID$(vargs$, po& + 6, 8))
+    END IF
+    ftx$ = ReadCString$(fmt%&)
+    na& = 0
+    FOR i% = 1 TO LenCString&(fmt%&) - 1
+        IF MID$(ftx$, i%, 2) = "{(" THEN na& = na& + 1
+    NEXT i%
+    tmp%& = MakeCString%&("num. args in list = %lu" + CHR$(0), 23)
+    buf%& = FormatToBuffer%&(tmp%&, MKL$(na&))
+    FreeCString tmp%&
+    DebugPuts ReadCString$(buf%&) + CHR$(0)
+    FreeCString buf%&
+    '--- print args list contents ---
+    po& = INSTR(vargs$, "|ARGS|")
+    buf%& = FormatToBuffer%&(fmt%&, MID$(vargs$, po& + 6))
+    DebugPuts ReadCString$(buf%&) + CHR$(0)
+    FreeCString buf%&
+    '--- print epilog ---
+    DebugPuts "## end vargs$ debug ##" + CHR$(0)
+END IF
+END SUB
+

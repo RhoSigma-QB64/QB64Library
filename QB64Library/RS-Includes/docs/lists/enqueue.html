@@ -1,0 +1,29 @@
+<html>
+<head>
+<title>Function Reference / Enqueue</title>
+</head>
+<body>
+<pre style="font-size:20px">
+
+DEFINITION - SUB
+    <b>Enqueue</b> <i>list&amp;</i>, <i>node&amp;</i> -- insert or append a <b>ListNode&amp;</b> to a queue
+
+OPERATION
+    Insert or append a <b>ListNode&amp;</b> into a queue.  The insert is performed
+    based on the priority given in the node&#39;s <b>ln_Pri&amp;</b> field, it will keep
+    the list properly sorted.  New nodes will be inserted in front of the
+    first node with a lower priority.  Hence a FIFO (or pipe) queue for
+    nodes of equal priority.
+
+ARGUMENTS
+    <i>list&amp;</i> -- pointer to the queue&#39;s (<b>Min</b>)<b>ListHeader&amp;</b>
+    <i>node&amp;</i> -- pointer to the node to enqueue, this must be a full featured
+             <b>ListNode&amp;</b> with type, priority and name fields
+
+SEE ALSO
+    <a href="priins.html">Prioritized Insertion</a>
+
+                                                 <a href="funcref.html">Back to Function Reference</a>
+</pre>
+</body>
+</html>

@@ -1,0 +1,59 @@
+<html>
+<head>
+<title>Alternative Types / A special case - Arrays</title>
+</head>
+<body>
+<pre style="font-size:20px">
+A little bit tricky are structures incorporating arrays.  In general, if
+you just need a standalone array, then use a QB64 array, because these are
+more easy to handle.  However, sometimes it is required to have an array
+within a structure, because the structure content and the array content
+depend on each other or have common belongings in general.
+<hr>
+Example of usage: (a structure with array)
+------------------------------------------
+    DefSTRUCTURE ArrStruct&amp;, 0&amp;
+    DefULONG     as_Counter&amp;
+    DefSTRUCT    as_Array&amp;, (10&amp; * 4&amp;)
+    DefULONG     as_WhatEver&amp;
+    DefLABEL     ArrStruct_SizeOf&amp;
+
+once again with explaination:
+-----------------------------
+    DefSTRUCTURE ArrStruct&amp;, 0&amp;
+      &#39;init the structure, guess you know already how it works
+
+    DefULONG     as_Counter&amp;
+      &#39;an ULONG entry, eg. the number of used array elements
+
+    DefSTRUCT    as_Array&amp;, (10&amp; * 4&amp;)
+      &#39;now here you use DefSTRUCT to incorporate the size of the complete array
+        &#39;<b>as_Array&amp;</b> gets the current offset, which will be the base of the
+         array for later access, <b>10&amp;</b> is the number of array elements and <b>4&amp;</b>
+         the size of <u>one single</u> array element (here LONG)
+          &#39;so in fact we created an array of 10 [0-9] LONG elements, defined
+           as QB64 array you would write it DIM as_Array(9) AS LONG
+
+    DefULONG     as_WhatEver&amp;
+      &#39;another ULONG entry
+
+    DefLABEL     ArrStruct_SizeOf&amp;
+      &#39;finish the actual structure
+
+To access the array elements with the appropriate <b>PokeXX</b> and <b>PeekXX</b> routines
+(see <b>memory.bm</b>), I recommend adding the array&#39;s base offset to the structure
+address and using the element number multiplied with the element size as offset.
+For example, print all elements of the array defined above in a FOR..NEXT loop:
+
+    &#39;assuming the structure address in <b>ptr&amp;</b>
+    FOR i&amp; = 0 TO 9
+        PRINT PeekL&amp;((ptr&amp; + <b>as_Array&amp;</b>), (i&amp; * <b>4&amp;</b>))
+    NEXT i&amp;
+
+However, you can of course find another way, as the <i>addr&amp;</i> and <i>offs&amp;</i> arguments
+of the <b>PokeXX</b> and <b>PeekXX</b> routines are generally interchangable.
+
+                                                     <a href="types-index.html">Back to Types Overview</a>
+</pre>
+</body>
+</html>

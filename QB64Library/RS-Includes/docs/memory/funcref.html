@@ -1,0 +1,70 @@
+<html>
+<head>
+<title>General Purpose Memory / Function Reference</title>
+</head>
+<body>
+<pre style="font-size:20px">
+The following table gives a brief description of the GP Memory functions.
+Follow the links for details about each call.
+   _________________________________________________________________________
+  |                                                                         |
+  |          Function   Description                                         |
+  |=========================================================================|
+  |         <a href="initmem.html">InitGPMem</a> - Initialize the GP Memory system for use.            |
+  |         <a href="dumpmem.html">DumpGPMem</a> - Create a text file mirroring the GP Memory region.  |
+  |       <a href="availmem.html">AvailGPMem&amp;</a> - Return the amount of free memory, given certain     |
+  |                     conditions.                                         |
+  |-------------------------------------------------------------------------|
+  |       <a href="allocmem.html">AllocGPMem&amp;</a> - Allocate memory with specified attributes.  If an   |
+  |                     application needs to allocate some memory, it will  |
+  |                     usually use this function.                          |
+  |      <a href="allocvec.html">AllocGPMVec&amp;</a> - Allocate memory with specified attributes and keep  |
+  |                     track of the size.                                  |
+  |         <a href="freemem.html">FreeGPMem</a> - Free a memory block of specified size, allocated    |
+  |                     with <b>AllocGPMem&amp;</b>.                                   |
+  |        <a href="freevec.html">FreeGPMVec</a> - Free a memory block allocated with <b>AllocGPMVec&amp;</b>.    |
+  |-------------------------------------------------------------------------|
+  |  <a href="createstr.html">CreateGPMString&amp;</a> - Create a zero terminated string in GP Memory.       |
+  |  <a href="disposestr.html">DisposeGPMString</a> - Dispose a string created with <b>CreateGPMString&amp;</b>.     |
+  |     <a href="alignsize.html">AlignGPMSize&amp;</a> - Align any size to a multiple of the minimum block   |
+  |                     size, this function is mainly for internal use.     |
+  |         <a href="fillmem.html">FillGPMem</a> - Fill a memory block with specified byte value, the  |
+  |                     block can be non-aligned and of arbitrary length.   |
+  |     <a href="comparemem.html">CompareGPMem&amp;</a> - Compare two memory blocks, which both can be non-   |
+  |                     aligned and of arbitrary length.                    |
+  |         <a href="copymem.html">CopyGPMem</a> - Copy a memory block, source and destination can be  |
+  |                     non-aligned and of arbitrary length.                |
+  |           <a href="savebin.html">SaveBin</a> - Write a memory block into a file, the block can be  |
+  |                     non-aligned and of arbitrary length.                |
+  |          <a href="loadbin.html">LoadBin&amp;</a> - Load a file into a new allocated memory block.      |
+  |-------------------------------------------------------------------------|
+  |             <a href="pokexx.html">PokeB</a> - Write a byte value (8 bits) to memory.              |
+  |           <a href="peekxx.html">PeekB%%</a> - Read a byte value (8 bits) from memory.             |
+  |             <a href="pokexx.html">PokeW</a> - Write a word value (16 bits) to memory.             |
+  |            <a href="peekxx.html">PeekW%</a> - Read a word value (16 bits) from memory.            |
+  |             <a href="pokexx.html">PokeL</a> - Write a long value (32 bits) to memory.             |
+  |            <a href="peekxx.html">PeekL&amp;</a> - Read a long value (32 bits) from memory.            |
+  |            <a href="pokexx.html">PokeLL</a> - Write a long long value (64 bits) to memory.        |
+  |          <a href="peekxx.html">PeekLL&amp;&amp;</a> - Read a long long value (64 bits) from memory.       |
+  |- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -|
+  |             <a href="pokexx.html">PokeS</a> - Write a single precision floating point value       |
+  |                     (32 bits) to memory.                                |
+  |            <a href="peekxx.html">PeekS!</a> - Read a single precision floating point value        |
+  |                     (32 bits) from memory.                              |
+  |             <a href="pokexx.html">PokeD</a> - Write a double precision floating point value       |
+  |                     (64 bits) to memory.                                |
+  |            <a href="peekxx.html">PeekD#</a> - Read a double precision floating point value        |
+  |                     (64 bits) from memory.                              |
+  |- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -|
+  |           <a href="pokexx.html">PokeSTR</a> - Write a string to memory and add zero termination.  |
+  |          <a href="peekxx.html">PeekSTR$</a> - Read a string from memory until zero termination    |
+  |                     is found.                                           |
+  |_________________________________________________________________________|
+
+                         Table 1: GP Memory Functions
+
+                                                       <a href="memory-index.html">Back to GPM Overview</a>
+                                                       <a href="../RSI-Docs.html">Back to RSI-Docs</a>
+</pre>
+</body>
+</html>

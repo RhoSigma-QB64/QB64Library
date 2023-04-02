@@ -1,0 +1,73 @@
+<html>
+<head>
+<title>List handling Functions / Searching by Name</title>
+</head>
+<body>
+<pre style="font-size:20px">
+Because many lists contain nodes with symbolic names attached (via the
+<b>ln_Name&amp;</b> field), it is possible to find a node by its name. The
+FUNCTION <b>FindName&amp;</b> searches a list for the first node with a given name.
+For example, &quot;<i>node&amp;</i> = <b>FindName&amp;</b>(<i>list&amp;</i>, <i>0&amp;</i>, <i>&quot;sample.node&quot;</i>, <i>lstF_TextArg&amp;</i>)&quot;
+returns a pointer to the first node named <i>&quot;sample.node&quot;</i>.  If no such node
+exists, a zero result is returned.  The case of the name characters is
+significant: &quot;foo&quot; is different from &quot;Foo&quot;, unless you specify the
+<b>lstF_NoCase&amp;</b> flag.
+  ________________________________________________________________________
+ |   ____________       ___________       ___________       ___________   |
+ |  |            |____\|           |____\|           |____\|           |__|
+ |  |  lh_Head&amp;  |/_  /| ln_Succ&amp;  |/_  /| ln_Succ&amp;  |/_  /| ln_Succ&amp;  |/_
+ |  |____________|\ \  |___________|\ \  |___________|\ \  |___________|\ |
+ |_\|            |   \ |           |   \ |           |   \ |           |  |
+   /| lh_Tail&amp;=0 |    \| ln_Pred&amp;  |    \| ln_Pred&amp;  |    \| ln_Pred&amp;  |  |
+    |____________|     |___________|     |___________|     |___________|  |
+    |            |     |           |     |           |     |           |  |
+    |lh_TailPred&amp;|__   | ln_Type&amp;  |     | ln_Type&amp;  |     | ln_Type&amp;  |  |
+    |____________|  |  |___________|     |___________|     |___________|  |
+    |            |  |  |           |     |           |     |           |  |
+    |  lh_Type&amp;  |  |  | ln_Pri&amp;   |     | ln_Pri&amp;   |     | ln_Pri&amp;   |  |
+    |____________|  |  |___________|     |___________|     |___________|  |
+    |            |  |  |           |     |           |     |           |  |
+    |  lh_Pad&amp;   |  |  | ln_Name&amp;  |     | ln_Name&amp;  |     | ln_Name&amp;  |  |
+    |____________|  |  |_ _ _ _ _ _|     |_ _ _ _ _ _|     |_ _ _ _ _ _|  |
+                    |  |           |     |           |     |           |  |
+                    |  |   Node    |     |   Node    |     |   Node    |  |
+                    |  |  Content  |     |  Content  |     |  Content  |  |
+                    |  |_ _ _ _ _ _|     |_ _ _ _ _ _|     |_ _ _ _ _ _|  |
+                    |_____________________________________________________|
+
+      Figure 4: Complete Sample List Showing all Interconnections
+
+To find multiple occurrences of nodes with identical names, the FUNCTION
+<b>FindName&amp;</b> is called multiple times.  For example, if you want to find all
+the nodes with a particular name (given as text$):
+
+    SUB DisplayName(list&amp;, text$)
+      node&amp; = FindName&amp;(list&amp;, 0&amp;, text$, lstF_TextArg&amp;)
+      IF node&amp; &lt;&gt; 0 THEN
+        WHILE node&amp; &lt;&gt; 0
+          PRINT &quot;Found node &quot;; CHR$(34);
+          PRINT PeekSTR$(PeekL&amp;(node&amp;, ln_Name&amp;), 0&amp;); &#39;read out mstr&amp; pointer
+          PRINT CHR$(34); &quot; at address &amp;h&quot;; HEX$(node&amp;); &quot;.&quot;
+          node&amp; = FindName&amp;(node&amp;, 0&amp;, text$, lstF_TextArg&amp;)
+        WEND
+      ELSE
+        PRINT &quot;No node with name &quot;; CHR$(34); text$; CHR$(34); &quot; found.&quot;
+      END IF
+    END SUB
+
+Notice that the second search uses the <i>node&amp;</i> found by the first search.
+<b>FindName&amp;</b> never compares the specified name with that of the starting node.
+It always begins the search with the successor of the starting point, hence
+if the starting point is the head of a list, then the first real data node
+is actually the first node checked, and not the head placeholder node in the
+(<b>Min</b>)<b>ListHeader&amp;</b> structure which does not even have a name.  This behavior
+allows for the search loop shown above.  If the starting node itself would
+be checked, then <b>FindName&amp;</b> would immediately find the same node again, but
+because the search starts with the successor of the starting node, it will
+begin with the node <u>after</u> the last found node and will continue until the
+next node with the given name is found or the list&#39;s end is reached.
+
+                                                     <a href="funcs.html">Back to List Functions</a>
+</pre>
+</body>
+</html>

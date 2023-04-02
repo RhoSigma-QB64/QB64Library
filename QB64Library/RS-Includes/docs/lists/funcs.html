@@ -1,0 +1,47 @@
+<html>
+<head>
+<title>Lists and Queues / List handling Functions</title>
+</head>
+<body>
+<pre style="font-size:20px">
+The include file <b>lists.bm</b> provides a number of symmetric functions for
+handling lists.  There are functions for initializing lists, for inserting
+and removing nodes, for adding and removing head and tail nodes, for
+inserting nodes in a priority order, for searching for nodes by name, for
+checking list emptiness, and for scanning lists.
+
+   List handling Functions
+   -----------------------
+   SUB NewList (list&amp;)
+   SUB Insert (list&amp;, node&amp;, pred&amp;) &#39;pred&amp; represents a node&amp; here too
+   SUB Remove (node&amp;)
+   SUB AddHead (list&amp;, node&amp;)
+   SUB AddTail (list&amp;, node&amp;)
+   FUNCTION RemHead&amp; (list&amp;)
+   FUNCTION RemTail&amp; (list&amp;)
+   SUB Enqueue (list&amp;, node&amp;)
+   FUNCTION FindName&amp; (list&amp;, mstr&amp;, text$, flags&amp;) &#39;list&amp; may also be a node&amp;
+   FUNCTION IsListEmpty&amp; (list&amp;)
+   FUNCTION GetHead&amp; (list&amp;)
+   FUNCTION GetTail&amp; (list&amp;)
+   FUNCTION GetSucc&amp; (node&amp;) &#39;node&amp; may also be a list&amp;
+   FUNCTION GetPred&amp; (node&amp;) &#39;node&amp; may also be a list&amp;
+
+In this discussion of the list handling functions, <b>list&amp;</b> represents a
+pointer to a (<b>Min</b>)<b>ListHeader&amp;</b> structure, and <b>node&amp;</b> represents a pointer
+to a (<b>Min</b>)<b>ListNode&amp;</b> structure, which is usually the carrier structure
+for the node&#39;s content.
+
+ <a href="newlh.html">Initializing new Lists</a>
+ <a href="insrem.html">Insertion and Removal</a>
+ <a href="scins.html">Special Case Insertion</a>
+ <a href="screm.html">Special Case Removal</a>
+ <a href="priins.html">Prioritized Insertion</a>
+ <a href="byname.html">Searching by Name</a>
+ <a href="isempty.html">Empty Lists</a>
+ <a href="scan.html">Scanning a List</a>
+
+                                                      <a href="lists-index.html">Back to List Overview</a>
+</pre>
+</body>
+</html>

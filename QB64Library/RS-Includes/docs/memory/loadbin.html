@@ -1,0 +1,37 @@
+<html>
+<head>
+<title>Function Reference / LoadBin&amp;</title>
+</head>
+<body>
+<pre style="font-size:20px">
+
+DEFINITION - FUNCTION
+    <i>addr&amp;</i> = <b>LoadBin&amp;</b>(<i>file$</i>) -- Load a file into GP memory
+
+OPERATION
+    <b>LoadBin&amp;</b> is a simple file loader function.  Each call to this function
+    will allocate a new memory block large enough to hold the entire contents of
+    the given file using the FUNCTION <b>AllocGPMVec&amp;</b>.  The result will be either
+    the pointer to the new memory block or zero, if the file was to large.
+
+ARGUMENTS
+    <i>file$</i> -- the name of the file, if required inlusive a full path
+
+RESULT
+    <i>addr&amp;</i> -- a pointer to the newly allocated memory block, which contains
+             the loaded file contents.  If there are no free memory regions
+             large enough for the file contents, zero will be returned.
+
+NOTES
+    1.) The result of any file load <u>must</u> be checked, and a viable error handling
+        path taken.  <u>Any</u> load may fail if memory has been filled.
+    2.) If you are done with the loaded file contents, then you can free
+        the used memory by passing the returned address to the SUB <b>FreeGPMVec</b>.
+
+SEE ALSO
+    <a href="supp.html">Support Functions</a>
+
+                                                 <a href="funcref.html">Back to Function Reference</a>
+</pre>
+</body>
+</html>

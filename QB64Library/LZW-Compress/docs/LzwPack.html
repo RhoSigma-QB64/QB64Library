@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>LzwPack</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<style type="text/css">
+/* This file is deliberately empty. */
+</style>
+<link rel="stylesheet" type="text/css" href="styles.css">
+</head>
+<body>
+<p><em><a href="_Lzwpacker_Contents.html">back to Table of Contents</a></em></p>
+<hr />
+<h2>LzwPack$ <em>(function)</em></h2>
+<p>Perform LZW compression on the given source data and return the packed
+data on success. The source can be any sequence of bytes inclusive zeros
+and control chars.</p>
+<hr />
+<blockquote>
+<blockquote>
+<blockquote>
+<blockquote>
+<blockquote>
+<p><strong><em>SYNTAX:</em></strong></p>
+</blockquote>
+</blockquote>
+</blockquote>
+</blockquote>
+<pre><code>packed$ = LzwPack$ (SourceData$, MinRatio%)
+</code></pre>
+
+</blockquote>
+<hr />
+<blockquote>
+<blockquote>
+<blockquote>
+<blockquote>
+<blockquote>
+<p><strong><em>INPUTS:</em></strong></p>
+</blockquote>
+</blockquote>
+</blockquote>
+</blockquote>
+<h4>SourceData$ <em>(STRING)</em></h4>
+<ul>
+<li>The data you want to compress. Note that very small data sizes may
+not compress very well and may cause this function to fail.</li>
+</ul>
+<h4>MinRatio% <em>(INTEGER)</em></h4>
+<ul>
+<li>Your desired minimum compression ratio, ie. how many percent the
+source data should be reduced at least, to consider it a successful
+run. Can be set to zero, then just one byte less than the source's
+size is considered a success. However, regular values should be 5-50%.</li>
+</ul>
+</blockquote>
+<hr />
+<blockquote>
+<blockquote>
+<blockquote>
+<blockquote>
+<blockquote>
+<p><strong><em>RESULT:</em></strong></p>
+</blockquote>
+</blockquote>
+</blockquote>
+</blockquote>
+<h4>packed$ <em>(STRING)</em></h4>
+<ul>
+<li>The LZW compressed data on success or an empty string, if packing
+did not reach your desired minimum ratio.</li>
+</ul>
+</blockquote>
+<hr />
+<p><em><a href="_Lzwpacker_Contents.html">back to Table of Contents</a></em></p>
+
+</body>
+</html>
+<!-- This document was created with MarkdownPad, the Markdown editor for Windows (http://markdownpad.com) -->

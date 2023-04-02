@@ -1,0 +1,66 @@
+<html>
+<head>
+<title>Function Reference / FindName&amp;</title>
+</head>
+<body>
+<pre style="font-size:20px">
+
+DEFINITION - FUNCTION
+    <i>node&amp;</i> = <b>FindName&amp;</b>(<i>list&amp;</i>, <i>mstr&amp;</i>, <i>text$</i>, <i>flags&amp;</i>)
+                                -- find a <b>ListNode&amp;</b> with a given name
+
+OPERATION
+    Traverse a list until a <b>ListNode&amp;</b> with the given name is found.
+    To find multiple occurrences of a name, this function may be called
+    with a node starting point.
+
+ARGUMENTS
+    <i>list&amp;</i>  -- pointer to a (<b>Min</b>)<b>ListHeader&amp;</b> or a <b>ListNode&amp;</b> to start the
+              search (if node, then the given one is skipped)
+    <i>mstr&amp;</i>  -- pointer to a zero terminated name string (as returned
+              by <b>CreateGPMString&amp;</b> from the <b>memory.bm</b> include file)
+    <i>text$</i>  -- or a regular QB64 string containing the name (<u>without</u> the
+              zero termination)
+    <i>flags&amp;</i> -- a bit field with any special characteristics (see below)
+
+RESULT
+    <i>node&amp;</i>  -- pointer to the first <b>ListNode&amp;</b> with the same name as given
+              by either <i>mstr&amp;</i> or <i>text$</i>, else zero to indicate that no
+              node with the given name was found
+
+NOTES
+    1.) The starting point for the search (the <i>list&amp;</i> argument) may also
+        be any <i>node&amp;</i> within that list.
+    2.) The arguments <i>mstr&amp;</i> and <i>text$</i> are mutually exclusive, you may
+        choose the one which fits best for you from case to case.
+        You must tell the function exclusively to use the QB64 <i>text$</i> by
+        specifying the <i>flags&amp;</i> value <b>lstF_TextArg&amp;</b> defined in <b>lists.bi</b>,
+        to use <i>mstr&amp;</i> simply omit the flag.
+
+FLAGS
+    The <i>flags&amp;</i> defined in the include file <b>lists.bi</b> are bit-coded values,
+    hence they can easily combined by ORing or adding them:
+
+    <b>lstF_TextArg&amp;</b> -- as already mentioned in NOTES 2.), this flag must be
+                     set to force the use of <i>text$</i> rather than <i>mstr&amp;</i> to
+                     specify the node name to search
+    <b>lstF_NoCase&amp;</b>  -- set this flag to force case-insensitive comparing of
+                     the node names with the given search name
+
+    The next three flags are mutually exclusive, they all do cause the
+    function to check for a partial name rather than the entire name:
+
+    <b>lstF_Left&amp;</b>    -- the given name must match to the left side of the
+                     node names (eg. a prefix)
+    <b>lstF_Mid&amp;</b>     -- the given name must appear in any position within
+                     the node names
+    <b>lstF_Right&amp;</b>   -- the given name must match to the right side of the
+                     node names (eg. a sufix / file extension)
+
+SEE ALSO
+    <a href="byname.html">Searching by Name</a>
+
+                                                 <a href="funcref.html">Back to Function Reference</a>
+</pre>
+</body>
+</html>

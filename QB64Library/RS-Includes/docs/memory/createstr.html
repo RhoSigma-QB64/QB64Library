@@ -1,0 +1,38 @@
+<html>
+<head>
+<title>Function Reference / CreateGPMString&amp;</title>
+</head>
+<body>
+<pre style="font-size:20px">
+
+DEFINITION - FUNCTION
+    <i>mstr&amp;</i> = <b>CreateGPMString&amp;</b>(<i>text$</i>)
+                           -- create a zero terminated string in GP Memory
+
+OPERATION
+    This function will allocate the required memory (inclusive the zero
+    termination byte), then copying the given string to the reserved memory
+    and finally write the termination byte.  As the memory allocation may
+    fail, this routine may return a zero result.
+
+ARGUMENTS
+    <i>text$</i> -- the string to create in GP memory, it will be copied, so you
+             can re-use a given string variable after the call
+
+RESULT
+    <i>mstr&amp;</i> -- a pointer to the newly created and zero terminated string in
+             the GP memory region.  If there is not enough space remaining,
+             return zero
+
+NOTES
+    The result of any string creation <u>must</u> be checked, and a viable error
+    handling path taken.  <u>Any</u> string creation may fail if memory has been
+    filled.
+
+SEE ALSO
+    <a href="supp.html">Support Functions</a>
+
+                                                 <a href="funcref.html">Back to Function Reference</a>
+</pre>
+</body>
+</html>

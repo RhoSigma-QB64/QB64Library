@@ -1,0 +1,295 @@
+'+---------------+---------------------------------------------------+
+'| ###### ###### |     .--. .         .-.                            |
+'| ##  ## ##   # |     |   )|        (   ) o                         |
+'| ##  ##  ##    |     |--' |--. .-.  `-.  .  .-...--.--. .-.        |
+'| ######   ##   |     |  \ |  |(   )(   ) | (   ||  |  |(   )       |
+'| ##      ##    |     '   `'  `-`-'  `-'-' `-`-`|'  '  `-`-'`-      |
+'| ##     ##   # |                            ._.'                   |
+'| ##     ###### |  Sources & Documents placed in the Public Domain. |
+'+---------------+---------------------------------------------------+
+'|                                                                   |
+'| === lists.bm ===                                                  |
+'|                                                                   |
+'| == The SUBs and FUNCTIONs used to implement doubly linked lists.  |
+'|                                                                   |
+'+-------------------------------------------------------------------+
+'| Done by RhoSigma, R.Heyder, provided AS IS, use at your own risk. |
+'| Find me in the QB64 Forum or mail to support@rhosigma-cw.net for  |
+'| any questions or suggestions. Thanx for your interest in my work. |
+'+-------------------------------------------------------------------+
+
+'====================
+'=== Dependencies ===
+'====================
+'=== If you wanna use this library in your project, then you must also
+'=== include the following other libaries into your project:
+'===    - RS-Includes\types  (.bi/.bm)
+'===    - RS-Includes\memory (.bi/.bm)
+'=====================================================================
+
+'=========================
+'=== List manipulation ===
+'=========================
+'=== The following routines do provide the interface for general list
+'=== manipulation, this includes the required init procedure and also
+'=== functions to add and remove nodes to/from a list. (see RSI-Docs)
+
+'--- Initialize a (Min)ListHeader& for use,
+'--- this SUB does the required magic to properly init a new list.
+'---------------------------------------------------------------------
+SUB NewList (lst&)
+'--- check ---
+IF lst& <= 0 THEN ERROR 97 'invalid list pointer
+'--- init ---
+PokeL lst&, lh_Head&, (lst& + lh_Tail&)
+PokeL lst&, lh_Tail&, 0&
+PokeL lst&, lh_TailPred&, (lst& + lh_Head&)
+END SUB
+
+'--- Insert a (Min)ListNode& into any list,
+'--- this SUB is used to insert a new node into any position.
+'---------------------------------------------------------------------
+SUB Insert (lst&, node&, pred&)
+'--- variables ---
+DIM suc&
+'--- check ---
+IF lst& <= 0 THEN ERROR 97 'invalid list pointer
+IF node& <= 0 THEN ERROR 97 'invalid node pointer
+IF pred& < 0 THEN ERROR 97 'invalid pred node pointer
+'--- insert ---
+IF (pred& = 0) OR (pred& = (lst& + lh_Head&)) THEN
+    AddHead lst&, node&
+ELSEIF pred& = (lst& + lh_Tail&) THEN
+    AddTail lst&, node&
+ELSE
+    suc& = PeekL&(pred&, ln_Succ&)
+    PokeL pred&, ln_Succ&, node&
+    PokeL node&, ln_Succ&, suc&
+    PokeL node&, ln_Pred&, pred&
+    PokeL suc&, ln_Pred&, node&
+END IF
+END SUB
+
+'--- Remove a (Min)ListNode& from any list,
+'--- use this SUB to remove a node from whatever list it is in.
+'---------------------------------------------------------------------
+SUB Remove (node&)
+'--- variables ---
+DIM suc&, pre&
+'--- check ---
+IF node& <= 0 THEN ERROR 97 'invalid node pointer
+'--- remove ---
+suc& = PeekL&(node&, ln_Succ&)
+pre& = PeekL&(node&, ln_Pred&)
+PokeL pre&, ln_Succ&, suc&
+PokeL suc&, ln_Pred&, pre&
+END SUB
+
+'--- Insert a (Min)ListNode& at head of list,
+'--- this one will insert a new node in the first (head) position.
+'---------------------------------------------------------------------
+SUB AddHead (lst&, node&)
+'--- variables ---
+DIM suc&
+'--- check ---
+IF lst& <= 0 THEN ERROR 97 'invalid list pointer
+IF node& <= 0 THEN ERROR 97 'invalid node pointer
+'--- add at head ---
+suc& = PeekL&(lst&, lh_Head&)
+PokeL lst&, lh_Head&, node&
+PokeL node&, ln_Succ&, suc&
+PokeL node&, ln_Pred&, lst&
+PokeL suc&, ln_Pred&, node&
+END SUB
+
+'--- Insert a (Min)ListNode& at tail of list,
+'--- use it to insert a new node in the last (tail) position.
+'---------------------------------------------------------------------
+SUB AddTail (lst&, node&)
+'--- variables ---
+DIM pre&
+'--- check ---
+IF lst& <= 0 THEN ERROR 97 'invalid list pointer
+IF node& <= 0 THEN ERROR 97 'invalid node pointer
+'--- add at tail ---
+pre& = PeekL&(lst&, lh_TailPred&)
+PokeL lst&, lh_TailPred&, node&
+PokeL node&, ln_Succ&, (lst& + lh_Tail&)
+PokeL node&, ln_Pred&, pre&
+PokeL pre&, ln_Succ&, node&
+END SUB
+
+'--- Remove a (Min)ListNode& from head of list,
+'--- this FUNCTION does remove the first (head) node, if any, and
+'--- will return a pointer to it.
+'---------------------------------------------------------------------
+FUNCTION RemHead& (lst&)
+'--- variables ---
+DIM res&
+'--- remove from head ---
+res& = GetHead&(lst&)
+IF res& <> 0 THEN Remove res&
+'--- result ---
+RemHead& = res&
+END FUNCTION
+
+'--- Remove a (Min)ListNode& from tail of list,
+'--- this FUNCTION does remove the last (tail) node, if any, and
+'--- will return a pointer to it.
+'---------------------------------------------------------------------
+FUNCTION RemTail& (lst&)
+'--- variables ---
+DIM res&
+'--- remove from tail ---
+res& = GetTail&(lst&)
+IF res& <> 0 THEN Remove res&
+'--- result ---
+RemTail& = res&
+END FUNCTION
+
+'--- Insert a ListNode& by priority,
+'--- this SUB is used to insert a new node in the right position,
+'--- according to its priority.
+'---------------------------------------------------------------------
+SUB Enqueue (lst&, node&)
+'--- variables ---
+DIM ln&
+'--- check ---
+IF node& <= 0 THEN ERROR 97 'invalid node pointer
+'--- insert prioritized ---
+ln& = GetHead&(lst&)
+IF ln& = 0 THEN
+    AddHead lst&, node&
+ELSE
+    WHILE PeekL&(ln&, ln_Succ&) <> 0
+        IF PeekB%%(ln&, ln_Pri&) < PeekB%%(node&, ln_Pri&) THEN EXIT WHILE
+        ln& = PeekL&(ln&, ln_Succ&)
+    WEND
+    Insert lst&, node&, GetPred&(ln&)
+END IF
+END SUB
+
+'=======================
+'=== List operations ===
+'=======================
+'=== Here you find functions, which operate on any existing list. You
+'=== find functions to easily traverse a list in both directions or to
+'=== search the list for specific nodes. (see also RSI-Docs)
+
+'--- Find a ListNode& by its name (or part of it),
+'--- this FUNCTION will traverse any list until a node with a given name
+'--- is found. If any, then the pointer to the found node is returned.
+'---------------------------------------------------------------------
+FUNCTION FindName& (lst&, mstr&, text$, flags&)
+'--- variables ---
+DIM chk$, ln&, np&, nam$
+'--- check ---
+IF lst& <= 0 THEN ERROR 97 'invalid list pointer
+'--- init ---
+IF (flags& AND lstF_TextArg&) = 0 THEN
+    chk$ = PeekSTR$(mstr&, 0&)
+ELSE
+    chk$ = text$
+END IF
+IF (flags& AND lstF_NoCase&) <> 0 THEN chk$ = UCASE$(chk$)
+'--- search ---
+ln& = GetSucc&(lst&)
+WHILE ln& <> 0
+    np& = PeekL&(ln&, ln_Name&)
+    IF np& <> 0 THEN
+        nam$ = PeekSTR$(np&, 0&)
+        IF (flags& AND lstF_NoCase&) <> 0 THEN nam$ = UCASE$(nam$)
+        IF nam$ = "" THEN
+            IF chk$ = "" THEN EXIT WHILE
+        ELSE
+            IF LEN(nam$) >= LEN(chk$) AND chk$ <> "" THEN
+                IF (flags& AND lstF_Left&) <> 0 THEN
+                    IF LEFT$(nam$, LEN(chk$)) = chk$ THEN EXIT WHILE
+                ELSEIF (flags& AND lstF_Mid&) <> 0 THEN
+                    IF INSTR(nam$, chk$) <> 0 THEN EXIT WHILE
+                ELSEIF (flags& AND lstF_Right&) <> 0 THEN
+                    IF RIGHT$(nam$, LEN(chk$)) = chk$ THEN EXIT WHILE
+                ELSE
+                    IF nam$ = chk$ THEN EXIT WHILE
+                END IF
+            END IF
+        END IF
+    END IF
+    ln& = GetSucc&(ln&)
+WEND
+'--- result ---
+FindName& = ln&
+END FUNCTION
+
+'--- Check for list emptiness,
+'--- this FUNCTION does return a false/true condition indicating
+'--- whether the list contains any data nodes or not.
+'---------------------------------------------------------------------
+FUNCTION IsListEmpty& (lst&)
+'--- check ---
+IF lst& <= 0 THEN ERROR 97 'invalid list pointer
+'--- is empty result ---
+IF PeekL&(lst&, lh_TailPred&) = lst& THEN
+    IsListEmpty& = -1
+ELSE
+    IsListEmpty& = 0
+END IF
+END FUNCTION
+
+'--- Get the first (Min)ListNode& in list,
+'--- this routine does return a pointer to the head (first) node in any
+'--- list, if any. Use it to get the start node for a forward list scan.
+'---------------------------------------------------------------------
+FUNCTION GetHead& (lst&)
+'--- head result ---
+IF IsListEmpty&(lst&) THEN
+    GetHead& = 0
+ELSE
+    GetHead& = PeekL&(lst&, lh_Head&)
+END IF
+END FUNCTION
+
+'--- Get the last (Min)ListNode& in list,
+'--- this FUNCTION returns a pointer to the tail (last) node in any list,
+'--- if any. Use it to get the start node for a backward list scan.
+'---------------------------------------------------------------------
+FUNCTION GetTail& (lst&)
+'--- tail result ---
+IF IsListEmpty&(lst&) THEN
+    GetTail& = 0
+ELSE
+    GetTail& = PeekL&(lst&, lh_TailPred&)
+END IF
+END FUNCTION
+
+'--- Get the (Min)ListNode& its successor,
+'--- use this FUNCTION to get a pointer to the next node in list.
+'---------------------------------------------------------------------
+FUNCTION GetSucc& (node&)
+'--- variables ---
+DIM res&
+'--- check ---
+IF node& <= 0 THEN ERROR 97 'invalid node pointer
+'--- get succ ---
+res& = PeekL&(node&, ln_Succ&)
+IF PeekL&(res&, ln_Succ&) = 0 THEN res& = 0
+'--- result ---
+GetSucc& = res&
+END FUNCTION
+
+'--- Get the (Min)ListNode& its predecessor,
+'--- use this FUNCTION to get a pointer to the previous node in list.
+'---------------------------------------------------------------------
+FUNCTION GetPred& (node&)
+'--- variables ---
+DIM res&
+'--- check ---
+IF node& <= 0 THEN ERROR 97 'invalid node pointer
+'--- get pred ---
+res& = PeekL&(node&, ln_Pred&)
+IF res& = 0 THEN res& = PeekL&(node&, lh_TailPred&)
+IF PeekL&(res&, ln_Pred&) = 0 THEN res& = 0
+'--- result ---
+GetPred& = res&
+END FUNCTION
+

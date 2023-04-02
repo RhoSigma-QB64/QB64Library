@@ -1,0 +1,42 @@
+<html>
+<head>
+<title>Function Reference / InitGPMem</title>
+</head>
+<body>
+<pre style="font-size:20px">
+
+DEFINITION - SUB
+    <b>InitGPMem</b> <i>maxSize&amp;</i>, <i>flags&amp;</i> -- init the general purpose memory system
+
+OPERATION
+    This routine will setup the GPM system for use.  It will DIM the
+    required array and prepare the administrative structures to keep
+    track of the available memory.  You must call this <u>once</u> before any
+    other GP Memory functions can be used.
+
+ARGUMENTS
+    <i>maxSize&amp;</i> -- the maximum size (in bytes) which you wanna allow the GP
+                memory region to grow  (The GPM system will automatically
+                round this number to a multiple of the minimum supported
+                memory block size)
+    <i>flags&amp;</i>   -- a bit field with any special characteristics (see below)
+
+NOTES
+    If any invalid <i>maxSize&amp;</i> was given (ie. less/equal zero), then this
+    routine will fallback to the default size of 512KiB (524288&amp; bytes).
+
+FLAGS
+    The <i>flags&amp;</i> defined in the include file <b>memory.bi</b> are bit-coded values,
+    hence they can easily combined by ORing or adding them:
+
+    <b>gpmF_MarkFree&amp;</b> -- If given, then all free LONGs in the new initialized
+                      GP Memory region will be filled with the word &quot;free&quot;.
+                      This is for better overview in a memory dump.
+
+SEE ALSO
+    <a href="init.html">Initializing GP Memory</a>
+
+                                                 <a href="funcref.html">Back to Function Reference</a>
+</pre>
+</body>
+</html>

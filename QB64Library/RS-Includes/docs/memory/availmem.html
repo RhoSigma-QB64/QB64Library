@@ -1,0 +1,49 @@
+<html>
+<head>
+<title>Function Reference / AvailGPMem&amp;</title>
+</head>
+<body>
+<pre style="font-size:20px">
+
+DEFINITION - FUNCTION
+    <i>size&amp;</i> = <b>AvailGPMem&amp;</b>(<i>flags&amp;</i>) -- memory available in the GPM system pool
+
+OPERATION
+    This function returns the amount of free memory according to the given
+    flags.  Returning the largest continuous block is a slow operation.
+
+ARGUMENTS
+    <i>flags&amp;</i> -- a bit field specifying the size to return (see below)
+
+RESULT
+    <i>size&amp;</i>  -- total free space remaining or the largest free block or the
+              overall size of the GPM system pool (see FLAGS below)
+
+NOTES
+    <b>AvailGPMem&amp;</b>(<i>gpmF_Largest&amp;</i>) does a consistency check on the memory list.
+    The GPM system will panic with an error if any mismatch is noted.
+
+FLAGS
+    The <i>flags&amp;</i> defined in the include file <b>memory.bi</b> are bit-coded values,
+    hence they can easily combined by ORing or adding them:
+
+    <b>gpmF_NoAdd&amp;</b>   -- Return the size according to the <u>current</u> GP Memory
+                     region, ignoring the amount which the GPM pool still
+                     could be extended until reaching the maximum given
+                     at init time.
+
+    The next two flags are mutually exclusive, without any of it this
+    function returns the total free space remaining:
+
+    <b>gpmF_Largest&amp;</b> -- Return size of the largest continuous free memory
+                     block, rather than total free size.
+    <b>gpmF_Total&amp;</b>   -- Don&#39;t return the free size, but the total size of the
+                     GP Memory region.
+
+SEE ALSO
+    <a href="avail.html">Query GP Memory</a>
+
+                                                 <a href="funcref.html">Back to Function Reference</a>
+</pre>
+</body>
+</html>
