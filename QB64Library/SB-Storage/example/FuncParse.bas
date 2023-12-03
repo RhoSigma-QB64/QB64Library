@@ -19,6 +19,8 @@
 '| any questions or suggestions. Thanx for your interest in my work. |
 '+-------------------------------------------------------------------+
 
+_TITLE "Simplebuffers usage example"
+
 '--- Make the required .bi includes,
 '--- always specify paths in the $INCLUDE statement assuming the
 '--- main QB64 installation folder as root.
@@ -132,6 +134,12 @@ DO
     END IF
 LOOP UNTIL subfuncStart& = 0
 RETURN
+
+'--- Function to define/return the program's version string.
+'-----
+FUNCTION VersionFuncParse$
+VersionFuncParse$ = MID$("$VER: FuncParse 1.0 (18-Oct-2022) by RhoSigma :END$", 7, 39)
+END FUNCTION
 
 '--- Make the required .bm includes,
 '--- always specify paths in the $INCLUDE statement assuming the

@@ -76,3 +76,9 @@ SELECT CASE outSize&
 END SELECT
 END FUNCTION
 
+'--- undocumented - for internal use only
+'---------------------------------------------------------------------
+FUNCTION VersionBase64$
+VersionBase64$ = MID$("$VER: base64.bm 1.2 (06-Feb-2022) by RhoSigma :END$", 7, 39)
+END FUNCTION
+

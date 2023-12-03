@@ -40,6 +40,8 @@ trcx% = CINT(trwi% / 2): trcy% = trcx%
 '-----
 scre& = _NEWIMAGE(widt%, heig%, 32)
 SCREEN scre&
+_DELAY 0.2
+_TITLE "Color Spin"
 
 '--- Make the colorwheel image.
 '-----
@@ -171,6 +173,12 @@ FOR cur% = sLow% TO sUpp%
     pre% = cur%
 NEXT cur%
 END SUB
+
+'--- Function to define/return the program's version string.
+'-----
+FUNCTION VersionColorSpin$
+VersionColorSpin$ = MID$("$VER: ColorSpin 1.0 (29-Jul-2016) by RhoSigma :END$", 7, 39)
+END FUNCTION
 
 '--- Make the required .bm includes,
 '--- always specify paths in the $INCLUDE statement assuming the

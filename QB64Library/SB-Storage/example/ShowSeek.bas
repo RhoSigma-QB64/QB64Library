@@ -19,6 +19,8 @@
 '| any questions or suggestions. Thanx for your interest in my work. |
 '+-------------------------------------------------------------------+
 
+_TITLE "Simplebuffers line seek behavior"
+
 '--- Make the required .bi includes,
 '--- always specify paths in the $INCLUDE statement assuming the
 '--- main QB64 installation folder as root.
@@ -122,6 +124,12 @@ NEXT i&
 DisposeBuf lBuf%
 DisposeBuf wBuf%
 END
+
+'--- Function to define/return the program's version string.
+'-----
+FUNCTION VersionShowSeek$
+VersionShowSeek$ = MID$("$VER: ShowSeek 1.0 (18-Oct-2022) by RhoSigma :END$", 7, 38)
+END FUNCTION
 
 '--- Make the required .bm includes,
 '--- always specify paths in the $INCLUDE statement assuming the

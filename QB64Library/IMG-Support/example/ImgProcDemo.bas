@@ -56,6 +56,8 @@ END IF
 '-----
 getChoice:
 _TITLE "Image processing Demo"
+COLOR 9: PRINT VersionImgProcDemo$: COLOR 7
+PRINT
 PRINT "How would you like this Demo to perform?": PRINT
 PRINT "  1 - process the entire image"
 PRINT "  2 - use a mask image to define the parts to process"
@@ -155,6 +157,12 @@ SCREEN nois&: SLEEP: _FREEIMAGE (bits&)
 '-----
 SCREEN 0: _FREEIMAGE (nois&)
 RETURN
+
+'--- Function to define/return the program's version string.
+'-----
+FUNCTION VersionImgProcDemo$
+VersionImgProcDemo$ = MID$("$VER: ImgProcDemo 1.0 (29-Jul-2016) by RhoSigma :END$", 7, 41)
+END FUNCTION
 
 '--- Make the required .bm includes,
 '--- always specify paths in the $INCLUDE statement assuming the

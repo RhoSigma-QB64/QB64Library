@@ -293,3 +293,9 @@ IF PeekL&(res&, ln_Pred&) = 0 THEN res& = 0
 GetPred& = res&
 END FUNCTION
 
+'--- undocumented - for internal use only
+'---------------------------------------------------------------------
+FUNCTION VersionLists$
+VersionLists$ = MID$("$VER: lists.bm 1.0 (09-Mar-2012) by RhoSigma :END$", 7, 38)
+END FUNCTION
+

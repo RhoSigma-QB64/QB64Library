@@ -19,6 +19,8 @@
 '| any questions or suggestions. Thanx for your interest in my work. |
 '+-------------------------------------------------------------------+
 
+_TITLE "Phonebook"
+
 '--- The required include files (the init stuff).
 '-----
 '$INCLUDE: 'QB64Library\RS-Includes\types.bi'
@@ -116,6 +118,8 @@ SYSTEM
 '-----
 headLine:
 CLS
+COLOR 9: PRINT VersionPhonebook$: COLOR 7
+PRINT
 PRINT "A simple example to show the usage of types/memory/lists include file routines."
 PRINT "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
 RETURN
@@ -405,6 +409,12 @@ LINE INPUT "Filename for memory dumpfile: "; df$
 DumpGPMem df$, gpmF_MarkFree&
 lastState$ = "memory dumpfile " + CHR$(34) + df$ + CHR$(34) + " written..."
 RETURN
+
+'--- Function to define/return the program's version string.
+'-----
+FUNCTION VersionPhonebook$
+VersionPhonebook$ = MID$("$VER: Phonebook 1.0 (09-Mar-2012) by RhoSigma :END$", 7, 39)
+END FUNCTION
 
 '--- The required include files (the SUBs and FUNCTIONs).
 '-----

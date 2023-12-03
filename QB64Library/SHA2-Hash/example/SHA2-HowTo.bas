@@ -33,6 +33,11 @@ ELSE
     root$ = "..\" 'compiled to source folder
 END IF
 
+'--- Set title and print the program's version string.
+'-----
+_TITLE "SHA2-HowTo Output"
+COLOR 9: PRINT VersionSha2HowTo$: COLOR 7
+
 '--- Read the file PD-Unlicense.txt from the SHA2-Hash\license folder into
 '--- a string and then pass it to the FUNCTION GetStringSHA2$().
 '-----
@@ -63,11 +68,11 @@ PRINT ":  "; GetStringSHA2$(a$)
 '--- Yet another try in a loop.
 '-----
 PRINT
-PRINT "continuously changing, press any key to stop..."
+PRINT "continuously changing, press any key to stop ..."
 WHILE INKEY$ = ""
     _LIMIT 5
     a$ = DATE$ + " " + TIME$
-    LOCATE 14, 1
+    LOCATE 15, 1
     PRINT "SHA2 Digest date/time "; CHR$(34); a$; CHR$(34)
     PRINT ":  "; GetStringSHA2$(a$)
 WEND
@@ -78,6 +83,12 @@ PRINT "to create a timed code lock like on a bank tresor :)"
 '--- Make your best guess what happens here.
 '-----
 END
+
+'--- Function to define/return the program's version string.
+'-----
+FUNCTION VersionSha2HowTo$
+VersionSha2HowTo$ = MID$("$VER: SHA2-HowTo 1.0 (15-Sep-2021) by RhoSigma :END$", 7, 40)
+END FUNCTION
 
 '--- Make the required .bm includes,
 '--- always specify paths in the $INCLUDE statement assuming the

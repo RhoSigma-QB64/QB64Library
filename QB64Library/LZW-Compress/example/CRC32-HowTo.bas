@@ -27,6 +27,11 @@ ELSE
     root$ = "..\" 'compiled to source folder
 END IF
 
+'--- Set title and print the program's version string.
+'-----
+_TITLE "CRC32-HowTo Output"
+COLOR 9: PRINT VersionCrc32HowTo$: COLOR 7
+
 '--- Read the file PD-Unlicense.txt from the LZW-Compress\license folder
 '--- into a string and then pass it to the FUNCTION GetCRC32&().
 '-----
@@ -50,7 +55,7 @@ PRINT ":  "; HEX$(GetCRC32&(a$))
 '--- Yet another try in a loop.
 '-----
 PRINT
-PRINT "continuously changing, press any key to stop..."
+PRINT "continuously changing, press any key to stop ..."
 WHILE INKEY$ = ""
     _LIMIT 5
     a$ = DATE$ + " " + TIME$
@@ -62,6 +67,12 @@ WEND
 '--- Make your best guess what happens here.
 '-----
 END
+
+'--- Function to define/return the program's version string.
+'-----
+FUNCTION VersionCrc32HowTo$
+VersionCrc32HowTo$ = MID$("$VER: CRC32-HowTo 1.0 (01-Mar-2019) by RhoSigma :END$", 7, 41)
+END FUNCTION
 
 '--- Make the required .bm includes,
 '--- always specify paths in the $INCLUDE statement assuming the

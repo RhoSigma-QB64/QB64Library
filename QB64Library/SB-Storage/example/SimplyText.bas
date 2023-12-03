@@ -34,6 +34,11 @@ ELSE
     root$ = "..\" 'compiled to source folder
 END IF
 
+'--- Set title and print the program's version string.
+'-----
+_TITLE "Simplebuffers usage example"
+COLOR 9: PRINT VersionSimplyText$: PRINT: COLOR 7
+
 '--- the usual file based read
 '-----
 COLOR 12: PRINT "reading lines from file (delayed 0.5 sec.) ...": PRINT: COLOR 7
@@ -49,6 +54,7 @@ CLS
 
 '--- now let's use a buffer
 '-----
+COLOR 9: PRINT VersionSimplyText$: PRINT: COLOR 7
 COLOR 12: PRINT "reading lines from buffer (delayed 0.5 sec.) ...": PRINT: COLOR 7
 bh% = FileToBuf%(root$ + "license\COPYING.txt")
 ConvBufToNativeEol bh%
@@ -59,6 +65,12 @@ WEND
 DisposeBuf bh%
 COLOR 12: PRINT: PRINT "end of buffer, press any key...": SLEEP: COLOR 7
 END
+
+'--- Function to define/return the program's version string.
+'-----
+FUNCTION VersionSimplyText$
+VersionSimplyText$ = MID$("$VER: SimplyText 1.0 (18-Oct-2022) by RhoSigma :END$", 7, 40)
+END FUNCTION
 
 '--- Make the required .bm includes,
 '--- always specify paths in the $INCLUDE statement assuming the

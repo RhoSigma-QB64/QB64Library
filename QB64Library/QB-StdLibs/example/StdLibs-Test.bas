@@ -30,6 +30,11 @@
 '$INCLUDE: 'QB64Library\QB-StdLibs\qbstdio.bi'
 '$INCLUDE: 'QB64Library\QB-StdLibs\qbtime.bi'
 
+'--- Set title and print the program's version string.
+'-----
+_TITLE "StdLibs-Test Output"
+COLOR 9: PRINT VersionStdlibsTest$: PRINT: COLOR 7
+
 '--- Make a couple argument tests.
 '-----
 InitArgs a$
@@ -47,12 +52,18 @@ FreeArgs a$
 
 '--- And here a time test.
 '-----
-PRINT StrFGivenTime$("This test was written at %X on %A %B %d %Y.\n", 2018, 8, 19, 18, 32, 8)
+PRINT StrFGivenTime$("This test was written at %X on %A %B %d %Y.\n", 2013, 3, 14, 18, 32, 8)
 
 '--- Make your best guess what happens here.
 '-----
 PRINT "done..."
 END
+
+'--- Function to define/return the program's version string.
+'-----
+FUNCTION VersionStdlibsTest$
+VersionStdlibsTest$ = MID$("$VER: StdLibs-Test 1.0 (14-Mar-2013) by RhoSigma :END$", 7, 42)
+END FUNCTION
 
 '--- Make the required .bm includes,
 '--- always specify paths in the $INCLUDE statement assuming the

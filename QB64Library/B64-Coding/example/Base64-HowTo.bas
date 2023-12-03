@@ -47,6 +47,11 @@ ELSE
     root$ = "..\" 'compiled to source folder
 END IF
 
+'--- Set title and print the program's version string.
+'-----
+_TITLE "Base64-HowTo Output"
+COLOR 9: PRINT VersionBase64HowTo$: COLOR 7
+
 '--- Read the file GPL-2.0.txt from the B64-Coding\license folder into
 '--- a string and then pass it to the FUNCTION Base64Encode$(). Write
 '--- the encoded text into GPL-2.0-base64.txt in the same folder. Then
@@ -88,6 +93,12 @@ PRINT Base64Encode$(a$, 0, 0, -1) 'use line mode
 '--- Make your best guess what happens here.
 '-----
 END
+
+'--- Function to define/return the program's version string.
+'-----
+FUNCTION VersionBase64HowTo$
+VersionBase64HowTo$ = MID$("$VER: Base64-HowTo 1.0 (06-Feb-2022) by RhoSigma :END$", 7, 42)
+END FUNCTION
 
 '--- Make the required .bm includes,
 '--- always specify paths in the $INCLUDE statement assuming the

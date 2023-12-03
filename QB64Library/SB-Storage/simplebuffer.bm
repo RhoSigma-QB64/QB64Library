@@ -982,3 +982,9 @@ FOR idx% = 1 TO 101
 NEXT idx%
 END SUB
 
+'--- undocumented - for internal use only
+'---------------------------------------------------------------------
+FUNCTION VersionSimplebuffer$
+VersionSimplebuffer$ = MID$("$VER: simplebuffer.bm 3.2 (18-Oct-2022) by RhoSigma :END$", 7, 45)
+END FUNCTION
+

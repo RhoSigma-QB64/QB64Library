@@ -23,6 +23,8 @@
 '--- Make a graphics screen.
 '-----
 SCREEN _NEWIMAGE(640, 480, 256)
+_DELAY 0.2
+_TITLE "Rotating polygon"
 
 '--- Set some variables.
 '-----
@@ -75,6 +77,12 @@ DATA 370,400
 DATA 320,360
 DATA 270,400
 DATA 290,340
+
+'--- Function to define/return the program's version string.
+'-----
+FUNCTION VersionRotatePolygon$
+VersionRotatePolygon$ = MID$("$VER: RotatePolygon 1.0 (29-Jul-2016) by RhoSigma :END$", 7, 43)
+END FUNCTION
 
 '--- Make the required .bm includes,
 '--- always specify paths in the $INCLUDE statement assuming the

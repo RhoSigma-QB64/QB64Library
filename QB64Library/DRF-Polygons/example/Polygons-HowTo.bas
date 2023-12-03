@@ -36,6 +36,8 @@
 '-----
 scr& = _NEWIMAGE(640, 480, 32)
 SCREEN scr&
+_DELAY 0.2
+_TITLE "Polygons-HowTo Output"
 
 '--- Define some colors.
 '--- Important: 32-bit colors must be unsigned long (~&).
@@ -136,6 +138,12 @@ SYSTEM
 '-----
 FUNCTION RangeRand% (low%, high%)
 RangeRand% = INT(RND(1) * (high% - low% + 1)) + low%
+END FUNCTION
+
+'--- Function to define/return the program's version string.
+'-----
+FUNCTION VersionPolygonsHowTo$
+VersionPolygonsHowTo$ = MID$("$VER: Polygons-HowTo 1.0 (14-Nov-2018) by RhoSigma :END$", 7, 44)
 END FUNCTION
 
 '--- Make the required .bm includes,

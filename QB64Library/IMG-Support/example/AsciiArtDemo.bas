@@ -21,6 +21,8 @@
 '| any questions or suggestions. Thanx for your interest in my work. |
 '+-------------------------------------------------------------------+
 
+_TITLE "Ascii Art Demo"
+
 '--- Set the program's work directory.
 '-----
 IF _FILEEXISTS("qb64.exe") OR _FILEEXISTS("qb64pe.exe") THEN
@@ -127,5 +129,11 @@ IF shan& < -1 THEN
     END IF
 END IF
 MakeAsciiArt$ = artStr$
+END FUNCTION
+
+'--- Function to define/return the program's version string.
+'-----
+FUNCTION VersionAsciiArtDemo$
+VersionAsciiArtDemo$ = MID$("$VER: AsciiArtDemo 1.0 (29-Jul-2016) by RhoSigma :END$", 7, 42)
 END FUNCTION
 

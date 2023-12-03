@@ -36,6 +36,11 @@ ELSE
     END IF
 END IF
 
+'--- Set title and print the program's version string.
+'-----
+_TITLE "LZW-HowTo Output"
+COLOR 9: PRINT VersionLzwHowTo$: COLOR 7
+
 '--- Get QB64 executable into a string.
 '-----
 PRINT: COLOR 10
@@ -99,6 +104,12 @@ CLOSE #1
 '--- Make your best guess what happens here.
 '-----
 END
+
+'--- Function to define/return the program's version string.
+'-----
+FUNCTION VersionLzwHowTo$
+VersionLzwHowTo$ = MID$("$VER: LZW-HowTo 1.0 (01-Mar-2019) by RhoSigma :END$", 7, 39)
+END FUNCTION
 
 '--- Make the required .bm includes,
 '--- always specify paths in the $INCLUDE statement assuming the

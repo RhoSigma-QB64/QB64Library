@@ -61,6 +61,12 @@
 '$INCLUDE: 'QB64Library\QB-StdLibs\qbstdio.bi'
 '$INCLUDE: 'QB64Library\QB-StdLibs\qbtime.bi'
 
+'--- Set title and print the program's version string.
+'-----
+WIDTH ,30
+_TITLE "StdLibs-HowTo Output"
+COLOR 9: PRINT VersionStdlibsHowTo$: PRINT: COLOR 7
+
 '--- Make a va_list and use it for formatted output, note the
 '--- use of \n and \t escape sequences in the format string.
 '-----
@@ -106,7 +112,7 @@ FreeArgs a$
 '--- format strings, you can use escape sequences here too.
 '-----
 PRINT StrFCurrentTime$("Today is \x22%a %b %d %X %Y\x22, it's day number %j of the year.")
-PRINT StrFGivenTime$("This example was written at %X on %A %B %d %Y.\n", 2018, 1, 23, 12, 56, 3)
+PRINT StrFGivenTime$("This example was written at %X on %A %B %d %Y.\n", 2013, 3, 14, 12, 56, 3)
 
 '--- Now finally you're familiar with the use of escape sequences and
 '--- you want it for regular strings too?, so here is a solution.
@@ -121,6 +127,12 @@ PRINT QB$("This is a \x22quoted\x22 section made the new easy way.\n")
 '-----
 PRINT "done..."
 END
+
+'--- Function to define/return the program's version string.
+'-----
+FUNCTION VersionStdlibsHowTo$
+VersionStdlibsHowTo$ = MID$("$VER: StdLibs-HowTo 1.0 (14-Mar-2013) by RhoSigma :END$", 7, 43)
+END FUNCTION
 
 '--- Make the required .bm includes,
 '--- always specify paths in the $INCLUDE statement assuming the

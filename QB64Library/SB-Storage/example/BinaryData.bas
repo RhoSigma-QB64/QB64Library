@@ -25,6 +25,8 @@
 '| any questions or suggestions. Thanx for your interest in my work. |
 '+-------------------------------------------------------------------+
 
+_TITLE "Simplebuffers binary data handling"
+
 '--- Make the required .bi includes,
 '--- always specify paths in the $INCLUDE statement assuming the
 '--- main QB64 installation folder as root.
@@ -178,6 +180,12 @@ ERASE b% 'destroy array
 PRINT: PRINT "You may also have a look in the created .dat files in the SB-Storage folder."
 PRINT "done... (you may then safely delete the .dat files)"
 END
+
+'--- Function to define/return the program's version string.
+'-----
+FUNCTION VersionBinaryData$
+VersionBinaryData$ = MID$("$VER: BinaryData 1.0 (18-Oct-2022) by RhoSigma :END$", 7, 40)
+END FUNCTION
 
 '--- Make the required .bm includes,
 '--- always specify paths in the $INCLUDE statement assuming the

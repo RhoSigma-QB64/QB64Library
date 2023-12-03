@@ -23,7 +23,7 @@
 '=== Instructions ===
 '====================
 '=== 1. Compile & Run this program as it is right now. As the LogInit call
-'===    below (line 57) is commented out, no debug logfile is written.
+'===    below (line 62) is commented out, no debug logfile is written.
 '=== 2. Now uncomment the LogInit call below and Compile & Run again, this
 '===    should write the named logfile to this program's "example" directory.
 '=====
@@ -53,6 +53,11 @@ IF _FILEEXISTS("qb64.exe") OR _FILEEXISTS("qb64pe.exe") THEN
 ELSE
     root$ = "..\" 'compiled to source folder
 END IF
+
+'--- Set title and print the program's version string.
+'-----
+_TITLE "Debug-HowTo Output"
+COLOR 9: PRINT VersionDebugHowTo$: PRINT: COLOR 7
 
 'LogInit root$ + "example\Debug-HowTo.txt", QBDEBUG_FilterSimple
 
@@ -131,6 +136,12 @@ IF DebugIsActive% THEN 'avoid time wasting, if logging is off
 END IF
 LogClose lo%
 Permut& = prod&
+END FUNCTION
+
+'--- Function to define/return the program's version string.
+'-----
+FUNCTION VersionDebugHowTo$
+VersionDebugHowTo$ = MID$("$VER: Debug-HowTo 1.0 (14-Mar-2013) by RhoSigma :END$", 7, 41)
 END FUNCTION
 
 '--- Make the required .bm includes,

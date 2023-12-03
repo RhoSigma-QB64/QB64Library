@@ -111,3 +111,9 @@ IF DebugIsActive% THEN 'avoid wasting time for nothing
 END IF
 END SUB
 
+'--- undocumented - for internal use only
+'---------------------------------------------------------------------
+FUNCTION VersionQbdebug$
+VersionQbdebug$ = MID$("$VER: qbdebug.bm 1.0 (14-Mar-2013) by RhoSigma :END$", 7, 40)
+END FUNCTION
+

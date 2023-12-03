@@ -23,6 +23,8 @@
 '-----
 scr& = _NEWIMAGE(1024, 768, 256)
 SCREEN scr&
+_DELAY 0.2
+_TITLE "Fractal Mountains"
 
 '--- Init the color palette.
 '-----
@@ -309,6 +311,12 @@ END SUB
 '-----
 FUNCTION RangeRand% (low%, high%)
 RangeRand% = INT(RND(1) * (high% - low% + 1)) + low%
+END FUNCTION
+
+'--- Function to define/return the program's version string.
+'-----
+FUNCTION VersionFractalMountains$
+VersionFractalMountains$ = MID$("$VER: FractalMountains 1.0 (14-Nov-2018) by RhoSigma :END$", 7, 46)
 END FUNCTION
 
 '--- Make the required .bm includes,

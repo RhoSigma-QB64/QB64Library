@@ -22,6 +22,9 @@
 '--- Make a graphics screen.
 '-----
 SCREEN _NEWIMAGE(640, 480, 256)
+_DELAY 0.2
+_TITLE "Circles"
+COLOR 9: PRINT VersionCircles$: COLOR 7
 
 '--- Set some variables.
 '-----
@@ -96,6 +99,12 @@ NEXT a%
 '--- Make your best guess what happens here.
 '-----
 END
+
+'--- Function to define/return the program's version string.
+'-----
+FUNCTION VersionCircles$
+VersionCircles$ = MID$("$VER: Circles 1.0 (29-Jul-2016) by RhoSigma :END$", 7, 37)
+END FUNCTION
 
 '--- Make the required .bm includes,
 '--- always specify paths in the $INCLUDE statement assuming the

@@ -51,6 +51,11 @@ ELSE
     root$ = "..\" 'compiled to source folder
 END IF
 
+'--- Set title and print the program's version string.
+'-----
+_TITLE "MD5-HowTo Output"
+COLOR 9: PRINT VersionMd5HowTo$: COLOR 7
+
 '--- Read the file RSA-License.txt from the MD5-Hash\license folder into
 '--- a string and then pass it to the FUNCTION GetStringMD5$().
 '-----
@@ -81,11 +86,11 @@ PRINT ":  "; GetStringMD5$(a$)
 '--- Yet another try in a loop.
 '-----
 PRINT
-PRINT "continuously changing, press any key to stop..."
+PRINT "continuously changing, press any key to stop ..."
 WHILE INKEY$ = ""
     _LIMIT 5
     a$ = DATE$ + " " + TIME$
-    LOCATE 14, 1
+    LOCATE 15, 1
     PRINT "MD5 Digest date/time "; CHR$(34); a$; CHR$(34)
     PRINT ":  "; GetStringMD5$(a$)
 WEND
@@ -96,6 +101,12 @@ PRINT "to create a timed code lock like on a bank tresor :)"
 '--- Make your best guess what happens here.
 '-----
 END
+
+'--- Function to define/return the program's version string.
+'-----
+FUNCTION VersionMd5HowTo$
+VersionMd5HowTo$ = MID$("$VER: MD5-HowTo 1.0 (15-Sep-2021) by RhoSigma :END$", 7, 39)
+END FUNCTION
 
 '--- Make the required .bm includes,
 '--- always specify paths in the $INCLUDE statement assuming the

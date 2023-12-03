@@ -47,6 +47,11 @@ ELSE
     root$ = "..\" 'compiled to source folder
 END IF
 
+'--- Set title and print the program's version string.
+'-----
+_TITLE "DES56-HowTo Output"
+COLOR 9: PRINT VersionDes56HowTo$: PRINT: COLOR 7
+
 '--- Encrypt a password for use in .htaccess files.
 '-----
 PRINT "Encrypt the QB64 version string as password for a .htaccess protected"
@@ -101,6 +106,12 @@ WEND
 '--- Make your best guess what happens here.
 '-----
 END
+
+'--- Function to define/return the program's version string.
+'-----
+FUNCTION VersionDes56HowTo$
+VersionDes56HowTo$ = MID$("$VER: DES56-HowTo 1.0 (12-May-2015) by RhoSigma :END$", 7, 41)
+END FUNCTION
 
 '--- Make the required .bm includes,
 '--- always specify paths in the $INCLUDE statement assuming the

@@ -27,6 +27,8 @@
 '-----
 scr& = _NEWIMAGE(1024, 768, 256)
 SCREEN scr&
+_DELAY 0.2
+_TITLE "3D Function Plotter"
 
 '--- Init the color palette.
 '-----
@@ -297,6 +299,12 @@ SUB XYfrom3D (x%, y%, z%)
 x% = (x% + (y% * .5))
 z% = (z% + (y% * .5))
 END SUB
+
+'--- Function to define/return the program's version string.
+'-----
+FUNCTION Version3dFuncPlot$
+Version3dFuncPlot$ = MID$("$VER: 3dFuncPlot 1.0 (14-Nov-2018) by RhoSigma :END$", 7, 40)
+END FUNCTION
 
 '--- Make the required .bm includes,
 '--- always specify paths in the $INCLUDE statement assuming the
