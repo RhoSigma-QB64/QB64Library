@@ -28,10 +28,16 @@
 
 '--- Find the root of the library's source folder.
 '-----
-IF _FILEEXISTS("qb64.exe") OR _FILEEXISTS("qb64pe.exe") THEN
-    root$ = "QB64Library\SB-Storage\" 'compiled to qb64 folder
-ELSE
+IF _FILEEXISTS("SimplyText.bas") THEN
     root$ = "..\" 'compiled to source folder
+ELSEIF _FILEEXISTS("qb64pe.exe") OR _FILEEXISTS("qb64.exe") OR _
+       _FILEEXISTS("qb64pe") OR _FILEEXISTS("qb64") THEN
+    root$ = "QB64Library\SB-Storage\" 'compiled to qb64(pe) folder
+ELSE
+    PRINT
+    PRINT "ERROR: Can't locate the library's source folder, please make sure"
+    PRINT "       to save EXEs either to source folder or to qb64(pe) folder."
+    END
 END IF
 
 '--- Set title and print the program's version string.
@@ -41,12 +47,12 @@ COLOR 9: PRINT VersionSimplyText$: PRINT: COLOR 7
 
 '--- the usual file based read
 '-----
-COLOR 12: PRINT "reading lines from file (delayed 0.5 sec.) ...": PRINT: COLOR 7
+COLOR 12: PRINT "reading lines from file (delayed 0.2 sec.) ...": PRINT: COLOR 7
 OPEN root$ + "license\COPYING.txt" FOR INPUT AS #1
 WHILE NOT EOF(1)
     LINE INPUT #1, l$
     PRINT l$
-    _DELAY 0.5
+    _DELAY 0.2
 WEND
 CLOSE #1
 COLOR 12: PRINT: PRINT "end of file, press any key...": SLEEP: COLOR 7
@@ -55,12 +61,12 @@ CLS
 '--- now let's use a buffer
 '-----
 COLOR 9: PRINT VersionSimplyText$: PRINT: COLOR 7
-COLOR 12: PRINT "reading lines from buffer (delayed 0.5 sec.) ...": PRINT: COLOR 7
+COLOR 12: PRINT "reading lines from buffer (delayed 0.2 sec.) ...": PRINT: COLOR 7
 bh% = FileToBuf%(root$ + "license\COPYING.txt")
 ConvBufToNativeEol bh%
 WHILE NOT EndOfBuf%(bh%)
     PRINT ReadBufLine$(bh%)
-    _DELAY 0.5
+    _DELAY 0.2
 WEND
 DisposeBuf bh%
 COLOR 12: PRINT: PRINT "end of buffer, press any key...": SLEEP: COLOR 7

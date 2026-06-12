@@ -25,6 +25,8 @@ scr& = _NEWIMAGE(1024, 768, 256)
 SCREEN scr&
 _DELAY 0.2
 _TITLE "Fractal Mountains"
+_DELAY 0.2
+_SCREENMOVE _MIDDLE
 
 '--- Init the color palette.
 '-----

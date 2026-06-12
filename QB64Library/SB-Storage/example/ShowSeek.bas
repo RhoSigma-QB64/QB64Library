@@ -19,13 +19,13 @@
 '| any questions or suggestions. Thanx for your interest in my work. |
 '+-------------------------------------------------------------------+
 
-_TITLE "Simplebuffers line seek behavior"
-
 '--- Make the required .bi includes,
 '--- always specify paths in the $INCLUDE statement assuming the
 '--- main QB64 installation folder as root.
 '-----
 '$INCLUDE: 'QB64Library\SB-Storage\simplebuffer.bi'
+
+_TITLE "Simplebuffers line seek behavior"
 
 '--- create a buffer
 '-----

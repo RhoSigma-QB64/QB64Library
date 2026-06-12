@@ -21,19 +21,29 @@
 
 '--- Find the QB64 home folder and EXE name.
 '-----
-IF _FILEEXISTS("qb64.exe") THEN
-    root$ = "" 'compiled to qb64 folder
-    qb64$ = "qb64.exe" 'normal version
-ELSEIF _FILEEXISTS("qb64pe.exe") THEN
-    root$ = "" 'compiled to qb64pe folder
-    qb64$ = "qb64pe.exe" 'Phoenix Edition
-ELSE
+IF _FILEEXISTS("LZW-HowTo.bas") THEN
     root$ = "..\..\..\" 'compiled to source folder
-    IF _FILEEXISTS(root$ + "qb64.exe") THEN
-        qb64$ = "qb64.exe" 'normal version
-    ELSE
-        qb64$ = "qb64pe.exe" 'Phoenix Edition
-    END IF
+ELSEIF _FILEEXISTS("qb64pe.exe") OR _FILEEXISTS("qb64.exe") OR _
+       _FILEEXISTS("qb64pe") OR _FILEEXISTS("qb64") THEN
+    root$ = "" 'compiled to qb64(pe) folder
+ELSE
+    PRINT
+    PRINT "ERROR: Can't locate the program's source folder, please make sure"
+    PRINT "       to save EXEs either to source folder or to qb64(pe) folder."
+    END
+END IF
+IF _FILEEXISTS(root$ + "qb64pe.exe") THEN
+    qb64$ = "qb64pe.exe" 'Phoenix Edition WIN
+ELSEIF _FILEEXISTS(root$ + "qb64.exe") THEN
+    qb64$ = "qb64.exe" 'normal version WIN
+ELSEIF _FILEEXISTS(root$ + "qb64pe") THEN
+    qb64$ = "qb64pe" 'Phoenix Edition LNX/MAC
+ELSEIF _FILEEXISTS(root$ + "qb64") THEN
+    qb64$ = "qb64" 'normal version LNX/MAC
+ELSE
+    PRINT
+    PRINT "ERROR: Can't find the qb64(pe) executable."
+    END
 END IF
 
 '--- Set title and print the program's version string.

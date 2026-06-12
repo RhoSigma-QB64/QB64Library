@@ -15,7 +15,7 @@
 '|                                                                   |
 '| == Note that this demo is considered "unfinished" yet, as there's |
 '| == no option to enter the F(x,y), you can just type it in here in |
-'| == the source file around line numbers 92-96.                     |
+'| == the source file around line numbers 97-101.                    |
 '|                                                                   |
 '+-------------------------------------------------------------------+
 '| Done by RhoSigma, R.Heyder, provided AS IS, use at your own risk. |
@@ -29,6 +29,8 @@ scr& = _NEWIMAGE(1024, 768, 256)
 SCREEN scr&
 _DELAY 0.2
 _TITLE "3D Function Plotter"
+_DELAY 0.2
+_SCREENMOVE _MIDDLE
 
 '--- Init the color palette.
 '-----
@@ -91,11 +93,13 @@ DO
         FOR x% = 0 TO (scrX% - 1) STEP stX%
             a# = x1# + (dx# * (x% / scrX%))
             bow# = 3.141592653589793 / 180
+            '--------------------------------------------------
             'this are some functions, choose one by uncommenting it and
             'commenting all other, or try to create your own
             c% = (120 * COS((a# * a#) + (b# * b#))) / EXP(((a# * a#) + (b# * b#)) / 5)
             'c% = (30 * SIN(bow# * a# * 80)) - (30 * SIN(bow# * b# * 80))
             'c% = (a# * a# * 5) - (b# * b# * 5)
+            '--------------------------------------------------
             xx% = x%
             yy% = y%
             zz% = c%

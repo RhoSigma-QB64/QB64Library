@@ -9,4 +9,5 @@ applies to the entire contents in this distribution, namely:
     - example\Circles.bas
     - example\ColorSpin.bas
     - example\ImgProcDemo.bas
+    - example\RotatePolygon.bas
 

@@ -33,8 +33,16 @@ _TITLE "Phonebook"
 
 '--- The program's work directory.
 '-----
-IF _FILEEXISTS("qb64.exe") OR _FILEEXISTS("qb64pe.exe") THEN
-    CHDIR "QB64Library\RS-Includes\example"
+IF _FILEEXISTS("Phonebook.bas") THEN
+    'CHDIR "" 'compiled to source folder
+ELSEIF _FILEEXISTS("qb64pe.exe") OR _FILEEXISTS("qb64.exe") OR _
+       _FILEEXISTS("qb64pe") OR _FILEEXISTS("qb64") THEN
+    CHDIR "QB64Library\RS-Includes\example" 'compiled to qb64(pe) folder
+ELSE
+    PRINT
+    PRINT "ERROR: Can't locate the program's source folder, please make sure"
+    PRINT "       to save EXEs either to source folder or to qb64(pe) folder."
+    END
 END IF
 
 '--- Let's get started,

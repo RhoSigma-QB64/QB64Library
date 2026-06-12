@@ -23,18 +23,27 @@
 
 _TITLE "Ascii Art Demo"
 
-'--- Set the program's work directory.
+'--- Find the root of the program's source folder.
 '-----
-IF _FILEEXISTS("qb64.exe") OR _FILEEXISTS("qb64pe.exe") THEN
-    CHDIR "QB64Library\IMG-Support\example"
+IF _FILEEXISTS("AsciiArtDemo.bas") THEN
+    root$ = "" 'compiled to source folder
+ELSEIF _FILEEXISTS("qb64pe.exe") OR _FILEEXISTS("qb64.exe") OR _
+       _FILEEXISTS("qb64pe") OR _FILEEXISTS("qb64") THEN
+    root$ = "QB64Library\IMG-Support\example\" 'compiled to qb64(pe) folder
+ELSE
+    PRINT
+    PRINT "ERROR: Can't locate the program's source folder, please make sure"
+    PRINT "       to save EXEs either to source folder or to qb64(pe) folder."
+    END
 END IF
 
 '--- Load the test (original) image.
 '-----
-oImg& = _LOADIMAGE("BeachGirl.jpg", 32)
+oImg& = _LOADIMAGE(root$ + "BeachGirl.jpg", 32)
 IF oImg& >= -1 THEN
-    PRINT "ERROR: Can't load the test Image, make sure it's in the same"
-    PRINT "       directory as this demo program's EXE file !!"
+    PRINT
+    PRINT "ERROR: Can't load BeachGirl.jpg, make sure the image is in the"
+    PRINT "       same folder as this program's source file."
     END
 END IF
 
@@ -45,6 +54,7 @@ art$ = MakeAsciiArt$(oImg&, 140, 8, "")
 '--- Adjust screen size and font an print the ASCII art.
 '-----
 WIDTH 141, 106
+_DELAY 0.2: _SCREENMOVE _MIDDLE
 _FONT 8
 PRINT art$;
 

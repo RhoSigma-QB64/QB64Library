@@ -19,18 +19,27 @@
 '| any questions or suggestions. Thanx for your interest in my work. |
 '+-------------------------------------------------------------------+
 
-'--- Set the program's work directory.
+'--- Find the root of the program's source folder.
 '-----
-IF _FILEEXISTS("qb64.exe") OR _FILEEXISTS("qb64pe.exe") THEN
-    CHDIR "QB64Library\IMG-Support\example"
+IF _FILEEXISTS("ImgProcDemo.bas") THEN
+    root$ = "" 'compiled to source folder
+ELSEIF _FILEEXISTS("qb64pe.exe") OR _FILEEXISTS("qb64.exe") OR _
+       _FILEEXISTS("qb64pe") OR _FILEEXISTS("qb64") THEN
+    root$ = "QB64Library\IMG-Support\example\" 'compiled to qb64(pe) folder
+ELSE
+    PRINT
+    PRINT "ERROR: Can't locate the program's source folder, please make sure"
+    PRINT "       to save EXEs either to source folder or to qb64(pe) folder."
+    END
 END IF
 
 '--- Load the test (original) image.
 '-----
-oImg& = _LOADIMAGE("BeachGirl.jpg", 32)
+oImg& = _LOADIMAGE(root$ + "BeachGirl.jpg", 32)
 IF oImg& >= -1 THEN
-    PRINT "ERROR: Can't load the test Image, make sure it's in the working"
-    PRINT "       directory designated in the source file !!"
+    PRINT
+    PRINT "ERROR: Can't load BeachGirl.jpg, make sure the image is in the"
+    PRINT "       same folder as this program's source file."
     END
 END IF
 
@@ -56,6 +65,7 @@ END IF
 '-----
 getChoice:
 _TITLE "Image processing Demo"
+_DELAY 0.2: _SCREENMOVE _MIDDLE
 COLOR 9: PRINT VersionImgProcDemo$: COLOR 7
 PRINT
 PRINT "How would you like this Demo to perform?": PRINT
@@ -73,7 +83,7 @@ SELECT CASE uc%
         righ% = -1: bott% = -1
     CASE 2
         _TITLE "This is the mask Image, press any key..."
-        SCREEN mImg&: SLEEP
+        SCREEN mImg&: _DELAY 0.2: _SCREENMOVE _MIDDLE: SLEEP
         mask& = mImg&
         left% = -1: topp% = -1
         righ% = -1: bott% = -1
@@ -83,7 +93,7 @@ SELECT CASE uc%
         righ% = 820: bott% = -1
     CASE 4
         _TITLE "This is the mask Image, press any key..."
-        SCREEN mImg&: SLEEP
+        SCREEN mImg&: _DELAY 0.2: _SCREENMOVE _MIDDLE: SLEEP
         mask& = mImg&
         left% = 250: topp% = 70
         righ% = 820: bott% = -1
@@ -101,7 +111,7 @@ GOTO getChoice
 demo:
 '--- first show the original image ---
 _TITLE "The original Image, press any key..."
-SCREEN oImg&: SLEEP
+SCREEN oImg&: _DELAY 0.2: _SCREENMOVE _MIDDLE: SLEEP
 
 '--- now make the image somewhat brighter ---
 _TITLE "The Gamma Correction (1.25), press any key..."

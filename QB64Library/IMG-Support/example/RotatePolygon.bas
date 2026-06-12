@@ -46,6 +46,7 @@ DO
         CASE 19712: rcx% = rcx% + 5 'CsrRgt
     END SELECT
     CLS
+    COLOR 9: PRINT VersionRotatePolygon$: COLOR 7: PRINT
     PRINT "Use arrow keys to move the rotation center, close window to quit:"
     PRINT "rcx% ="; rcx%; "  rcy% ="; rcy%
 

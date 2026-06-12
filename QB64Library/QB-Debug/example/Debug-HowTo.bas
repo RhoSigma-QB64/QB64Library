@@ -23,7 +23,7 @@
 '=== Instructions ===
 '====================
 '=== 1. Compile & Run this program as it is right now. As the LogInit call
-'===    below (line 62) is commented out, no debug logfile is written.
+'===    below (line 68) is commented out, no debug logfile is written.
 '=== 2. Now uncomment the LogInit call below and Compile & Run again, this
 '===    should write the named logfile to this program's "example" directory.
 '=====
@@ -48,10 +48,16 @@
 
 '--- Find the root of the library's source folder.
 '-----
-IF _FILEEXISTS("qb64.exe") OR _FILEEXISTS("qb64pe.exe") THEN
-    root$ = "QB64Library\QB-Debug\" 'compiled to qb64 folder
-ELSE
+IF _FILEEXISTS("Debug-HowTo.bas") THEN
     root$ = "..\" 'compiled to source folder
+ELSEIF _FILEEXISTS("qb64pe.exe") OR _FILEEXISTS("qb64.exe") OR _
+       _FILEEXISTS("qb64pe") OR _FILEEXISTS("qb64") THEN
+    root$ = "QB64Library\QB-Debug\" 'compiled to qb64(pe) folder
+ELSE
+    PRINT
+    PRINT "ERROR: Can't locate the library's source folder, please make sure"
+    PRINT "       to save EXEs either to source folder or to qb64(pe) folder."
+    END
 END IF
 
 '--- Set title and print the program's version string.

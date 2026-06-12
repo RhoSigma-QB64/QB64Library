@@ -29,6 +29,7 @@
 **       - renamed encrypt.c/h to des56.c/h respectivly to clearly
 **         name the cryptographic algorithm contained
 **       - joint des56.h and des56.c into one file for DECLARE LIBRARY
+**       - renamed ERROR_xxx macros as DES56_ERROR_xxx
 **       - addded "RSQB" include guard and namespace
 **       - removed progress display stuff, as QB64 cannot pass callback
 **         hooks (pointer to function) to called C/C++ functions
@@ -59,42 +60,42 @@ namespace rsqbdes56 {
 /* Error Codes returned by encryptfile() and decryptfile() */
 /***********************************************************/
 
-#define WARN_NOTCRYPTED -1 /* returned by decryptfile() only, */
-                           /* given file is not encrypted, at */
-                           /* least not with encryptfile() of */
-                           /* this API                        */
+#define DES56_WARN_NOTCRYPTED -1 /* returned by decryptfile() only, */
+                                 /* given file is not encrypted, at */
+                                 /* least not with encryptfile() of */
+                                 /* this API                        */
 
-#define ERROR_NONE       0 /* no error, file was successfully */
-                           /* encrypted or decrypted          */
+#define DES56_ERROR_NONE       0 /* no error, file was successfully */
+                                 /* encrypted or decrypted          */
 
-#define ERROR_NOACCESS   1 /* specified file could not be opened */
-                           /* either not found or not accessible */
+#define DES56_ERROR_NOACCESS   1 /* specified file could not be opened */
+                                 /* either not found or not accessible */
 
-#define ERROR_NOPASS     2 /* pointer to password was 0, or the */
-                           /* password is empty (zero length)   */
+#define DES56_ERROR_NOPASS     2 /* pointer to password was 0, or the */
+                                 /* password is empty (zero length)   */
 
-#define ERROR_BADCHUNK   3 /* returned by decryptfile() only, */
-                           /* expected data chunk not found,  */
-                           /* either encrypted by a diff. API */
-                           /* version or file is truncated    */
+#define DES56_ERROR_BADCHUNK   3 /* returned by decryptfile() only, */
+                                 /* expected data chunk not found,  */
+                                 /* either encrypted by a diff. API */
+                                 /* version or file is truncated    */
 
-#define ERROR_TRUNCATED  4 /* returned by decryptfile() only, */
-                           /* file is certainly truncated     */
+#define DES56_ERROR_TRUNCATED  4 /* returned by decryptfile() only, */
+                                 /* file is certainly truncated     */
 
-#define ERROR_WRONGCRC   5 /* returned by decryptfile() only, */
-                           /* wrong checksum indicates either */
-                           /* file damage, file manipulation  */
-                           /* or (most probably case) wrong   */
-                           /* password for decryption         */
+#define DES56_ERROR_WRONGCRC   5 /* returned by decryptfile() only, */
+                                 /* wrong checksum indicates either */
+                                 /* file damage, file manipulation  */
+                                 /* or (most probably case) wrong   */
+                                 /* password for decryption         */
 
-#define ERROR_FILEOP     6 /* error during common file operation */
-                           /* like fseek(), ftell() etc.         */
+#define DES56_ERROR_FILEOP     6 /* error during common file operation */
+                                 /* like fseek(), ftell() etc.         */
 
-#define ERROR_FILEREAD   7 /* error while reading data from file */
-#define ERROR_FILEWRITE  8 /* error while writing data to file   */
+#define DES56_ERROR_FILEREAD   7 /* error while reading data from file */
+#define DES56_ERROR_FILEWRITE  8 /* error while writing data to file   */
 
-#define ERROR_LOWMEM     9 /* running out of memory during */
-                           /* file buffering               */
+#define DES56_ERROR_LOWMEM     9 /* running out of memory during */
+                                 /* file buffering               */
 
 /**********************************************************/
 /* Normal Level Functions (user API to DES-56 encryption) */
@@ -292,6 +293,7 @@ extern int16_t decryptfile(const char *fname, const char *passw);
 **       - renamed encrypt.c/h to des56.c/h respectivly to clearly
 **         name the cryptographic algorithm contained
 **       - joint des56.h and des56.c into one file for DECLARE LIBRARY
+**       - renamed ERROR_xxx macros as DES56_ERROR_xxx
 **       - addded "RSQB" include guard and namespace
 **       - removed progress display stuff, as QB64 cannot pass callback
 **         hooks (pointer to function) to called C/C++ functions
@@ -509,44 +511,44 @@ static int16_t cryptfile(const char *fname, const char *passw, int16_t edflag, u
     FILE *fh = 0;
     uint64_t *dunit;
     int32_t tmp, pwl, cnt, rws, i, j, k, kd, kl;
-    int16_t err = ERROR_NONE;
+    int16_t err = DES56_ERROR_NONE;
 
     if (bsize < 96) bsize = 96; /* minimum 8 data chunks (64 bytes) + meta data (32 bytes) */
     else if (bsize > 32752) bsize = 32752; /* maximum because of sumalgo limit */
     else bsize = (bsize + 15) & 0xfffffff0;
     dsize = bsize - 16;
 
-    if (!(fh = fopen(fname,"rb"))) err = ERROR_NOACCESS;
+    if (!(fh = fopen(fname,"rb"))) err = DES56_ERROR_NOACCESS;
     else
     {
-        if ((passw == 0) || ((pwl = strlen(passw)) == 0)) err = ERROR_NOPASS;
+        if ((passw == 0) || ((pwl = strlen(passw)) == 0)) err = DES56_ERROR_NOPASS;
 
         if (!err && !edflag)
         {
-            if (fseek(fh,0,SEEK_END)) err = ERROR_FILEOP;
+            if (fseek(fh,0,SEEK_END)) err = DES56_ERROR_FILEOP;
             else
             {
-                if ((tmp = ftell(fh)) == EOF) err = ERROR_FILEOP;
+                if ((tmp = ftell(fh)) == EOF) err = DES56_ERROR_FILEOP;
                 else
                 {
                     cnt = tmp / dsize; if (tmp % dsize) cnt++;
-                    if (fseek(fh,0,SEEK_SET)) err = ERROR_FILEOP;
+                    if (fseek(fh,0,SEEK_SET)) err = DES56_ERROR_FILEOP;
                 }
             }
         }
         else if (!err && edflag)
         {
-            if (fread(form,1,12,fh) < 12) err = ERROR_FILEREAD;
+            if (fread(form,1,12,fh) < 12) err = DES56_ERROR_FILEREAD;
             else
             {
                 if ((form[0] == 'MROF') && (form[2] == 'PYRC')) /* flipped for little endian */
                 {
-                    if (fread(fhdr,1,24,fh) < 24) err = ERROR_FILEREAD;
+                    if (fread(fhdr,1,24,fh) < 24) err = DES56_ERROR_FILEREAD;
                     else
                     {
                         if ((fhdr[0] == 'RDHF') && (fhdr[1] == 16)) /* flipped for little endian */
                         {
-                            if (fhdr[5] != sumalgo(fhdr, 5)) err = ERROR_WRONGCRC;
+                            if (fhdr[5] != sumalgo(fhdr, 5)) err = DES56_ERROR_WRONGCRC;
                             else
                             {
                                 cnt = fhdr[2];
@@ -554,22 +556,22 @@ static int16_t cryptfile(const char *fname, const char *passw, int16_t edflag, u
                                 dsize = bsize - 16;
                             }
                         }
-                        else err = ERROR_BADCHUNK;
+                        else err = DES56_ERROR_BADCHUNK;
                     }
                 }
-                else err = WARN_NOTCRYPTED;
+                else err = DES56_WARN_NOTCRYPTED;
             }
         }
 
         if (!err)
         {
-            if (!(bvp = (uint32_t**) malloc(cnt * sizeof(uint32_t*)))) err = ERROR_LOWMEM;
+            if (!(bvp = (uint32_t**) malloc(cnt * sizeof(uint32_t*)))) err = DES56_ERROR_LOWMEM;
             else
             {
                 memset(bvp,0,cnt * sizeof(uint32_t*));
                 for (i = 0; (!err) && (i < cnt); i++)
                 {
-                    if (!(bvp[i] = (uint32_t*) malloc(bsize))) err = ERROR_LOWMEM;
+                    if (!(bvp[i] = (uint32_t*) malloc(bsize))) err = DES56_ERROR_LOWMEM;
                 }
             }
         }
@@ -581,8 +583,8 @@ static int16_t cryptfile(const char *fname, const char *passw, int16_t edflag, u
             for (i = 0; (!err) && (i < cnt); i++)
             {
                 bpl = bvp[i]; if (!edflag) bpl += 4;
-                if ((tmp = fread(bpl,1,rws,fh)) < rws) err = ERROR_FILEREAD;
-                if (err && (i == (cnt - 1)) && (tmp > 0)) err = ERROR_NONE;
+                if ((tmp = fread(bpl,1,rws,fh)) < rws) err = DES56_ERROR_FILEREAD;
+                if (err && (i == (cnt - 1)) && (tmp > 0)) err = DES56_ERROR_NONE;
                 if (!err && !edflag)
                 {
                     bpl[-4] = 'FUBF'; /* flipped for little endian */
@@ -594,9 +596,9 @@ static int16_t cryptfile(const char *fname, const char *passw, int16_t edflag, u
                 {
                     if (bpl[0] == 'FUBF') /* flipped for little endian */
                     {
-                        if (bpl[2] != i) err = ERROR_TRUNCATED;
+                        if (bpl[2] != i) err = DES56_ERROR_TRUNCATED;
                     }
-                    else err = ERROR_BADCHUNK;
+                    else err = DES56_ERROR_BADCHUNK;
                 }
             }
         }
@@ -632,53 +634,53 @@ static int16_t cryptfile(const char *fname, const char *passw, int16_t edflag, u
             }
             if (edflag)
             {
-                if (bpl[3] != sumalgo(&bpl[4], (bpl[1] - 8) / 4)) err = ERROR_WRONGCRC;
+                if (bpl[3] != sumalgo(&bpl[4], (bpl[1] - 8) / 4)) err = DES56_ERROR_WRONGCRC;
             }
         }
     }
 
     if (!err)
     {
-        if (!(fh = fopen(fname,"wb"))) err = ERROR_FILEWRITE;
+        if (!(fh = fopen(fname,"wb"))) err = DES56_ERROR_FILEWRITE;
         else
         {
             if (!edflag)
             {
                 form[0] = 'MROF'; form[2] = 'PYRC'; /* flipped for little endian */
-                if (fwrite(form,1,12,fh) < 12) err = ERROR_FILEWRITE;
+                if (fwrite(form,1,12,fh) < 12) err = DES56_ERROR_FILEWRITE;
                 if (!err)
                 {
                     fhdr[0] = 'RDHF'; fhdr[1] = 16; /* flipped for little endian */
                     fhdr[2] = cnt; fhdr[3] = bsize; fhdr[4] = tmp;
                     fhdr[5] = sumalgo(fhdr, 5);
-                    if (fwrite(fhdr,1,24,fh) < 24) err = ERROR_FILEWRITE;
+                    if (fwrite(fhdr,1,24,fh) < 24) err = DES56_ERROR_FILEWRITE;
                 }
             }
             rws = edflag ? dsize : bsize;
             for (i = 0; (!err) && (i < (cnt - 1)); i++)
             {
                 bpl = bvp[i]; if (edflag) bpl += 4;
-                if (fwrite(bpl,1,rws,fh) < rws) err = ERROR_FILEWRITE;
+                if (fwrite(bpl,1,rws,fh) < rws) err = DES56_ERROR_FILEWRITE;
             }
             if (!err)
             {
                 bpl = bvp[cnt - 1];
                 rws = edflag ? fhdr[4] : bpl[1] + 8; if (edflag) bpl += 4;
-                if (fwrite(bpl,1,rws,fh) < rws) err = ERROR_FILEWRITE;
+                if (fwrite(bpl,1,rws,fh) < rws) err = DES56_ERROR_FILEWRITE;
             }
             if (!err && !edflag)
             {
-                if (fseek(fh,0,SEEK_END)) err = ERROR_FILEOP;
+                if (fseek(fh,0,SEEK_END)) err = DES56_ERROR_FILEOP;
                 else
                 {
-                    if ((tmp = ftell(fh)) == EOF) err = ERROR_FILEOP;
+                    if ((tmp = ftell(fh)) == EOF) err = DES56_ERROR_FILEOP;
                     else
                     {
-                        if (fseek(fh,4,SEEK_SET)) err = ERROR_FILEOP;
+                        if (fseek(fh,4,SEEK_SET)) err = DES56_ERROR_FILEOP;
                         else
                         {
                             tmp -= 8;
-                            if (fwrite(&tmp,1,4,fh) < 4) err = ERROR_FILEWRITE;
+                            if (fwrite(&tmp,1,4,fh) < 4) err = DES56_ERROR_FILEWRITE;
                         }
                     }
                 }

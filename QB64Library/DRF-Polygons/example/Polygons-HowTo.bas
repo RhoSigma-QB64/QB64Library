@@ -38,6 +38,8 @@ scr& = _NEWIMAGE(640, 480, 32)
 SCREEN scr&
 _DELAY 0.2
 _TITLE "Polygons-HowTo Output"
+_DELAY 0.2
+_SCREENMOVE _MIDDLE
 
 '--- Define some colors.
 '--- Important: 32-bit colors must be unsigned long (~&).

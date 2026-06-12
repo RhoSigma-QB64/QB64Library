@@ -29,10 +29,16 @@ _TITLE "Simplebuffers usage example"
 
 '--- Find the root of the library's source folder.
 '-----
-IF _FILEEXISTS("qb64.exe") OR _FILEEXISTS("qb64pe.exe") THEN
-    root$ = "QB64Library\SB-Storage\" 'compiled to qb64 folder
-ELSE
+IF _FILEEXISTS("FuncParse.bas") THEN
     root$ = "..\" 'compiled to source folder
+ELSEIF _FILEEXISTS("qb64pe.exe") OR _FILEEXISTS("qb64.exe") OR _
+       _FILEEXISTS("qb64pe") OR _FILEEXISTS("qb64") THEN
+    root$ = "QB64Library\SB-Storage\" 'compiled to qb64(pe) folder
+ELSE
+    PRINT
+    PRINT "ERROR: Can't locate the library's source folder, please make sure"
+    PRINT "       to save EXEs either to source folder or to qb64(pe) folder."
+    END
 END IF
 
 '--- load the file into a buffer

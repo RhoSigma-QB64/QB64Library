@@ -8,7 +8,7 @@
  */
 
 // Added "RSQB" include guard and namespace plus some helper code
-// at the end of this file for use in QB64, Nov-20th-2019.
+// at the end of this file for use in QB64, 20-Nov-2019.
 // Done by RhoSigma, Roland Heyder <support@rhosigma-cw.net>
 
 #ifndef RSQB_SHA2_H // include only once
@@ -217,7 +217,7 @@ void calc_sha_256(uint8_t hash[32], const void * input, size_t len)
 }
 
 /// ==================================================================
-/// additional helper code adapted from md5.h
+/// additional helper code to hash from file or memory
 
 // an SHA digest is a 32-byte number (64 hex digits)
 BYTE rsLibDigestRaw[ 32 ] ;

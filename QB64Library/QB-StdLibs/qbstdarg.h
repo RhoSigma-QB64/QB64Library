@@ -94,18 +94,18 @@ ptrszint MakeCString(char *qbStr, int32_t qbStrLen) {
             else if (esc) {
                 esc = 0; len = 0;
                 switch (chr) {
-                    case 'a': {*cStr++ = '\a'; seq = "\\a"; break;}
-                    case 'b': {*cStr++ = '\b'; seq = "\\b"; break;}
-                    case 't': {*cStr++ = '\t'; seq = "\\t"; break;}
-                    case 'n': {*cStr++ = '\n'; seq = "\\n"; break;}
-                    case 'v': {*cStr++ = '\v'; seq = "\\v"; break;}
-                    case 'f': {*cStr++ = '\f'; seq = "\\f"; break;}
-                    case 'r': {*cStr++ = '\r'; seq = "\\r"; break;}
-                    case 'e': {*cStr++ = '\e'; seq = "\\e"; break;}
-                    case '\"': {*cStr++ = '\"'; seq = "\\\x22"; break;}
-                    case '\'': {*cStr++ = '\''; seq = "\\'"; break;}
-                    case '?': {*cStr++ = '\?'; seq = "\\?"; break;}
-                    case '\\': {*cStr++ = '\\'; seq = "\\\\"; break;}
+                    case 'a': {*cStr++ = '\a'; seq = (char*)"\\a"; break;}
+                    case 'b': {*cStr++ = '\b'; seq = (char*)"\\b"; break;}
+                    case 't': {*cStr++ = '\t'; seq = (char*)"\\t"; break;}
+                    case 'n': {*cStr++ = '\n'; seq = (char*)"\\n"; break;}
+                    case 'v': {*cStr++ = '\v'; seq = (char*)"\\v"; break;}
+                    case 'f': {*cStr++ = '\f'; seq = (char*)"\\f"; break;}
+                    case 'r': {*cStr++ = '\r'; seq = (char*)"\\r"; break;}
+                    case 'e': {*cStr++ = '\e'; seq = (char*)"\\e"; break;}
+                    case '\"': {*cStr++ = '\"'; seq = (char*)"\\\x22"; break;}
+                    case '\'': {*cStr++ = '\''; seq = (char*)"\\'"; break;}
+                    case '?': {*cStr++ = '\?'; seq = (char*)"\\?"; break;}
+                    case '\\': {*cStr++ = '\\'; seq = (char*)"\\\\"; break;}
                     case '0': case '1': case '2': case '3': case 'x': case 'X': {
                         char tmp = qbStr[2]; qbStr[2] = '\0'; char *eptr;
                         if (chr == 'x' || chr == 'X') {*cStr++ = strtoul(qbStr, &eptr, 16);} // hex value

@@ -33,8 +33,8 @@ FILE   *dbgFile = 0; // logfile handle
 int16_t glbOpen = 0; // global file open flag
 int16_t ftrMode = 0; // active filter mode
 
-int32_t numIndt = 0;    // indent count
-char   *strIndt = "| "; // indent string
+int32_t numIndt = 0;           // indent count
+char   *strIndt = (char*)"| "; // indent string
 
 int16_t fcdFlag = 0; // first call done flag
 int16_t eclFlag = 0; // empty close line flag
